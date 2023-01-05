@@ -26,6 +26,8 @@ source-repository head
 library
   exposed-modules:
       Controls
+      FRP
+      Game
       Main
       Resources
       Types
@@ -34,6 +36,7 @@ library
   hs-source-dirs:
       src
   default-extensions:
+      Arrows
       BangPatterns
       BinaryLiterals
       ConstrainedClassMethods
@@ -104,6 +107,7 @@ executable ld52-exe
   hs-source-dirs:
       app
   default-extensions:
+      Arrows
       BangPatterns
       BinaryLiterals
       ConstrainedClassMethods
@@ -176,6 +180,7 @@ test-suite ld52-test
   hs-source-dirs:
       test
   default-extensions:
+      Arrows
       BangPatterns
       BinaryLiterals
       ConstrainedClassMethods

@@ -1,10 +1,13 @@
 module Types
   ( module Types
+  , V2 (..)
   , Generic
+  , Word8
   ) where
 
 import SDL
 import GHC.Generics
+import Data.Word
 
 
 ------------------------------------------------------------------------------
@@ -23,6 +26,7 @@ data Resources = Resources
 
 ------------------------------------------------------------------------------
 
+type Color = V4 Word8
 type Renderable = Resources -> IO ()
 
 
@@ -38,7 +42,9 @@ data FrameInfo = FrameInfo
 ------------------------------------------------------------------------------
 -- | Input for the frame.
 data Controls = Controls
+  { c_space :: Bool
+  }
 
 defaultControls :: Controls
-defaultControls = Controls
+defaultControls = Controls False
 

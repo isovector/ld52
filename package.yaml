@@ -41,6 +41,7 @@ ghc-options:
 - -Wredundant-constraints
 
 default-extensions:
+- Arrows
 - BangPatterns
 - BinaryLiterals
 - ConstrainedClassMethods

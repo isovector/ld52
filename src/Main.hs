@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE PatternSynonyms   #-}
 
 module Main where
 
@@ -7,21 +8,13 @@ import Controls (parseControls)
 import Data.IORef
 import Data.Time.Clock.System
 import FRP.Yampa
+import Game
 import Resources (loadResources)
 import SDL hiding (copy, Stereo)
 import SDL.Mixer hiding (quit)
 import System.Exit
 import Types
 
-
-screenSize :: Num a => V2 a
-screenSize = V2 640 480
-
-screenScale :: Num a => V2 a
-screenScale = V2 2 2
-
-game :: Resources -> SF FrameInfo Renderable
-game _ = pure $ pure $ pure ()
 
 main :: IO ()
 main = do
@@ -63,7 +56,7 @@ main = do
     (pure $ FrameInfo defaultControls 0.016)
     (input window tRef)
     (output rs)
-    (game rs)
+    game
   quit
 
 
@@ -86,10 +79,15 @@ input win tRef _ = do
   let dt = min 0.016 (seconds' - seconds)
   pure (dt, Just $ FrameInfo (parseControls keys) dt)
 
+
+pattern Keypress :: Scancode -> EventPayload
+pattern Keypress scan <- KeyboardEvent (KeyboardEventData _ Pressed _ (Keysym scan _ _))
+
 isQuit :: EventPayload -> Bool
-isQuit QuitEvent             = True
-isQuit (WindowClosedEvent _) = True
-isQuit _                     = False
+isQuit QuitEvent                 = True
+isQuit (WindowClosedEvent _)     = True
+isQuit (Keypress ScancodeEscape) = True
+isQuit _                         = False
 
 
 output :: Resources -> Bool -> Renderable -> IO Bool
