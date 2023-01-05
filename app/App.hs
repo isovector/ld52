@@ -1,6 +1,4 @@
-module App (main) where
-
-import Main as Main
+import qualified Run
 
 main :: IO ()
-main = Main.main
+main = Run.main

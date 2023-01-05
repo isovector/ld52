@@ -28,8 +28,8 @@ library
       Controls
       FRP
       Game
-      Main
       Resources
+      Run
       Types
   other-modules:
       Paths_ld52

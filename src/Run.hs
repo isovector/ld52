@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE PatternSynonyms   #-}
 
-module Main where
+module Run where
 
 import Control.Monad
 import Controls (parseControls)
