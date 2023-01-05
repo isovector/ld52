@@ -4,9 +4,10 @@ module FRP
   , module FRP.Yampa
   ) where
 
-import FRP.Yampa
 import Control.Monad.Cont
+import Data.Functor.Identity
 import Data.Monoid
+import FRP.Yampa
 
 newtype Swont i o a = Swont
   { runSwont' :: Cont (SF i o) a
@@ -41,4 +42,17 @@ runSwont end sw = runCont (runSwont' sw) end
 
 deriving via (Ap (SF i) o) instance Semigroup o => Semigroup (SF i o)
 deriving via (Ap (SF i) o) instance Monoid o    => Monoid    (SF i o)
+
+-- | Perform the given action for a single frame, rendering the next step of
+-- the Swont for that frame.
+momentary :: Semigroup o => o -> Swont i o ()
+momentary what = Swont $ ContT $ \ f -> Identity $
+  dSwitch
+    (proc i -> do
+      io <- constant what -< ()
+      k  <- runIdentity (f ()) -< i
+      ev <- now () -< ()
+      returnA -< (io <> k, ev)
+    )
+    $ const $ runIdentity $ f ()
 

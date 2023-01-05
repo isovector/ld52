@@ -1,9 +1,11 @@
 module Game where
 
-import SDL
-import FRP
-import Types
+import Control.Monad (void)
 import Data.Bool (bool)
+import FRP
+import SDL
+import SDL.Mixer
+import Types
 
 
 logicalSize :: Num a => V2 a
@@ -21,6 +23,17 @@ drawBackgroundColor c rs = do
   rendererDrawColor renderer $= c
   fillRect renderer Nothing
 
+drawTexture :: GameTexture -> Point V2 Int -> V2 Int -> Renderable
+drawTexture gt p sz rs = do
+  let renderer = e_renderer $ r_engine rs
+  copy renderer (r_textures rs gt) Nothing $ Just $ fmap fromIntegral $ Rectangle p sz
+
+playSound :: Sound -> Resources -> IO ()
+playSound s r = do
+  putStrLn "hi"
+  halt 0
+  void $ playOn 0 Once $ r_sounds r s
+
 game :: SF FrameInfo Renderable
 game = do
   let set_bg :: Color -> SF a Renderable
@@ -36,6 +49,21 @@ game = do
                    . fi_controls
                    ) >>> arr drawBackgroundColor )
       $ do
+
+    -- We can draw textures!
+    let nintendo =
+          mconcat
+            [ set_bg $ V4 0 0 0 255
+            , arr $ \t ->
+                drawTexture NintendoLogo
+                  (P $ V2 100 (round $ 120 * t))
+                  (V2 120 20)
+            ]
+    lerpSF 2 nintendo
+
+    -- and play sounds!
+    momentary $ playSound NintendoSound
+    timed 1 $ constant 1 >>> nintendo
 
     -- Change the background to red for a second
     timed 1 $ set_bg $ V4 255 0 0 255

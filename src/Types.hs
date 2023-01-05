@@ -8,6 +8,7 @@ module Types
 import SDL
 import GHC.Generics
 import Data.Word
+import SDL.Mixer (Chunk)
 
 
 ------------------------------------------------------------------------------
@@ -20,7 +21,9 @@ data Engine = Engine
 ------------------------------------------------------------------------------
 -- | Things we need to keep track of, like sprites and music and stuff.
 data Resources = Resources
-  { r_engine :: Engine
+  { r_engine   :: Engine
+  , r_textures :: GameTexture -> Texture
+  , r_sounds   :: Sound -> Chunk
   }
 
 
@@ -37,6 +40,18 @@ data FrameInfo = FrameInfo
   , fi_dt :: Double
   }
   deriving stock Generic
+
+
+------------------------------------------------------------------------------
+-- | Textures used by the game.
+data GameTexture = NintendoLogo
+  deriving (Eq, Ord, Show, Read, Enum, Bounded)
+
+
+------------------------------------------------------------------------------
+-- | Audio used by the game.
+data Sound = NintendoSound
+  deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 
 ------------------------------------------------------------------------------
