@@ -46,5 +46,7 @@ data Controls = Controls
   }
 
 defaultControls :: Controls
-defaultControls = Controls False
+defaultControls = Controls
+  { c_space = False
+  }
 

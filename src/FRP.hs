@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-orphans #-}
 module FRP
   ( module FRP
   , module FRP.Yampa
@@ -5,6 +6,7 @@ module FRP
 
 import FRP.Yampa
 import Control.Monad.Cont
+import Data.Monoid
 
 newtype Swont i o a = Swont
   { runSwont' :: Cont (SF i o) a
@@ -36,4 +38,7 @@ lerpSF dur sf = timed dur $ localTime >>> arr (/ dur) >>> sf
 
 runSwont :: (a -> SF i o) -> Swont i o a -> SF i o
 runSwont end sw = runCont (runSwont' sw) end
+
+deriving via (Ap (SF i) o) instance Semigroup o => Semigroup (SF i o)
+deriving via (Ap (SF i) o) instance Monoid o    => Monoid    (SF i o)
 

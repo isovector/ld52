@@ -16,6 +16,10 @@ import System.Exit
 import Types
 
 
+screenSize :: Num a => V2 a
+screenSize = V2 640 480
+
+
 main :: IO ()
 main = do
   initializeAll
@@ -30,7 +34,7 @@ main = do
     { rendererType = AcceleratedVSyncRenderer
     , rendererTargetTexture = True
     }
-  rendererScale renderer $= screenScale
+  rendererScale renderer $= screenSize / logicalSize
   rendererDrawBlendMode renderer $= BlendAlphaBlend
   cursorVisible $= False
 
