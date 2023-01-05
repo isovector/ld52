@@ -5,9 +5,10 @@ module FRP
   ) where
 
 import Control.Monad.Cont
-import Data.Functor.Identity
 import Data.Monoid
 import FRP.Yampa
+import Data.Bifunctor
+import Data.Tuple (swap)
 
 newtype Swont i o a = Swont
   { runSwont' :: Cont (SF i o) a
@@ -46,13 +47,40 @@ deriving via (Ap (SF i) o) instance Monoid o    => Monoid    (SF i o)
 -- | Perform the given action for a single frame, rendering the next step of
 -- the Swont for that frame.
 momentary :: Semigroup o => o -> Swont i o ()
-momentary what = Swont $ ContT $ \ f -> Identity $
+momentary what = Swont $ cont $ \ f ->
   dSwitch
     (proc i -> do
       io <- constant what -< ()
-      k  <- runIdentity (f ()) -< i
+      k  <- f () -< i
       ev <- now () -< ()
       returnA -< (io <> k, ev)
     )
-    $ const $ runIdentity $ f ()
+    $ const $ f ()
+
+data Resumption s o = Resumption
+  { r_state  :: !s
+  , r_output :: !o
+  , r_stop  :: !(Event ())
+  }
+  deriving stock Functor
+
+instance Bifunctor Resumption where
+  bimap fab fcd (Resumption a c ev) = Resumption
+    { r_state = fab a
+    , r_output = fcd c
+    , r_stop = ev
+    }
+
+-- | A 'Resumable' is a signal function with state. The final state is returned
+-- by 'runResumable', meaning you can resume it exactly where you left off.
+newtype Resumable s i o = Resumable
+  { unResumable :: SF (s, i) (Resumption s o)
+  }
+  deriving stock Functor
+
+runResumable :: s -> Resumable s i o -> Swont i o s
+runResumable s0 (Resumable sf) = swont $ loopPre s0 $
+  proc is -> do
+    Resumption s' o ev <- sf -< swap is
+    returnA -< ((o, s' <$ ev), s')
 

@@ -34,6 +34,11 @@ playSound s r = do
   halt 0
   void $ playOn 0 Once $ r_sounds r s
 
+data World = World
+  { w_pos :: V2 Double
+  }
+
+
 game :: SF FrameInfo Renderable
 game = do
   let set_bg :: Color -> SF a Renderable
@@ -65,8 +70,26 @@ game = do
     momentary $ playSound NintendoSound
     timed 1 $ constant 1 >>> nintendo
 
+    -- A little interactive section for 5 seconds.
+    let run_around :: Resumable World FrameInfo Renderable
+        run_around = Resumable $ proc (World pos, fi) -> do
+          stop <- after 5 () -< ()
+          let dpos = pure $ fi_dt fi * bool 0 20 (c_space $ fi_controls fi)
+              pos' = pos + dpos
+          returnA -< Resumption
+            { r_state = World pos'
+            , r_output = drawFilledRect (V4 255 0 0 255) $ fmap round $ Rectangle (P pos') 10
+            , r_stop = stop
+            }
+
+    -- We get the resulting world state
+    w' <- runResumable (World 0) run_around
+
     -- Change the background to red for a second
     timed 1 $ set_bg $ V4 255 0 0 255
+
+    -- Resume the interactive section where we left off
+    void $ runResumable w' run_around
 
     -- and then to green for a second
     timed 1 $ set_bg $ V4 0 255 0 255
