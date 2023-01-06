@@ -11,6 +11,13 @@ packages:
       sha256: 35bb62f063c3568eb32a8794585f7aa6a3dd89c29ee8b4df3ff61fa7e631b907
   original:
     hackage: Yampa-0.13.7
+- completed:
+    hackage: ldtk-types-0.1.0.0@sha256:db6aadccbbebf7590ee810422ae0f9b282884d82870c3fbfbb54e1867c82090d,2226
+    pantry-tree:
+      size: 364
+      sha256: aecda286616f91d5626397ba35bbd98ba43427fe2fefa4c6a72f26b39567eecb
+  original:
+    hackage: ldtk-types-0.1.0.0
 snapshots:
 - completed:
     size: 586296
