@@ -44,8 +44,8 @@ data Level = Level
   { l_bgcolor :: Color
   , l_tilebounds :: Rect Tile
   , l_bounds  :: Rect Pixel
-  , l_tiles :: Resources -> Renderable
-  , l_hitmap  :: V2 Tile -> Bool
+  , l_tiles  :: LevelLayer -> Resources -> Renderable
+  , l_hitmap :: LevelLayer -> V2 Tile -> Bool
   }
   deriving stock Generic
 
@@ -104,6 +104,9 @@ data WorldName = TestWorld
 data Sound = NintendoSound
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
+data LevelLayer
+  = Layer1 | Layer2 | Layer3
+  deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 data WrappedTexture = WrappedTexture
   { getTexture    :: Texture

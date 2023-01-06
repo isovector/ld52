@@ -9,6 +9,7 @@ import Data.Monoid
 import FRP.Yampa
 import Data.Bifunctor
 import Data.Tuple (swap)
+import Data.Foldable (traverse_)
 
 newtype Swont i o a = Swont
   { runSwont' :: Cont (SF i o) a
@@ -36,6 +37,16 @@ timed dur sf = waitFor (after dur ()) sf
 
 lerpSF :: Double -> SF Double b -> Swont a b ()
 lerpSF dur sf = timed dur $ localTime >>> arr (/ dur) >>> sf
+
+
+timedSequence
+    :: SF i o    -- ^ final result
+    -> Double    -- ^ duration of each sf
+    -> [SF i o]  -- ^ sfs to run
+    -> SF i o
+timedSequence d interval sfs =
+  runSwont (const d) $
+    traverse_ (dswont . (&&& after interval ())) sfs
 
 
 runSwont :: (a -> SF i o) -> Swont i o a -> SF i o
