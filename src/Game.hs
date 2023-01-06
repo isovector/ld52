@@ -1,5 +1,7 @@
 module Game where
 
+import qualified Data.Set as S
+import Data.Set (Set)
 import Control.Monad (void)
 import Data.Bool (bool)
 import FRP
@@ -24,7 +26,12 @@ data St = St
   }
 
 game :: Resources -> SF FrameInfo Renderable
-game rs = arr $ const $ drawWorld $ r_worlds rs TestWorld
+game rs = timedSequence undefined 1 $ cycle $
+  [ arr $ const $ drawWorld rs (S.singleton Layer1) $ r_worlds rs TestWorld
+  , arr $ const $ drawWorld rs (S.singleton Layer2) $ r_worlds rs TestWorld
+  , arr $ const $ drawWorld rs (S.fromList [Layer1, Layer2]) $ r_worlds rs TestWorld
+  ]
+  -- arr $ const $ drawWorld rs $ r_worlds rs TestWorld
 
 game' :: SF FrameInfo Renderable
 game' = do
