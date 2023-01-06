@@ -8,6 +8,7 @@ import SDL
 import SDL.Mixer
 import Types
 import Drawing
+import Control.Lens ((^.))
 
 
 logicalSize :: Num a => V2 a
@@ -27,10 +28,19 @@ data Player = Player
 game :: Resources -> SF FrameInfo Renderable
 game rs = -- arr $ const $ drawWorld $ r_worlds rs TestWorld
   do
-  loopPre (Player (V2 150 150) (V2 100 100)) $ proc (fi, p) -> do
-    let dpos =  fi_dt fi SDL.*^ p_vel p * V2 1 0 * (realToFrac <$> c_dir (fi_controls fi))
-    let pos' = p_pos p + dpos
-    returnA -< (drawFilledRect (V4 255 0 0 255) $ round <$> Rectangle (P pos') 50, Player pos' (p_vel p))
+  loopPre (Player (V2 150 150) zero) $ proc (fi, p) -> do
+    let dt = fi_dt fi
+    let grav = V2 0 0.1
+    let jumpPower = V2 0 (-5)
+    jumpEv <- edge -< c_space (fi_controls fi)
+    let jump = event zero (const jumpPower) jumpEv --if c_space (fi_controls fi) then V2 0 (-1) else V2 0 0
+    let hvel = 2 SDL.*^ V2 1 0 * (realToFrac <$> c_dir (fi_controls fi))
+    let vvel = p_vel p + grav + jump
+    let vel' = hvel + V2 0 1 * vvel
+    let pos' = p_pos p + vel'
+    let (pos'', vel'') = (if pos' ^. _y > 200 then (V2 (pos' ^. _x) 200, V2 (vel' ^. _x) 0) else (pos', vel'))
+
+    returnA -< (drawFilledRect (V4 255 0 0 255) $ round <$> Rectangle (P pos') 16, Player pos'' vel'')
 
 game' :: SF FrameInfo Renderable
 game' = do
