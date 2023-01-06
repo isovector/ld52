@@ -28,7 +28,17 @@ data Player = Player
   }
 
 game :: Resources -> SF FrameInfo Renderable
-game rs = -- arr $ const $ drawWorld $ r_worlds rs TestWorld
+game rs = dpSwitch _ _ _ _
+
+game5 :: Resources -> SF i Renderable
+game5 rs = timedSequence undefined 1 $ cycle $
+  [ arr $ const $ drawWorld rs (S.singleton Layer1) $ r_worlds rs TestWorld
+  , arr $ const $ drawWorld rs (S.singleton Layer2) $ r_worlds rs TestWorld
+  , arr $ const $ drawWorld rs (S.fromList [Layer1, Layer2]) $ r_worlds rs TestWorld
+  ]
+
+game4 :: Resources -> SF FrameInfo Renderable
+game4 rs = -- arr $ const $ drawWorld $ r_worlds rs TestWorld
   do
   loopPre (Player (V2 150 150) zero) $ proc (fi, p) -> do
     let dt = fi_dt fi
