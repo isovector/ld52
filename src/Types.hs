@@ -14,6 +14,7 @@ import GHC.Generics
 import SDL
 import SDL.Mixer (Chunk)
 import Debug.Trace (trace, traceShowId, traceM)
+import Foreign.C (CInt)
 
 
 ------------------------------------------------------------------------------
@@ -60,7 +61,7 @@ data Engine = Engine
 -- | Things we need to keep track of, like sprites and music and stuff.
 data Resources = Resources
   { r_engine   :: Engine
-  , r_textures :: GameTexture -> Texture
+  , r_textures :: GameTexture -> WrappedTexture
   , r_sounds   :: Sound -> Chunk
   , r_worlds   :: WorldName -> World
   }
@@ -95,6 +96,14 @@ data WorldName = TestWorld
 data Sound = NintendoSound
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
+
+data WrappedTexture = WrappedTexture
+  { getTexture    :: Texture
+  , wt_sourceRect :: Maybe (Rectangle CInt)
+  , wt_size       :: V2 CInt
+  , wt_origin     :: V2 CInt
+  }
+  deriving stock Generic
 
 ------------------------------------------------------------------------------
 -- | Input for the frame.

@@ -7,27 +7,11 @@ import Game.World (drawWorld)
 import SDL
 import SDL.Mixer
 import Types
+import Drawing
 
 
 logicalSize :: Num a => V2 a
 logicalSize = V2 320 240
-
-drawFilledRect :: Color -> Rectangle Int  -> Renderable
-drawFilledRect c rect rs = do
-  let renderer = e_renderer $ r_engine rs
-  rendererDrawColor renderer $= c
-  fillRect renderer $ Just $ fmap fromIntegral rect
-
-drawBackgroundColor :: Color -> Renderable
-drawBackgroundColor c rs = do
-  let renderer = e_renderer $ r_engine rs
-  rendererDrawColor renderer $= c
-  fillRect renderer Nothing
-
-drawTexture :: GameTexture -> Point V2 Int -> V2 Int -> Renderable
-drawTexture gt p sz rs = do
-  let renderer = e_renderer $ r_engine rs
-  copy renderer (r_textures rs gt) Nothing $ Just $ fmap fromIntegral $ Rectangle p sz
 
 playSound :: Sound -> Resources -> IO ()
 playSound s r = do
@@ -58,20 +42,8 @@ game' = do
                    ) >>> arr drawBackgroundColor )
       $ do
 
-    -- We can draw textures!
-    let nintendo =
-          mconcat
-            [ set_bg $ V4 0 0 0 255
-            , arr $ \t ->
-                drawTexture NintendoLogo
-                  (P $ V2 100 (round $ 120 * t))
-                  (V2 120 20)
-            ]
-    lerpSF 2 nintendo
-
     -- and play sounds!
     momentary $ playSound NintendoSound
-    timed 1 $ constant 1 >>> nintendo
 
     -- A little interactive section for 5 seconds.
     let run_around :: Resumable St FrameInfo Renderable

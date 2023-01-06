@@ -19,9 +19,8 @@ drawBackgroundColor c rs = do
   rendererDrawColor renderer $= c
   fillRect renderer Nothing
 
--- TODO(sandy): hella unsafe
 tileSize :: Num a =>  V2 a
-tileSize = 16
+tileSize = 8
 
 drawWorld :: World -> Renderable
 drawWorld = foldMap drawLevel . toList . w_levels
@@ -36,12 +35,12 @@ drawLevel lv = mconcat
         False -> mempty
         True -> pure $
           drawFilledRect (V4 25 25 25 255)
-            $ flip Rectangle 16 -- TODO(sandy): magic number
+            $ flip Rectangle tileSize
             $ P $ tileToWorld tile
   ]
 
 tileToWorld :: V2 Tile -> V2 Int
-tileToWorld = fmap (* 16) . coerce
+tileToWorld = (* tileSize) . coerce
 
 tilesOf :: Rect Tile -> [V2 Tile]
 tilesOf (Rect (V2 x y) (V2 w h)) = do
