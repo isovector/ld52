@@ -24,7 +24,7 @@ main :: IO ()
 main = do
   initializeAll
 
-  window <- createWindow "ld50" $ defaultWindow
+  window <- createWindow "ld52" $ defaultWindow
     { windowInitialSize = screenSize
     , windowGraphicsContext = OpenGLContext defaultOpenGL
     }
