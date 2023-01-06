@@ -24,12 +24,9 @@ data Player = Player
   , p_vel :: V2 Double
   }
 
-game2 :: Resources -> SF FrameInfo Renderable
-game2 rs = arr $ const $ drawWorld $ r_worlds rs TestWorld
-
-
-game :: SF FrameInfo Renderable
-game = do
+game :: Resources -> SF FrameInfo Renderable
+game rs = -- arr $ const $ drawWorld $ r_worlds rs TestWorld
+  do
   loopPre (Player (V2 150 150) (V2 100 100)) $ proc (fi, p) -> do
     let dpos =  fi_dt fi SDL.*^ p_vel p * V2 1 0 * (realToFrac <$> c_dir (fi_controls fi))
     let pos' = p_pos p + dpos
@@ -55,19 +52,19 @@ game' = do
     momentary $ playSound NintendoSound
 
     -- A little interactive section for 5 seconds.
-    let run_around :: Resumable St FrameInfo Renderable
-        run_around = Resumable $ proc (St pos, fi) -> do
+    let run_around :: Resumable Player FrameInfo Renderable
+        run_around = Resumable $ proc (p, fi) -> do
           stop <- after 5 () -< ()
           let dpos = pure $ fi_dt fi * bool 0 20 (c_space $ fi_controls fi)
-              pos' = pos + dpos
+              pos' = p_pos p + dpos
           returnA -< Resumption
-            { r_state = St pos'
+            { r_state = Player pos' (p_vel p)
             , r_output = drawFilledRect (V4 255 0 0 255) $ fmap round $ Rectangle (P pos') 10
             , r_stop = stop
             }
 
     -- We get the resulting world state
-    w' <- runResumable (St 0) run_around
+    w' <- runResumable (Player 0 0) run_around
 
     -- Change the background to red for a second
     timed 1 $ set_bg $ V4 255 0 0 255

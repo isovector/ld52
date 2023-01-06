@@ -6,7 +6,6 @@ module Types
   , module Debug.Trace
   ) where
 
-import Data.Generics.Labels ()
 import Data.Map (Map)
 import Data.Text (Text)
 import Data.Word
