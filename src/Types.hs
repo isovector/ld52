@@ -89,7 +89,10 @@ data FrameInfo = FrameInfo
 data GameTexture = NintendoLogo
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
-data Tileset = Cavernas_by_Adam_Saltsman
+data Tileset
+  -- NOTE: It's important that the tileset names line up with their png names,
+  -- so levels can import them properly.
+  = Cavernas_by_Adam_Saltsman
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 
