@@ -43,7 +43,8 @@ data Level = Level
   { l_bgcolor :: Color
   , l_tilebounds :: Rect Tile
   , l_bounds  :: Rect Pixel
-  , l_hitmap  :: V2 Tile -> Bool
+  , l_tiles  :: LevelLayer -> Resources -> Renderable
+  , l_hitmap :: LevelLayer -> V2 Tile -> Bool
   }
   deriving stock Generic
 
@@ -60,6 +61,7 @@ data Engine = Engine
 -- | Things we need to keep track of, like sprites and music and stuff.
 data Resources = Resources
   { r_engine   :: Engine
+  , r_tilesets :: Tileset -> WrappedTexture
   , r_textures :: GameTexture -> WrappedTexture
   , r_sounds   :: Sound -> Chunk
   , r_worlds   :: WorldName -> World
@@ -86,6 +88,12 @@ data FrameInfo = FrameInfo
 data GameTexture = NintendoLogo
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
+data Tileset
+  -- NOTE: It's important that the tileset names line up with their png names,
+  -- so levels can import them properly.
+  = Cavernas_by_Adam_Saltsman
+  deriving (Eq, Ord, Show, Read, Enum, Bounded)
+
 
 data WorldName = TestWorld
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
@@ -95,6 +103,9 @@ data WorldName = TestWorld
 data Sound = NintendoSound
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
+data LevelLayer
+  = Layer1 | Layer2 | Layer3
+  deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 data WrappedTexture = WrappedTexture
   { getTexture    :: Texture
@@ -116,4 +127,7 @@ defaultControls = Controls
   { c_space = False
   , c_dir = V2 0 0
   }
+
+tileSize :: Num a =>  V2 a
+tileSize = 8
 

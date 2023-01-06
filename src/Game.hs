@@ -1,5 +1,7 @@
 module Game where
 
+import qualified Data.Set as S
+import Data.Set (Set)
 import Control.Monad (void)
 import Data.Bool (bool)
 import FRP

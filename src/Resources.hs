@@ -2,15 +2,15 @@
 
 module Resources where
 
+import           Control.Monad ((<=<))
+import           Level (loadWorld)
 import           Resources.Machinery
 import           SDL (Texture, textureWidth, textureHeight)
 import qualified SDL.Image as Image
 import           SDL.Mixer (Chunk)
 import qualified SDL.Mixer as Mixer
+import           SDL.Video (queryTexture)
 import           Types
-import Level (loadWorld)
-import SDL.Video (queryTexture)
-import Control.Monad ((<=<))
 
 wrapTexture :: Texture -> IO WrappedTexture
 wrapTexture t = do
@@ -21,6 +21,15 @@ wrapTexture t = do
     , wt_sourceRect = Nothing
     , wt_origin = 0
     }
+
+instance IsResource Tileset WrappedTexture where
+  load
+      = (wrapTexture <=<)
+      . Image.loadTexture
+      . e_renderer
+  resourceFolder = "tilesets"
+  resourceExt    = "png"
+  resourceName = show
 
 instance IsResource GameTexture WrappedTexture where
   load
@@ -46,12 +55,14 @@ instance IsResource WorldName World where
 
 loadResources :: Engine -> IO Resources
 loadResources engine = do
+  tilesets <- loadResource engine
   textures <- loadResource engine
   sounds   <- loadResource engine
   worlds   <- loadResource engine
 
   pure $ Resources
     { r_engine   = engine
+    , r_tilesets = tilesets
     , r_textures = textures
     , r_sounds   = sounds
     , r_worlds   = worlds
