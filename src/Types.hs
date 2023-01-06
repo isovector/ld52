@@ -58,10 +58,12 @@ data Sound = NintendoSound
 -- | Input for the frame.
 data Controls = Controls
   { c_space :: Bool
+  , c_dir :: V2 Int
   }
 
 defaultControls :: Controls
 defaultControls = Controls
   { c_space = False
+  , c_dir = V2 0 0
   }
 
