@@ -12,7 +12,7 @@ import           Types (Engine)
 class (Ord key, Enum key, Bounded key)
       => IsResource key res
        | key -> res
-       , res -> key where
+       where
   resourceFolder :: String
   resourceExt :: String
   resourceName :: key -> String
@@ -26,7 +26,7 @@ loadResource
 loadResource engine = do
   m <- fmap M.fromList $
     for [minBound @key .. maxBound] $ \k ->
-      fmap (k, ) $ load engine $
+      fmap (k, ) $ load @key @res engine $
         "resources" </> resourceFolder @key @res </>
           resourceName k <.> resourceExt @key @res
   pure $ \k -> m M.! k

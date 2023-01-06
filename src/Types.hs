@@ -61,6 +61,7 @@ data Engine = Engine
 -- | Things we need to keep track of, like sprites and music and stuff.
 data Resources = Resources
   { r_engine   :: Engine
+  , r_tilesets :: Tileset -> WrappedTexture
   , r_textures :: GameTexture -> WrappedTexture
   , r_sounds   :: Sound -> Chunk
   , r_worlds   :: WorldName -> World
@@ -85,6 +86,9 @@ data FrameInfo = FrameInfo
 ------------------------------------------------------------------------------
 -- | Textures used by the game.
 data GameTexture = NintendoLogo
+  deriving (Eq, Ord, Show, Read, Enum, Bounded)
+
+data Tileset = Cavernas_by_Adam_Saltsman
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 
