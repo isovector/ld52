@@ -44,6 +44,9 @@ runSwont end sw = runCont (runSwont' sw) end
 deriving via (Ap (SF i) o) instance Semigroup o => Semigroup (SF i o)
 deriving via (Ap (SF i) o) instance Monoid o    => Monoid    (SF i o)
 
+deriving via (Ap Event o) instance Semigroup o => Semigroup (Event o)
+deriving via (Ap Event o) instance Monoid o    => Monoid    (Event o)
+
 -- | Perform the given action for a single frame, rendering the next step of
 -- the Swont for that frame.
 momentary :: Semigroup o => o -> Swont i o ()
