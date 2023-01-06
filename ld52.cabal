@@ -29,6 +29,7 @@ library
       FRP
       Game
       Resources
+      Resources.Machinery
       Run
       Types
   other-modules:
