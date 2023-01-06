@@ -24,8 +24,16 @@ data Player = Player
   , p_vel :: V2 Double
   }
 
-game :: Resources -> SF FrameInfo Renderable
-game rs = arr $ const $ drawWorld $ r_worlds rs TestWorld
+game2 :: Resources -> SF FrameInfo Renderable
+game2 rs = arr $ const $ drawWorld $ r_worlds rs TestWorld
+
+
+game :: SF FrameInfo Renderable
+game = do
+  loopPre (Player (V2 150 150) (V2 100 100)) $ proc (fi, p) -> do
+    let dpos =  fi_dt fi SDL.*^ p_vel p * V2 1 0 * (realToFrac <$> c_dir (fi_controls fi))
+    let pos' = p_pos p + dpos
+    returnA -< (drawFilledRect (V4 255 0 0 255) $ round <$> Rectangle (P pos') 50, Player pos' (p_vel p))
 
 game' :: SF FrameInfo Renderable
 game' = do
@@ -96,10 +104,4 @@ game' = do
     lerpSF 3 $ arr $
       -- `lerpSF` causes this `d` to go from 0 to 1 over the 3 second duration
       \d -> drawBackgroundColor $ V4 255 255 255 $ round $ 255 * d
-game :: SF FrameInfo Renderable
-game = do
-  loopPre (Player (V2 150 150) (V2 100 100)) $ proc (fi, p) -> do
-    let dpos =  fi_dt fi SDL.*^ p_vel p * V2 1 0 * (realToFrac <$> c_dir (fi_controls fi))
-    let pos' = p_pos p + dpos
-    returnA -< (drawFilledRect (V4 255 0 0 255) $ round <$> Rectangle (P pos') 50, Player pos' (p_vel p))
 
