@@ -6,6 +6,7 @@ import FRP
 import SDL
 import SDL.Mixer
 import Types
+import Game.World (drawLevel, drawWorld)
 
 
 logicalSize :: Num a => V2 a
@@ -34,13 +35,15 @@ playSound s r = do
   halt 0
   void $ playOn 0 Once $ r_sounds r s
 
-data World = World
+data St = St
   { w_pos :: V2 Double
   }
 
+game :: Resources -> SF FrameInfo Renderable
+game rs = arr $ const $ drawWorld $ r_worlds rs TestWorld
 
-game :: SF FrameInfo Renderable
-game = do
+game' :: SF FrameInfo Renderable
+game' = do
   let set_bg :: Color -> SF a Renderable
       set_bg col = arr $ pure $ drawBackgroundColor col
 
@@ -71,19 +74,19 @@ game = do
     timed 1 $ constant 1 >>> nintendo
 
     -- A little interactive section for 5 seconds.
-    let run_around :: Resumable World FrameInfo Renderable
-        run_around = Resumable $ proc (World pos, fi) -> do
+    let run_around :: Resumable St FrameInfo Renderable
+        run_around = Resumable $ proc (St pos, fi) -> do
           stop <- after 5 () -< ()
           let dpos = pure $ fi_dt fi * bool 0 20 (c_space $ fi_controls fi)
               pos' = pos + dpos
           returnA -< Resumption
-            { r_state = World pos'
+            { r_state = St pos'
             , r_output = drawFilledRect (V4 255 0 0 255) $ fmap round $ Rectangle (P pos') 10
             , r_stop = stop
             }
 
     -- We get the resulting world state
-    w' <- runResumable (World 0) run_around
+    w' <- runResumable (St 0) run_around
 
     -- Change the background to red for a second
     timed 1 $ set_bg $ V4 255 0 0 255

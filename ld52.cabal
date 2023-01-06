@@ -28,6 +28,8 @@ library
       Controls
       FRP
       Game
+      Game.World
+      Level
       Resources
       Resources.Machinery
       Run
@@ -87,18 +89,24 @@ library
       TypeApplications
       TypeOperators
       TypeSynonymInstances
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints
+  ghc-options: -Wall -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints
   build-depends:
       Yampa
+    , aeson
     , base >=4.7 && <5
     , containers
+    , errors
     , filepath
+    , generic-lens
+    , ldtk-types
+    , lens
     , mtl
     , sdl2
     , sdl2-image
     , sdl2-mixer
     , text
     , time
+    , vector
   default-language: Haskell2010
 
 executable ld52-exe
@@ -158,19 +166,25 @@ executable ld52-exe
       TypeApplications
       TypeOperators
       TypeSynonymInstances
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Yampa
+    , aeson
     , base >=4.7 && <5
     , containers
+    , errors
     , filepath
+    , generic-lens
     , ld52
+    , ldtk-types
+    , lens
     , mtl
     , sdl2
     , sdl2-image
     , sdl2-mixer
     , text
     , time
+    , vector
   default-language: Haskell2010
 
 test-suite ld52-test
@@ -231,17 +245,23 @@ test-suite ld52-test
       TypeApplications
       TypeOperators
       TypeSynonymInstances
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Yampa
+    , aeson
     , base >=4.7 && <5
     , containers
+    , errors
     , filepath
+    , generic-lens
     , ld52
+    , ldtk-types
+    , lens
     , mtl
     , sdl2
     , sdl2-image
     , sdl2-mixer
     , text
     , time
+    , vector
   default-language: Haskell2010
