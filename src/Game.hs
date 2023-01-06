@@ -3,10 +3,10 @@ module Game where
 import Control.Monad (void)
 import Data.Bool (bool)
 import FRP
+import Game.World (drawWorld)
 import SDL
 import SDL.Mixer
 import Types
-import Game.World (drawLevel, drawWorld)
 
 
 logicalSize :: Num a => V2 a

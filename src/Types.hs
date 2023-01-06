@@ -3,16 +3,17 @@ module Types
   , V2 (..)
   , Generic
   , Word8
+  , module Debug.Trace
   ) where
 
 import Data.Generics.Labels ()
 import Data.Map (Map)
-import Data.Monoid (Any)
 import Data.Text (Text)
 import Data.Word
 import GHC.Generics
 import SDL
 import SDL.Mixer (Chunk)
+import Debug.Trace (trace, traceShowId, traceM)
 
 
 ------------------------------------------------------------------------------
