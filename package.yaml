@@ -30,10 +30,15 @@ dependencies:
 - text
 - time
 - Yampa
+- ldtk-types
+- lens
+- generic-lens
+- errors
+- vector
+- aeson
 
 ghc-options:
 - -Wall
-- -Wcompat
 - -Widentities
 - -Wincomplete-record-updates
 - -Wincomplete-uni-patterns

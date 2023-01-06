@@ -5,4 +5,5 @@ packages:
 
 extra-deps:
 - Yampa-0.13.7
+- ldtk-types-0.1.0.0
 

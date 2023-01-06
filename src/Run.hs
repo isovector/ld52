@@ -60,7 +60,7 @@ main = do
     (pure $ FrameInfo defaultControls 0.016)
     (input window tRef)
     (output rs)
-    game
+    (game rs)
   quit
 
 
