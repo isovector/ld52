@@ -19,24 +19,24 @@ drawBackgroundColor c rs = do
   rendererDrawColor renderer $= c
   fillRect renderer Nothing
 
-tileSize :: Num a =>  V2 a
-tileSize = 8
+drawWorld :: Resources -> World -> Renderable
+drawWorld rs = foldMap (drawLevel rs) . toList . w_levels
 
-drawWorld :: World -> Renderable
-drawWorld = foldMap drawLevel . toList . w_levels
+debugDrawCollision :: Level -> Renderable
+debugDrawCollision lv =
+  mconcat $ do
+    tile <- tilesOf (l_tilebounds lv)
+    case l_hitmap lv tile of
+      False -> mempty
+      True -> pure $
+        drawFilledRect (V4 25 25 25 255)
+          $ flip Rectangle tileSize
+          $ P $ tileToWorld tile
 
-
-drawLevel :: Level -> Renderable
-drawLevel lv = mconcat
+drawLevel :: Resources -> Level -> Renderable
+drawLevel rs lv = mconcat
   [ drawBackgroundColor $ l_bgcolor lv
-  , mconcat $ do
-      tile <- tilesOf (l_tilebounds lv)
-      case l_hitmap lv tile of
-        False -> mempty
-        True -> pure $
-          drawFilledRect (V4 25 25 25 255)
-            $ flip Rectangle tileSize
-            $ P $ tileToWorld tile
+  , l_tiles lv rs
   ]
 
 tileToWorld :: V2 Tile -> V2 Int

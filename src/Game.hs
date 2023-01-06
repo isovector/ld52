@@ -24,7 +24,7 @@ data St = St
   }
 
 game :: Resources -> SF FrameInfo Renderable
-game rs = arr $ const $ drawWorld $ r_worlds rs TestWorld
+game rs = arr $ const $ drawWorld rs $ r_worlds rs TestWorld
 
 game' :: SF FrameInfo Renderable
 game' = do

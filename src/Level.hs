@@ -12,11 +12,15 @@ import           Data.Map (Map)
 import qualified Data.Map as M
 import           Data.Monoid
 import           Data.Text (Text)
+import qualified Data.Text as T
 import           Data.Traversable
 import qualified Data.Vector as V
+import           Drawing
 import qualified LDtk.Types as LDtk
 import           SDL.Vect hiding (trace)
+import           System.FilePath.Lens (basename)
 import           Types
+import SDL (Rectangle(Rectangle))
 
 ldtkColorToColor :: LDtk.Color -> Color
 ldtkColorToColor (LDtk.Color r g b) = V4 r g b 255
@@ -46,12 +50,35 @@ rectangularize (V2 x _)
   . fmap V.fromList
   . chunksOf x
 
-parseLayer :: LDtk.Layer -> Either [String] (V2 Tile -> Any)
+parseLayer
+    :: LDtk.Layer
+    -> Either [String] ( V2 Tile -> Any
+                       , Resources -> Renderable
+                       )
 parseLayer l = do
-  pure
-    $ buildCollisionMap
-        (parseV2 Tile l #__cWid #__cHei)
-        (l ^. #intGridCsv)
+  let cols
+        = buildCollisionMap (parseV2 Tile l #__cWid #__cHei)
+        $ (l ^. #intGridCsv)
+  pure (cols, foldMap (drawTile $ l ^. #__tilesetRelPath) $ l ^. #autoLayerTiles)
+
+drawTile :: Maybe Text -> LDtk.Tile -> Resources -> Renderable
+drawTile Nothing _ _ = mempty
+drawTile (Just tsstr) t rs = do
+  let ts = read @Tileset $ view basename $ T.unpack tsstr
+      wt = r_tilesets rs ts
+      wt' = wt { wt_sourceRect = Just (Rectangle (P $ fmap fromIntegral $ pairToV2 $ t ^. #src) tileSize)
+               , wt_size = tileSize
+               }
+  drawSprite wt' (fmap fromIntegral $ pairToV2 $ t ^. #px) 0 (flipToMirrors $ t ^. #tile_flip)
+
+flipToMirrors :: LDtk.Flip -> V2 Bool
+flipToMirrors LDtk.NoFlip = V2 False False
+flipToMirrors LDtk.FlipX = V2 True False
+flipToMirrors LDtk.FlipY = V2 False True
+flipToMirrors LDtk.FlipXY = V2 True True
+
+pairToV2 :: LDtk.Pair a -> V2 a
+pairToV2 (LDtk.Pair x y) = V2 x y
 
 
 parseV2 :: (a -> b) -> s -> Getting a s a -> Getting a s a -> V2 b
@@ -65,8 +92,9 @@ parseLevels root = either (error . mappend "couldn't parse level: " . unlines) i
         bounds = Rect (parseV2 Pixel lev #worldX #worldY)
                $ parseV2 Pixel lev #pxWid #pxHei
 
-    !colmaps <-
-      traverse parseLayer
+    !(colmaps, tiles) <-
+      fmap unzip
+        $ traverse parseLayer
         $ lev ^. #layerInstances
 
     pure
@@ -75,6 +103,7 @@ parseLevels root = either (error . mappend "couldn't parse level: " . unlines) i
           (ldtkColorToColor $ lev ^. #__bgColor)
           (Rect 0 16)
           bounds
+          (mconcat tiles)
           (coerce $ mconcat colmaps)
       )
 

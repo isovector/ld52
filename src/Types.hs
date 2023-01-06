@@ -44,6 +44,7 @@ data Level = Level
   { l_bgcolor :: Color
   , l_tilebounds :: Rect Tile
   , l_bounds  :: Rect Pixel
+  , l_tiles :: Resources -> Renderable
   , l_hitmap  :: V2 Tile -> Bool
   }
   deriving stock Generic
@@ -119,4 +120,7 @@ defaultControls :: Controls
 defaultControls = Controls
   { c_space = False
   }
+
+tileSize :: Num a =>  V2 a
+tileSize = 8
 
