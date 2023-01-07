@@ -101,25 +101,28 @@ game rs = proc fi -> do
 game4 :: Resources -> SF FrameInfo Renderable
 game4 rs =
   do
-  loopPre (0) $ proc (fi, pos) -> do
+  loopPre (Player 0 0) $ proc (fi, Player pos vel) -> do
     let dt = fi_dt fi
-    let arrs = c_dir (fi_controls fi)
-    -- let grav = V2 0 10
-    -- let jumpVel = V2 0 (-300)
-    -- let stepSpeed = 200
-    -- jumpEv <- edge -< c_space (fi_controls fi) -- Only jump when on the ground
-    -- let jump = event zero (const jumpVel) jumpEv
-    -- let hvel = stepSpeed SDL.*^ V2 1 0 * (realToFrac <$> c_dir (fi_controls fi))
-    -- let vvel = p_vel p + grav + jump
-    -- let vel' = hvel + V2 0 1 * vvel
-    -- let pos' = p_pos p + (WorldPos <$> dt SDL.*^ vel')
+    let grav = V2 0 10
+    let jumpVel = V2 0 (-200)
+    let stepSpeed = 2
+    jumpEv <- edge -< c_space (fi_controls fi) -- TODO: Only jump when on the ground
+    let jump = event zero (const jumpVel) jumpEv
+    let vx = vel * V2 1 0 + V2 stepSpeed 0 * (realToFrac <$> c_dir (fi_controls fi))
+    let vy = V2 0 1 * vel + grav + jump
+    let vel' = vx + vy
 
     let (_name, lev) = head $ toList $ w_levels $ r_worlds rs TestWorld
     -- let hits = hitTiles lev Layer1 pos'
     -- let player' = if or hits then collide lev Layer1 (p_pos p) pos' else Player pos' vel'
 
-    let pos' = move (l_hitmap lev Layer1 . posToTile) 7 pos $ fmap fromIntegral arrs ^* dt * 100
-    returnA -< (drawFilledRect (V4 255 0 0 255) $ Rectangle (P $ pos' - 3.5) 7, pos')
+    let dpos = dt SDL.*^ vel'
+    let desiredPos = pos + coerce dpos
+    let pos' = move (l_hitmap lev Layer1 . posToTile) 7 pos $ dpos
+
+    let vel'' = V2 (if desiredPos ^. _x == pos' ^. _x then vel' ^. _x else 0) (if desiredPos ^. _y == pos' ^. _y then vel'  ^. _y else 0)
+
+    returnA -< (drawFilledRect (V4 255 0 0 255) $ Rectangle (P $ pos' - 3.5) 7, Player pos' vel'')
 
 posToTile :: V2 WorldPos -> V2 Tile
 posToTile = fmap $ Tile . floor . (/8) . getWorldPos
