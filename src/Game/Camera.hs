@@ -22,5 +22,5 @@ centerScreen focus = -focus + logicalSize / 2
 
 
 cameraDeadzone :: Double
-cameraDeadzone = 0
+cameraDeadzone = 60
 
