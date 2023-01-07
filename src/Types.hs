@@ -10,10 +10,11 @@ import Data.Map (Map)
 import Data.Text (Text)
 import Data.Word
 import GHC.Generics
-import SDL
+import SDL hiding (Event)
 import SDL.Mixer (Chunk)
 import Debug.Trace (trace, traceShowId, traceM)
 import Foreign.C (CInt)
+import FRP (SF, Event)
 
 
 ------------------------------------------------------------------------------
@@ -135,4 +136,26 @@ defaultControls = Controls
 
 tileSize :: Num a =>  V2 a
 tileSize = 8
+
+
+------------------------------------------------------------------------------
+
+newtype ObjectId = ObjectId
+  { getObjectId :: Int
+  }
+  deriving newtype (Eq, Ord, Show, Read, Enum, Bounded)
+
+type Object = SF ObjectInput ObjectOutput
+
+data ObjectInput = ObjectInput
+  -- TODO(sandy): THIS NEVER GETS CALLED YET
+  { oi_hit :: Event ()
+  , oi_frameInfo :: FrameInfo
+  }
+
+data ObjectOutput = ObjectOutput
+  { oo_die :: Event ()
+  , oo_spawn :: Event [Object]
+  , oo_render :: Renderable
+  }
 
