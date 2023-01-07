@@ -13,10 +13,14 @@ camera
           Camera
 camera = flip loopPre $ arr $ \((fi, focus), pos) -> do
   let dt = fi_dt fi
-      pos' = pos + (focus - pos) ^* coerce dt * 2
+      pos' = pos + (focus - pos) ^* coerce dt * cameraSpeed
   case focus == pos || distance focus pos <= cameraDeadzone of
     True -> (Camera $ centerScreen pos, pos)
     False -> (Camera $ centerScreen pos', pos')
+
+
+cameraSpeed :: Num a => a
+cameraSpeed = 3
 
 
 centerScreen :: V2 WorldPos -> V2 WorldPos
