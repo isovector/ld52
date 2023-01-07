@@ -185,7 +185,6 @@ data WithMeta a = Object
 type HitEvent = (ObjectId, ObjectMeta)
 
 data ObjectInput = ObjectInput
-  -- TODO(sandy): THIS NEVER GETS CALLED YET
   { oi_hit :: Event [HitEvent]
   , oi_frameInfo :: FrameInfo
   }
@@ -194,7 +193,6 @@ data ObjectEvents = ObjectEvents
   { oe_die :: Event ()
   , oe_spawn :: Event [Object]
   , oe_focus :: Event ()
-  -- TODO(sandy): not hooked up yet!
   , oe_play_sound :: Event [Sound]
   }
 
