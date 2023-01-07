@@ -46,7 +46,7 @@ timedSequence
     -> SF i o
 timedSequence d interval sfs =
   runSwont (const d) $
-    traverse_ (dswont . (&&& after interval ())) sfs
+    traverse_ (swont . (&&& after interval ())) sfs
 
 
 runSwont :: (a -> SF i o) -> Swont i o a -> SF i o

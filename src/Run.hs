@@ -64,8 +64,6 @@ main = do
   quit
 
 
-
-
 input :: Window -> IORef Double -> Bool -> IO (Double, Maybe FrameInfo)
 input win tRef _ = do
   pumpEvents
@@ -87,6 +85,7 @@ input win tRef _ = do
 pattern Keypress :: Scancode -> EventPayload
 pattern Keypress scan <- KeyboardEvent (KeyboardEventData _ Pressed _ (Keysym scan _ _))
 
+
 isQuit :: EventPayload -> Bool
 isQuit QuitEvent                   = True
 isQuit (WindowClosedEvent _)       = True
@@ -95,13 +94,13 @@ isQuit (Keypress ScancodeCapsLock) = True
 isQuit _                           = False
 
 
-output :: Resources -> Bool -> Renderable -> IO Bool
-output rs _ render = do
+output :: Resources -> Bool -> (Camera, Renderable) -> IO Bool
+output rs _ (cam, render) = do
   let e = r_engine rs
       renderer = e_renderer e
   rendererDrawColor renderer $= V4 100 149 237 255
   clear renderer
-  render rs
+  render cam rs
   present renderer
   pure False
 

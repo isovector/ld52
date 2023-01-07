@@ -4,17 +4,23 @@ module Types
   , Generic
   , Word8
   , module Debug.Trace
+  , SF
+  , Event
+  , coerce
   ) where
 
+import Data.Coerce
+import Data.Generics.Labels ()
 import Data.Map (Map)
 import Data.Text (Text)
 import Data.Word
+import Debug.Trace (trace, traceShowId, traceM)
+import FRP (SF, Event)
+import Foreign.C (CInt)
 import GHC.Generics
 import SDL hiding (Event)
 import SDL.Mixer (Chunk)
-import Debug.Trace (trace, traceShowId, traceM)
-import Foreign.C (CInt)
-import FRP (SF, Event)
+import FRP.Yampa (noEvent)
 
 
 ------------------------------------------------------------------------------
@@ -36,10 +42,15 @@ newtype Pixel = Pixel
   }
   deriving newtype (Eq, Ord, Show, Read, Enum, Bounded, Num)
 
-newtype Pos = Pos
-  { getPos :: Double
+newtype ScreenPos = ScreenPos
+  { getScreenPos :: Double
   }
-  deriving newtype (Eq, Ord, Show, Read, Enum, Num)
+  deriving newtype (Eq, Ord, Show, Read, Enum, Num, Fractional, Floating, Real, RealFrac)
+
+newtype WorldPos = WorldPos
+  { getWorldPos :: Double
+  }
+  deriving newtype (Eq, Ord, Show, Read, Enum, Num, Fractional, Floating, Real, RealFrac)
 
 data World = World
   { w_levels :: Map Text Level
@@ -77,7 +88,8 @@ data Resources = Resources
 ------------------------------------------------------------------------------
 
 type Color = V4 Word8
-type Renderable = Resources -> IO ()
+
+type Renderable = Camera -> Resources -> IO ()
 
 
 ------------------------------------------------------------------------------
@@ -143,7 +155,8 @@ tileSize = 8
 newtype ObjectId = ObjectId
   { getObjectId :: Int
   }
-  deriving newtype (Eq, Ord, Show, Read, Enum, Bounded)
+  deriving stock (Show, Read)
+  deriving newtype (Eq, Ord, Enum, Bounded)
 
 type Object = SF ObjectInput ObjectOutput
 
@@ -153,9 +166,37 @@ data ObjectInput = ObjectInput
   , oi_frameInfo :: FrameInfo
   }
 
-data ObjectOutput = ObjectOutput
-  { oo_die :: Event ()
-  , oo_spawn :: Event [Object]
-  , oo_render :: Renderable
+data ObjectEvents = ObjectEvents
+  { oe_die :: Event ()
+  , oe_spawn :: Event [Object]
+  , oe_focus :: Event ()
   }
+
+instance Semigroup ObjectEvents where
+  (ObjectEvents ev ev' ev2) <> (ObjectEvents ev3 ev4 ev5)
+    = ObjectEvents
+        {oe_die = ev <> ev3, oe_spawn = ev' <> ev4, oe_focus = ev2 <> ev5}
+
+instance Monoid ObjectEvents where
+  mempty
+    = ObjectEvents
+        {oe_die = mempty, oe_spawn = mempty, oe_focus = mempty}
+
+data ObjectOutput = ObjectOutput
+  { oo_events :: ObjectEvents
+  , oo_render :: Renderable
+  , oo_pos :: V2 WorldPos
+  }
+
+data ObjectMap a = ObjectMap
+  { om_camera_focus :: ObjectId
+  , om_map :: Map ObjectId a
+  }
+  deriving stock (Functor, Generic)
+
+
+newtype Camera = Camera (V2 WorldPos)
+
+logicalSize :: Num a => V2 a
+logicalSize = V2 320 240
 
