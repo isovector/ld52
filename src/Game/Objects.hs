@@ -10,11 +10,13 @@ module Game.Objects
 import           Control.Lens ((%~), over, (.~))
 import           Control.Lens.Lens
 import           Data.Bool (bool)
+import           Data.Foldable (toList)
 import           Data.Functor.Compose (getCompose)
 import           Data.Map (Map)
 import qualified Data.Map as M
 import           Data.Maybe (maybeToList)
 import           Data.Monoid
+import           Drawing (playSound)
 import           FRP
 import           Game.Camera (camera)
 import           Geometry (intersects)
@@ -22,12 +24,21 @@ import           SDL (Point(P), Rectangle (Rectangle))
 import           Types
 
 
-renderObjects :: V2 WorldPos -> ObjectMap ObjSF -> SF FrameInfo (Camera, Renderable)
-renderObjects cam0 objs0 = proc fi -> do
+renderObjects
+    :: Resources
+    -> V2 WorldPos
+    -> ObjectMap ObjSF
+    -> SF FrameInfo (Camera, Renderable)
+renderObjects rs cam0 objs0 = proc fi -> do
   objs <- router objs0 -< fi
   let focuson = M.lookup (objm_camera_focus objs) $ getCompose $ objm_map objs
   focus <- camera cam0 -< (fi, maybe 0 (oo_pos . obj_data) focuson)
-  returnA -< (focus, foldMap oo_render . fmap obj_data . getCompose $ objm_map objs)
+  let dat = toList $ fmap obj_data . getCompose $ objm_map objs
+  returnA -< (focus, flip foldMap dat (renderEvents rs . oo_events <> oo_render))
+
+renderEvents :: Resources -> ObjectEvents -> Renderable
+renderEvents rs oe _ _ =
+  foldMap (foldMap $ playSound rs) $ oe_play_sound oe
 
 emptyObjMap :: ObjectMap a
 emptyObjMap = ObjectMap (ObjectId 0) $ mempty

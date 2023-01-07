@@ -1,9 +1,17 @@
 module Drawing where
 
-import Types
-import SDL
+import Control.Monad (void)
 import Foreign.C
 import Game.Camera (viaCamera)
+import SDL
+import SDL.Mixer
+import Types
+
+
+playSound :: Resources -> Sound -> IO ()
+playSound r s = do
+  halt 0
+  void $ playOn 0 Once $ r_sounds r s
 
 
 drawFilledRect :: Color -> Rectangle WorldPos -> Renderable
