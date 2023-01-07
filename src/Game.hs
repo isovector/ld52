@@ -101,7 +101,7 @@ game rs = proc fi -> do
 game4 :: Resources -> SF ObjectInput (V2 WorldPos, Renderable)
 game4 rs =
   do
-  loopPre (Player zero zero) $ proc (ObjectInput hit fi, p) -> do
+  loopPre (Player zero zero) $ proc (ObjectInput hit fi, Player pos vel) -> do
     let dt = fi_dt fi
     let grav = V2 0 10
     let jumpVel = V2 0 (-200)
@@ -120,10 +120,10 @@ game4 rs =
     let desiredPos = pos + coerce dpos
     let pos' = move (l_hitmap lev Layer1 . posToTile) 7 pos $ dpos
 
-    let vel'' = V2 (if desiredPos ^. _x == pos' ^. _x then vel' ^. _x else 0) (if desiredPos ^. _y == pos' ^. _y then vel'  ^. _y else 0)
+    let vel'' = V2 (if desiredPos ^. _x == pos' ^. _x then vel' ^. _x else 0) (if desiredPos ^. _y == pos' ^. _y then vel' ^. _y else 0)
     let player' = Player pos' vel''
 
-    returnA -< ((p_pos player', drawFilledRect (event (V4 255 0 0 255) (const $ V4 255 255 0 255) hit) $ Rectangle (P (p_pos player')) 8), player')
+    returnA -< ((p_pos player', drawFilledRect (event (V4 255 0 0 255) (const $ V4 255 255 0 255) hit) $ Rectangle (P (p_pos player' - 3.5)) 7), player')
 
 posToTile :: V2 WorldPos -> V2 Tile
 posToTile = fmap $ Tile . floor . (/8) . getWorldPos
