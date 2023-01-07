@@ -52,7 +52,7 @@ grenade = Object noObjectMeta $
               pure $ shrapnel n pos $ 2 * pi / 6 * fromIntegral n
             )
             noEvent
-            noEvent
+            ([NintendoSound] <$ die)
             )
             (drawFilledRect (V4 255 0 0 255) $ flip Rectangle 8 $ P pos)
             pos
@@ -69,12 +69,6 @@ grenade = Object noObjectMeta $
   where
     pos = V2 50 50
 
-
-playSound :: Sound -> Resources -> IO ()
-playSound s r = do
-  putStrLn "hi"
-  halt 0
-  void $ playOn 0 Once $ r_sounds r s
 
 data Player = Player
   { p_pos :: V2 WorldPos
@@ -93,7 +87,7 @@ player rs = Object noObjectMeta $ game4 rs >>> arr (\(p, r) -> ObjectOutput memp
 
 game :: Resources -> SF FrameInfo (Camera, Renderable)
 game rs = proc fi -> do
-  (cam, objs) <- renderObjects (V2 0 0) (initialObjs rs) -< fi
+  (cam, objs) <- renderObjects rs (V2 0 0) (initialObjs rs) -< fi
   bg <- constant $ drawWorld rs (S.singleton Layer1) $ r_worlds rs TestWorld -< fi
   returnA -< (cam, bg <> objs)
 

@@ -55,6 +55,9 @@ runSwont end sw = runCont (runSwont' sw) end
 deriving via (Ap (SF i) o) instance Semigroup o => Semigroup (SF i o)
 deriving via (Ap (SF i) o) instance Monoid o    => Monoid    (SF i o)
 
+deriving stock instance Foldable Event
+deriving stock instance Traversable Event
+
 instance Semigroup o => Semigroup (Event o) where
   (<>) = mergeBy (<>)
 
