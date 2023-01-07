@@ -2,6 +2,7 @@
 
 module Resources where
 
+import GHC.Generics
 import           Control.Monad ((<=<))
 import           Level (loadWorld)
 import           Resources.Machinery
@@ -39,6 +40,7 @@ instance IsResource GameTexture WrappedTexture where
   resourceFolder = "textures"
   resourceExt    = "png"
   resourceName NintendoLogo = "nintendo"
+  resourceName MainCharacter = "char"
 
 instance IsResource Sound Chunk where
   load _ = Mixer.load

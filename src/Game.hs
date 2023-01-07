@@ -1,17 +1,18 @@
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# HLINT ignore "Use if" #-}
 {-# LANGUAGE CPP #-}
+
 module Game where
 
-import           Data.Map (toList)
+import           Collision (move)
+import           Data.Bool (bool)
 import qualified Data.Set as S
 import           Drawing
-import           FRP
+import           FRP hiding ((*^))
 import           Game.Objects (renderObjects, addObject)
 import           Game.World (drawWorld)
 import           SDL
 import           Types
-import Control.Lens hiding (Level)
+import           Utils
+import Data.Foldable (toList)
 
 #ifndef __HLINT__
 
@@ -79,8 +80,21 @@ initialObjs rs
   $ addObject grenade
   $ ObjectMap (ObjectId 0) mempty
 
+
 player :: Resources -> Object
-player rs = Object noObjectMeta $ game4 rs
+player rs
+  = Object noObjectMeta
+  $ arr (head $ toList $ w_levels $ r_worlds rs TestWorld ,) >>> game4 7 (drawPlayer rs 7)
+
+
+drawPlayer :: Resources -> V2 Double -> SF (ObjectInput, V2 WorldPos) Renderable
+drawPlayer rs sz = arr $ \(_, pos) ->
+  drawSprite
+    (setGroundOrigin $ r_textures rs MainCharacter)
+    (pos - coerce sz / 2)
+    0
+    (V2 False False)
+
 
 
 game :: Resources -> SF FrameInfo (Camera, Renderable)
@@ -90,112 +104,52 @@ game rs = proc fi -> do
   returnA -< (cam, bg <> objs)
 
 
-game4 :: Resources -> SF ObjectInput ObjectOutput
-game4 rs =
-  do
-  loopPre (Player zero zero) $ proc (ObjectInput hit fi, Player pos vel) -> do
-    
-    focus <- nowish () -< ()
+playerPhysVelocity :: SF FrameInfo (V2 Double)
+playerPhysVelocity = proc fi -> do
+  let jumpVel = V2 0 (-200)
+  let stepSpeed = 2
+  jumpEv <- edge -< c_space (fi_controls fi) -- TODO: Only jump when on the ground
+  let jump = event zero (const jumpVel) jumpEv
+  let vx = V2 stepSpeed 0 * (realToFrac <$> c_dir (fi_controls fi))
+  let vy = jump
+  let vel' = vx + vy
+  returnA -< vel'
+
+
+game4
+    :: V2 Double
+    -> SF (ObjectInput, V2 WorldPos) Renderable
+    -> SF (Level, ObjectInput) ObjectOutput
+game4 sz render = loopPre (Player zero zero) $
+  proc ((lev, oi@(ObjectInput _ fi)), Player pos vel) -> do
     let dt = fi_dt fi
 
+    focus <- nowish () -< ()
+    vel'0 <- playerPhysVelocity -< fi
+
     let grav = V2 0 10
-    let jumpVel = V2 0 (-200)
-    let stepSpeed = 2
-    jumpEv <- edge -< c_space (fi_controls fi) -- TODO: Only jump when on the ground
-    let jump = event zero (const jumpVel) jumpEv
-    let vx = vel * V2 1 0 + V2 stepSpeed 0 * (realToFrac <$> c_dir (fi_controls fi))
-    let vy = V2 0 1 * vel + grav + jump
-    let vel' = vx + vy
+    let vel' = vel + vel'0 + grav
 
-    let (_name, lev) = head $ toList $ w_levels $ r_worlds rs TestWorld
-    -- let hits = hitTiles lev Layer1 pos'
-    -- let player' = if or hits then collide lev Layer1 (p_pos p) pos' else Player pos' vel'
-
-    let dpos = dt SDL.*^ vel'
+    let dpos = dt *^ vel'
     let desiredPos = pos + coerce dpos
-    let pos' = move (l_hitmap lev Layer1 . posToTile) 7 pos $ dpos
+    let pos' = move (l_hitmap lev Layer1 . posToTile) sz pos $ dpos
 
-    let vel'' = V2 (if desiredPos ^. _x == pos' ^. _x then vel' ^. _x else 0) (if desiredPos ^. _y == pos' ^. _y then vel' ^. _y else 0)
+    let vel''
+          = (\want have res -> bool 0 res $ want == have)
+              <$> desiredPos
+              <*> pos'
+              <*> vel'
+
     let player' = Player pos' vel''
+    img <- render -< (oi, pos')
 
-    -- returnA -< ((p_pos player', drawFilledRect (event (V4 255 0 0 255) (const $ V4 255 255 0 255) hit) $ Rectangle (P (p_pos player' - 3.5)) 7), player')
-    returnA -< (ObjectOutput {
-      oo_events = ObjectEvents
-      {oe_die = noEvent, oe_spawn = noEvent, oe_focus = focus, oe_play_sound = noEvent},
-      oo_render = drawFilledRect (event (V4 255 0 0 255) (const $ V4 255 255 0 255) hit) $ Rectangle (P (p_pos player' - 3.5)) 7, 
-      oo_pos = pos'
-      }, 
-      player')
-
-posToTile :: V2 WorldPos -> V2 Tile
-posToTile = fmap $ Tile . floor . (/8) . getWorldPos
-
-collide :: Level -> LevelLayer -> V2 WorldPos -> V2 WorldPos -> Player
-collide lev layer pos0 pos1 = let
-  n = 4
-  subVels = replicate n $ (1 / realToFrac n) SDL.*^ fmap getWorldPos (pos1 - pos0)
-  dPos = fmap WorldPos <$> zipWith (SDL.*^) (fmap realToFrac [1 .. n]) subVels
-  subPos = zipWith (+) (replicate n pos0) dPos
-
-  validPos = filter (not . or . hitTiles lev layer) subPos
-  pos' = case validPos of
-    [] -> pos0
-    _ -> last validPos
-
-  in Player pos' zero --TODO: Only set vertical or horizontal to zero
-
--- TODO: This doesn't make sense if the character isn't exactly the size of a tile. Each corner needs calculating
-hitTiles :: Level -> LevelLayer -> V2 WorldPos -> [Bool]
-hitTiles lev layer pos = l_hitmap lev layer <$> zipWith (+) (replicate 4 (posToTile pos)) [V2 0 0, V2 1 0, V2 0 1, V2 1 1]
-
-hitTile :: (V2 Tile -> Bool) -> V2 WorldPos -> Bool
-hitTile f = f . posToTile
-
-cornersX :: V2 Double -> Int -> V2 WorldPos -> (V2 WorldPos, V2 WorldPos)
-cornersX ((/ 2) -> V2 (coerce -> sx) sy) ydir p =
-  let sy' :: WorldPos
-      sy' = coerce $ sy * fromIntegral ydir
-   in (p + V2 (-sx) sy', p + V2 sx sy')
-
-cornersY :: V2 Double -> Int -> V2 WorldPos -> (V2 WorldPos, V2 WorldPos)
-cornersY ((/ 2) -> V2 sx (coerce -> sy)) xdir p =
-  let sx' :: WorldPos
-      sx' = coerce $ sx * fromIntegral xdir
-   in (p + V2 sx' (-sy), p + V2 sx' sy)
-
-move :: (V2 WorldPos -> Bool) -> V2 Double -> V2 WorldPos -> V2 Double -> V2 WorldPos
-move f sz pos dpos =
-  let (V2 xd yd) = fmap (round @_ @Int) $ signum dpos
-   in  moveX f sz xd (moveY f sz yd (pos + coerce dpos))
-
-epsilon :: Fractional a => a
-epsilon = 0.01
-
-moveX :: (V2 WorldPos -> Bool) -> V2 Double -> Int -> V2 WorldPos -> V2 WorldPos
-moveX f sz xdir pos =
-  let (l, r) = cornersY sz xdir pos
-   in case f l || f r of
-        False -> pos
-        True ->
-          case xdir of
-            -1 -> pos & _x .~ coerce ((tileToPos (posToTile pos + 1) - coerce sz / 2) ^. _x)
-            0 -> pos -- already in the wall
-            1 -> pos & _x .~ coerce ((tileToPos (posToTile pos + 1) - coerce sz / 2 - epsilon) ^. _x)
-            _ -> error "very impossible"
-
-moveY :: (V2 WorldPos -> Bool) -> V2 Double -> Int -> V2 WorldPos -> V2 WorldPos
-moveY f sz ydir pos =
-  let (l, r) = cornersX sz ydir pos
-   in case f l || f r of
-        False -> pos
-        True ->
-          case ydir of
-            -1 -> pos & _y .~ coerce ((tileToPos (posToTile pos + 1) - coerce sz / 2) ^. _y)
-            0 -> pos -- already in the wall
-            1 -> pos & _y .~ coerce ((tileToPos (posToTile pos + 1) - coerce sz / 2 - epsilon) ^. _y)
-            _ -> error "very impossible"
-
-tileToPos :: V2 Tile -> V2 WorldPos
-tileToPos = fmap (WorldPos . fromIntegral . getTile) . (* tileSize)
+    returnA -<
+      ( ObjectOutput
+        { oo_events = mempty { oe_focus = focus }
+        , oo_render = img
+        , oo_pos = pos'
+        }
+      , player'
+      )
 
 #endif

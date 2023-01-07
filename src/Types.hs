@@ -7,8 +7,10 @@ module Types
   , SF
   , Event
   , coerce
+  , module Control.Lens
   ) where
 
+import Control.Lens ((&), (^.), (.~), (%~), view, set, over)
 import Data.Coerce
 import Data.Functor.Compose (Compose)
 import Data.Generics.Labels ()
@@ -104,7 +106,9 @@ data FrameInfo = FrameInfo
 
 ------------------------------------------------------------------------------
 -- | Textures used by the game.
-data GameTexture = NintendoLogo
+data GameTexture
+    = NintendoLogo
+    | MainCharacter
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 data Tileset
