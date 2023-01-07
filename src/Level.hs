@@ -33,8 +33,10 @@ loadWorld fp = do
     Right root -> pure $ World $ parseLevels root
 
 buildCollisionMap :: V2 Tile -> [Int] -> V2 Tile -> Any
-buildCollisionMap sz csv = trace "building" $ \(coerce -> V2 x y) ->
-    Any $ col V.! y V.! x /= 0
+buildCollisionMap sz csv = \(coerce -> V2 x y) ->
+    if x < 0 || y < 0 || x >= sz ^. _x || y >= sz ^. _y
+      then Any False
+      else Any $ col V.! getTile y V.! getTile x /= 0
   where
     col :: V.Vector (V.Vector Int)
     col = rectangularize (coerce sz) csv

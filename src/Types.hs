@@ -35,6 +35,11 @@ newtype Pixel = Pixel
   }
   deriving newtype (Eq, Ord, Show, Read, Enum, Bounded, Num)
 
+newtype Pos = Pos
+  { getPos :: Double
+  }
+  deriving newtype (Eq, Ord, Show, Read, Enum, Num)
+
 data World = World
   { w_levels :: Map Text Level
   }
