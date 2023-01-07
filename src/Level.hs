@@ -6,7 +6,6 @@ module Level where
 
 import           Control.Lens hiding (Level)
 import           Data.Aeson (eitherDecodeFileStrict)
-import           Data.Coerce (coerce)
 import           Data.Generics.Labels ()
 import           Data.List (find)
 import           Data.Map (Map)

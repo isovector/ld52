@@ -4,7 +4,6 @@ module Game.World where
 
 import Data.Set (Set)
 import Types
-import Data.Coerce (coerce)
 import Data.Foldable (toList)
 import Drawing
 

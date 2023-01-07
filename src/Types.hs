@@ -88,7 +88,7 @@ data Resources = Resources
 
 type Color = V4 Word8
 
-type Renderable = V2 ScreenPos -> ScreenRenderable
+type Renderable = Camera -> ScreenRenderable
 type ScreenRenderable = Resources -> IO ()
 
 
@@ -184,6 +184,8 @@ data ObjectMap a = ObjectMap
   }
   deriving stock (Functor, Generic)
 
+
+newtype Camera = Camera (V2 WorldPos)
 
 logicalSize :: Num a => V2 a
 logicalSize = V2 320 240

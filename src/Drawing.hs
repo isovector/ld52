@@ -4,7 +4,6 @@ import Types
 import SDL
 import Foreign.C
 import Game.Camera (viaCamera)
-import Data.Coerce (coerce)
 
 
 drawFilledRect :: Color -> Rectangle WorldPos -> Renderable

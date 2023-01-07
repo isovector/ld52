@@ -86,8 +86,8 @@ game rs
 
 thingsToRunAtOnce :: Resources -> [SF FrameInfo ScreenRenderable]
 thingsToRunAtOnce rs =
-  [ game5 rs >>> arr ($ V2 0 0)
-  , game4 rs >>> arr ($ V2 0 0)
+  [ game5 rs >>> arr ($ Camera $ V2 0 0)
+  , game4 rs >>> arr ($ Camera $ V2 0 0)
   , renderObjects (V2 0 0) $ addObject grenade $ ObjectMap (ObjectId 0) mempty
   ]
 
