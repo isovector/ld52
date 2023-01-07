@@ -16,12 +16,12 @@ import Control.Lens ((%~), over, (.~))
 import Game.Camera (camera)
 
 
-renderObjects :: V2 WorldPos -> ObjectMap Object -> SF FrameInfo ScreenRenderable
+renderObjects :: V2 WorldPos -> ObjectMap Object -> SF FrameInfo (Camera, Renderable)
 renderObjects cam0 objs0 = proc fi -> do
   objs <- router objs0 -< fi
   let focuson = M.lookup (om_camera_focus objs) $ om_map objs
   focus <- camera cam0 -< (fi, maybe 0 oo_pos focuson)
-  returnA -< foldMap (flip oo_render focus) $ om_map objs
+  returnA -< (focus, foldMap oo_render $ om_map objs)
 
 
 router :: ObjectMap Object -> SF FrameInfo (ObjectMap ObjectOutput)
@@ -40,8 +40,10 @@ route oid (oo_events -> ObjectEvents {..}) = mconcat $
   , foldMap (Endo . over #om_map . insertObject)  <$> oe_spawn
   ]
 
+
 addObject :: a -> ObjectMap a -> ObjectMap a
 addObject a = #om_map %~ insertObject a
+
 
 insertObject :: a -> Map ObjectId a -> Map ObjectId a
 insertObject obj m =

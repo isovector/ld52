@@ -1,7 +1,6 @@
 module Game where
 
 import           Control.Monad (void)
-import           Data.Foldable (fold)
 import           Data.Map (toList)
 import qualified Data.Set as S
 import           Drawing
@@ -78,23 +77,19 @@ data Player = Player
   , p_vel :: V2 Double
   } deriving Show
 
-game :: Resources -> SF FrameInfo ScreenRenderable
-game rs
-  = fmap fold
-  $ par (\fi -> fmap (fi, ))
-  $ thingsToRunAtOnce rs
+initialObjs :: Resources -> ObjectMap Object
+initialObjs rs = addObject (player rs) $ addObject grenade $ ObjectMap (ObjectId 0) mempty
 
-thingsToRunAtOnce :: Resources -> [SF FrameInfo ScreenRenderable]
-thingsToRunAtOnce rs =
-  [ game5 rs >>> arr ($ Camera $ V2 0 0)
-  , game4 rs >>> arr ($ Camera $ V2 0 0)
-  , renderObjects (V2 0 0) $ addObject grenade $ ObjectMap (ObjectId 0) mempty
-  ]
+player :: Resources -> Object
+player rs = arr oi_frameInfo >>> game4 rs >>> arr (\r -> ObjectOutput mempty r 0)
 
-game5 :: Resources -> SF i Renderable
-game5 rs = timedSequence undefined 1 $ cycle $
-  [ arr $ const $ drawWorld rs (S.singleton Layer1) $ r_worlds rs TestWorld
-  ]
+
+game :: Resources -> SF FrameInfo (Camera, Renderable)
+game rs = proc fi -> do
+  (cam, objs) <- renderObjects (V2 0 0) (initialObjs rs) -< fi
+  bg <- constant $ drawWorld rs (S.singleton Layer1) $ r_worlds rs TestWorld -< fi
+  returnA -< (cam, bg <> objs)
+
 
 game4 :: Resources -> SF FrameInfo Renderable
 game4 rs =

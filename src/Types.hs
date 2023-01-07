@@ -20,6 +20,7 @@ import Foreign.C (CInt)
 import GHC.Generics
 import SDL hiding (Event)
 import SDL.Mixer (Chunk)
+import FRP.Yampa (noEvent)
 
 
 ------------------------------------------------------------------------------
@@ -88,8 +89,7 @@ data Resources = Resources
 
 type Color = V4 Word8
 
-type Renderable = Camera -> ScreenRenderable
-type ScreenRenderable = Resources -> IO ()
+type Renderable = Camera -> Resources -> IO ()
 
 
 ------------------------------------------------------------------------------
@@ -171,6 +171,16 @@ data ObjectEvents = ObjectEvents
   , oe_spawn :: Event [Object]
   , oe_focus :: Event ()
   }
+
+instance Semigroup ObjectEvents where
+  (ObjectEvents ev ev' ev2) <> (ObjectEvents ev3 ev4 ev5)
+    = ObjectEvents
+        {oe_die = ev <> ev3, oe_spawn = ev' <> ev4, oe_focus = ev2 <> ev5}
+
+instance Monoid ObjectEvents where
+  mempty
+    = ObjectEvents
+        {oe_die = mempty, oe_spawn = mempty, oe_focus = mempty}
 
 data ObjectOutput = ObjectOutput
   { oo_events :: ObjectEvents
