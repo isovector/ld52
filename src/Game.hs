@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Use if" #-}
 module Game where
 
 import           Control.Monad (void)
@@ -10,6 +12,7 @@ import           Game.World (drawWorld)
 import           SDL
 import           SDL.Mixer
 import           Types
+import Control.Lens hiding (Level)
 
 nowish :: a -> SF x (Types.Event a)
 nowish a = after 0.016 a
@@ -136,3 +139,37 @@ collide lev layer pos0 pos1 = let
 -- TODO: This doesn't make sense if the character isn't exactly the size of a tile. Each corner needs calculating
 hitTiles :: Level -> LevelLayer -> V2 WorldPos -> [Bool]
 hitTiles lev layer pos = l_hitmap lev layer <$> zipWith (+) (replicate 4 (posToTile pos)) [V2 0 0, V2 1 0, V2 0 1, V2 1 1]
+
+hitTile :: (V2 Tile -> Bool) -> V2 WorldPos -> Bool
+hitTile f = f . posToTile
+
+cornersX :: V2 Double -> Int -> V2 WorldPos -> (V2 WorldPos, V2 WorldPos)
+cornersX ((/ 2) -> V2 sx sy) dir p = 
+  let sy' = sy & _y *~ fromIntegral dir
+   in (p + V2 (-sx) sy', p + V2 sx sy')
+cornersY :: V2 Double -> Int -> V2 WorldPos -> (V2 WorldPos, V2 WorldPos)
+cornersY (coerce -> sz) p = undefined -- (p - V2 0 sz / 2, p + V2 0 sz / 2)
+
+move :: (V2 WorldPos -> Bool) -> V2 Double -> V2 WorldPos -> V2 Double -> V2 WorldPos
+move f (V2 szx szy) pos dpos = 
+  let (V2 xd yd) = fmap (round @_ @Int) $ signum dpos
+   in  moveY f sz yd (moveX f sz xd (pos + coerce dpos))
+
+moveY :: (V2 WorldPos -> Bool) -> V2 Double -> Int -> V2 WorldPos -> V2 WorldPos
+moveY f sz dir pos =  
+  let (l, r) = cornersX sz dir pos
+   in case f l || f r of
+        False -> pos
+        True -> 
+          case dir of
+            -1 -> pos & _y .~ coerce ((tileToPos (posToTile pos + 1) - coerce sz / 2) ^. _y)
+            0 -> pos -- already in the wall
+            1 -> pos & _y .~ coerce ((tileToPos (posToTile pos) - coerce sz / 2) ^. _y)
+            _ -> error "very impossible"
+
+tileToPos :: V2 Tile -> V2 WorldPos
+tileToPos = fmap (WorldPos . fromIntegral . getTile) . (* tileSize)
+      
+   
+moveX :: (V2 WorldPos -> Bool) -> V2 Double -> Int -> V2 WorldPos -> V2 WorldPos
+moveX = _
