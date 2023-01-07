@@ -170,17 +170,21 @@ data ObjectEvents = ObjectEvents
   { oe_die :: Event ()
   , oe_spawn :: Event [Object]
   , oe_focus :: Event ()
+  -- TODO(sandy): not hooked up yet!
+  , oe_play_sound :: Event [Sound]
   }
 
 instance Semigroup ObjectEvents where
-  (ObjectEvents ev ev' ev2) <> (ObjectEvents ev3 ev4 ev5)
+  (ObjectEvents ev ev' ev2 ev3) <> (ObjectEvents ev4 ev5 ev6 ev7)
     = ObjectEvents
-        {oe_die = ev <> ev3, oe_spawn = ev' <> ev4, oe_focus = ev2 <> ev5}
+        {oe_die = ev <> ev4, oe_spawn = ev' <> ev5, oe_focus = ev2 <> ev6,
+         oe_play_sound = ev3 <> ev7}
 
 instance Monoid ObjectEvents where
   mempty
     = ObjectEvents
-        {oe_die = mempty, oe_spawn = mempty, oe_focus = mempty}
+        {oe_die = mempty, oe_spawn = mempty, oe_focus = mempty,
+         oe_play_sound = mempty}
 
 data ObjectOutput = ObjectOutput
   { oo_events :: ObjectEvents
