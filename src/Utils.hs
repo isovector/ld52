@@ -1,6 +1,10 @@
 module Utils where
 
 import Types
+import FRP
+
+nowish :: a -> SF x (Types.Event a)
+nowish a = after 0.016 a
 
 posToTile :: V2 WorldPos -> V2 Tile
 posToTile = fmap $ Tile . floor . (/8) . getWorldPos
@@ -14,3 +18,9 @@ setGroundOrigin wt =
    in wt
         { wt_origin = V2 (div w 2) (h - 6)
         }
+
+focusOn :: SF ObjectOutput ObjectOutput
+focusOn = proc oo -> do
+  ev <- nowish () -< ()
+  returnA -< oo & #oo_events . #oe_focus .~ ev
+

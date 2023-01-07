@@ -7,7 +7,7 @@ module FRP
 
 import Control.Monad.Cont
 import Data.Monoid
-import FRP.Yampa
+import FRP.Yampa hiding ((*^))
 import Data.Bifunctor
 import Data.Tuple (swap)
 import Data.Foldable (traverse_)

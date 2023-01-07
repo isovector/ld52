@@ -5,7 +5,6 @@ module Game.Camera
 
 import Types
 import FRP.Yampa
-import SDL (distance, (^*))
 
 camera
     :: V2 WorldPos

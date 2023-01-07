@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedLabels #-}
-{-# LANGUAGE ViewPatterns #-}
 {-# OPTIONS_GHC -Wno-compat-unqualified-imports #-}
 
 module Level where
@@ -17,7 +15,6 @@ import           Data.Traversable
 import qualified Data.Vector as V
 import           Drawing
 import qualified LDtk.Types as LDtk
-import           SDL (Rectangle(Rectangle))
 import           SDL.Vect hiding (trace)
 import           System.FilePath.Lens (basename)
 import           Types

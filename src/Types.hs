@@ -1,6 +1,10 @@
 module Types
   ( module Types
   , V2 (..)
+  , V3 (..)
+  , V4 (..)
+  , Rectangle (..)
+  , Point (..)
   , Generic
   , Word8
   , module Debug.Trace
@@ -8,6 +12,10 @@ module Types
   , Event
   , coerce
   , module Control.Lens
+  , (*^)
+  , (^*)
+  , distance
+  , toList
   ) where
 
 import Control.Lens ((&), (^.), (.~), (%~), view, set, over)
@@ -24,6 +32,7 @@ import Foreign.C (CInt)
 import GHC.Generics
 import SDL hiding (Event)
 import SDL.Mixer (Chunk)
+import Data.Foldable (toList)
 
 
 ------------------------------------------------------------------------------
@@ -192,6 +201,7 @@ data ObjectInput = ObjectInput
   { oi_hit :: Event [HitEvent]
   , oi_frameInfo :: FrameInfo
   }
+  deriving stock Generic
 
 data ObjectEvents = ObjectEvents
   { oe_die :: Event ()
@@ -199,6 +209,7 @@ data ObjectEvents = ObjectEvents
   , oe_focus :: Event ()
   , oe_play_sound :: Event [Sound]
   }
+  deriving stock Generic
 
 instance Semigroup ObjectEvents where
   (ObjectEvents ev ev' ev2 ev3) <> (ObjectEvents ev4 ev5 ev6 ev7)
@@ -217,6 +228,7 @@ data ObjectOutput = ObjectOutput
   , oo_render :: Renderable
   , oo_pos :: V2 WorldPos
   }
+  deriving stock Generic
 
 data ObjectMap a = ObjectMap
   { objm_camera_focus :: ObjectId

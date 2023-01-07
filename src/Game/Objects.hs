@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedLabels #-}
-{-# LANGUAGE ViewPatterns #-}
 {-# LANGUAGE RecordWildCards #-}
 
 module Game.Objects
@@ -7,10 +5,8 @@ module Game.Objects
   , addObject
   ) where
 
-import           Control.Lens ((%~), over, (.~))
 import           Control.Lens.Lens
 import           Data.Bool (bool)
-import           Data.Foldable (toList)
 import           Data.Functor.Compose (getCompose)
 import           Data.Map (Map)
 import qualified Data.Map as M
@@ -20,7 +16,6 @@ import           Drawing (playSound)
 import           FRP
 import           Game.Camera (camera)
 import           Geometry (intersects)
-import           SDL (Point(P), Rectangle (Rectangle))
 import           Types
 
 

@@ -2,7 +2,6 @@
 
 module Resources where
 
-import GHC.Generics
 import           Control.Monad ((<=<))
 import           Level (loadWorld)
 import           Resources.Machinery
