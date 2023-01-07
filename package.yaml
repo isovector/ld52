@@ -96,6 +96,7 @@ default-extensions:
 - TypeApplications
 - TypeOperators
 - TypeSynonymInstances
+- ViewPatterns
 
 library:
   source-dirs: src

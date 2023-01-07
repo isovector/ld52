@@ -1,8 +1,6 @@
 module Game where
 
-import           Control.Lens ((^.))
 import           Control.Monad (void)
-import           Data.Bool (bool)
 import           Data.Foldable (fold)
 import           Data.Map (toList)
 import qualified Data.Set as S
@@ -10,7 +8,6 @@ import           Drawing
 import           FRP
 import           Game.Objects (renderObjects, addObject)
 import           Game.World (drawWorld)
-import           Resources (loadResources)
 import           SDL
 import           SDL.Mixer
 import           Types
@@ -18,21 +15,20 @@ import           Types
 nowish :: a -> SF x (Types.Event a)
 nowish a = after 0.016 a
 
-shrapnel :: Int -> V2 Double -> Double -> Object
+shrapnel :: Int -> V2 WorldPos -> Double -> Object
 shrapnel n pos0 theta = arr oi_frameInfo >>> loopPre pos0
   ( proc (fi, pos) -> do
     die <- never -< () -- after 2 () -< ()
     focus <- after (fromIntegral n) () -< ()
     let dt = fi_dt fi
-    let pos' = pos + V2 (cos theta) (sin theta) ^* 50 ^* dt
+    let pos' = pos + coerce (V2 (cos theta) (sin theta) ^* 50 ^* dt)
     returnA -<
       ( ObjectOutput
           { oo_events = ObjectEvents die noEvent focus
           , oo_render
               = drawFilledRect (V4 255 0 0 255)
               $ flip Rectangle 3
-              $ P
-              $ fmap round pos'
+              $ P pos'
           , oo_pos = pos'
           }
       , pos'
@@ -55,7 +51,7 @@ grenade =
             )
             noEvent
             )
-            (drawFilledRect (V4 255 0 0 255) $ flip Rectangle 8 $ fmap round $ P pos)
+            (drawFilledRect (V4 255 0 0 255) $ flip Rectangle 8 $ P pos)
             pos
 
     ) 0.5
@@ -65,7 +61,7 @@ grenade =
         $ constant
         $ ObjectOutput
             (ObjectEvents noEvent noEvent noEvent)
-            (drawFilledRect col $ flip Rectangle 8 $ fmap round $ P pos)
+            (drawFilledRect col $ flip Rectangle 8 $ P pos)
             pos
   where
     pos = V2 50 50
@@ -78,7 +74,7 @@ playSound s r = do
   void $ playOn 0 Once $ r_sounds r s
 
 data Player = Player
-  { p_pos :: V2 Pos
+  { p_pos :: V2 WorldPos
   , p_vel :: V2 Double
   } deriving Show
 
@@ -90,16 +86,14 @@ game rs
 
 thingsToRunAtOnce :: Resources -> [SF FrameInfo ScreenRenderable]
 thingsToRunAtOnce rs =
-  [ game5 rs
-  , game4 rs
+  [ game5 rs >>> arr ($ V2 0 0)
+  , game4 rs >>> arr ($ V2 0 0)
   , renderObjects (V2 0 0) $ addObject grenade $ ObjectMap (ObjectId 0) mempty
   ]
 
 game5 :: Resources -> SF i Renderable
 game5 rs = timedSequence undefined 1 $ cycle $
   [ arr $ const $ drawWorld rs (S.singleton Layer1) $ r_worlds rs TestWorld
-  -- , arr $ const $ drawWorld rs (S.singleton Layer2) $ r_worlds rs TestWorld
-  -- , arr $ const $ drawWorld rs (S.fromList [Layer1, Layer2]) $ r_worlds rs TestWorld
   ]
 
 game4 :: Resources -> SF FrameInfo Renderable
@@ -115,22 +109,22 @@ game4 rs =
     let hvel = stepSpeed SDL.*^ V2 1 0 * (realToFrac <$> c_dir (fi_controls fi))
     let vvel = p_vel p + grav + jump
     let vel' = hvel + V2 0 1 * vvel
-    let pos' = p_pos p + (Pos <$> dt SDL.*^ vel')
+    let pos' = p_pos p + (WorldPos <$> dt SDL.*^ vel')
 
     let (_name, lev) = head $ toList $ w_levels $ r_worlds rs TestWorld
     let hits = hitTiles lev Layer1 pos'
     let player' = if or hits then collide lev Layer1 (p_pos p) pos' else Player pos' vel'
 
-    returnA -< (drawFilledRect (V4 255 0 0 255) $ round . getPos <$> Rectangle (P (p_pos player')) 8, player')
+    returnA -< (drawFilledRect (V4 255 0 0 255) $ Rectangle (P (p_pos player')) 8, player')
 
-posToTile :: V2 Pos -> V2 Tile
-posToTile = fmap $ Tile . floor . (/8) . getPos
+posToTile :: V2 WorldPos -> V2 Tile
+posToTile = fmap $ Tile . floor . (/8) . getWorldPos
 
-collide :: Level -> LevelLayer -> V2 Pos -> V2 Pos -> Player
+collide :: Level -> LevelLayer -> V2 WorldPos -> V2 WorldPos -> Player
 collide lev layer pos0 pos1 = let
   n = 4
-  subVels = replicate n $ (1 / realToFrac n) SDL.*^ fmap getPos (pos1 - pos0)
-  dPos = fmap Pos <$> zipWith (SDL.*^) (fmap realToFrac [1 .. n]) subVels
+  subVels = replicate n $ (1 / realToFrac n) SDL.*^ fmap getWorldPos (pos1 - pos0)
+  dPos = fmap WorldPos <$> zipWith (SDL.*^) (fmap realToFrac [1 .. n]) subVels
   subPos = zipWith (+) (replicate n pos0) dPos
 
   validPos = filter (not . or . hitTiles lev layer) subPos
@@ -141,5 +135,5 @@ collide lev layer pos0 pos1 = let
   in Player pos' zero --TODO: Only set vertical or horizontal to zero
 
 -- TODO: This doesn't make sense if the character isn't exactly the size of a tile. Each corner needs calculating
-hitTiles :: Level -> LevelLayer -> V2 Pos -> [Bool]
+hitTiles :: Level -> LevelLayer -> V2 WorldPos -> [Bool]
 hitTiles lev layer pos = l_hitmap lev layer <$> zipWith (+) (replicate 4 (posToTile pos)) [V2 0 0, V2 1 0, V2 0 1, V2 1 1]

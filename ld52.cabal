@@ -92,6 +92,7 @@ library
       TypeApplications
       TypeOperators
       TypeSynonymInstances
+      ViewPatterns
   ghc-options: -Wall -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints
   build-depends:
       Yampa
@@ -169,6 +170,7 @@ executable ld52-exe
       TypeApplications
       TypeOperators
       TypeSynonymInstances
+      ViewPatterns
   ghc-options: -Wall -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Yampa
@@ -248,6 +250,7 @@ test-suite ld52-test
       TypeApplications
       TypeOperators
       TypeSynonymInstances
+      ViewPatterns
   ghc-options: -Wall -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Yampa

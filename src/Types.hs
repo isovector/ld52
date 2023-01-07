@@ -6,8 +6,10 @@ module Types
   , module Debug.Trace
   , SF
   , Event
+  , coerce
   ) where
 
+import Data.Coerce
 import Data.Generics.Labels ()
 import Data.Map (Map)
 import Data.Text (Text)
@@ -39,10 +41,15 @@ newtype Pixel = Pixel
   }
   deriving newtype (Eq, Ord, Show, Read, Enum, Bounded, Num)
 
-newtype Pos = Pos
-  { getPos :: Double
+newtype ScreenPos = ScreenPos
+  { getScreenPos :: Double
   }
-  deriving newtype (Eq, Ord, Show, Read, Enum, Num)
+  deriving newtype (Eq, Ord, Show, Read, Enum, Num, Fractional, Floating, Real, RealFrac)
+
+newtype WorldPos = WorldPos
+  { getWorldPos :: Double
+  }
+  deriving newtype (Eq, Ord, Show, Read, Enum, Num, Fractional, Floating, Real, RealFrac)
 
 data World = World
   { w_levels :: Map Text Level
@@ -81,7 +88,7 @@ data Resources = Resources
 
 type Color = V4 Word8
 
-type Renderable = V2 Double -> ScreenRenderable
+type Renderable = V2 ScreenPos -> ScreenRenderable
 type ScreenRenderable = Resources -> IO ()
 
 
@@ -168,11 +175,11 @@ data ObjectEvents = ObjectEvents
 data ObjectOutput = ObjectOutput
   { oo_events :: ObjectEvents
   , oo_render :: Renderable
-  , oo_pos :: V2 Double
+  , oo_pos :: V2 WorldPos
   }
 
 data ObjectMap a = ObjectMap
-  { om_camera :: ObjectId
+  { om_camera_focus :: ObjectId
   , om_map :: Map ObjectId a
   }
   deriving stock (Functor, Generic)
