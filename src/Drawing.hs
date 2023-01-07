@@ -4,14 +4,16 @@ import Types
 import SDL
 import Foreign.C
 
-drawFilledRect :: Color -> Rectangle Int  -> Renderable
-drawFilledRect c rect rs = do
+
+drawFilledRect :: Color -> Rectangle Int -> Renderable
+drawFilledRect c (Rectangle (P v) sz) cam rs = do
+  let rect' = Rectangle (P $ v + fmap round cam) sz
   let renderer = e_renderer $ r_engine rs
   rendererDrawColor renderer $= c
-  fillRect renderer $ Just $ fmap fromIntegral rect
+  fillRect renderer $ Just $ fmap fromIntegral rect'
 
 drawBackgroundColor :: Color -> Renderable
-drawBackgroundColor c rs = do
+drawBackgroundColor c _ rs = do
   let renderer = e_renderer $ r_engine rs
   rendererDrawColor renderer $= c
   fillRect renderer Nothing
@@ -23,14 +25,14 @@ drawSpriteStretched
     -> V2 Bool         -- ^ mirroring
     -> V2 Double       -- ^ scaling factor
     -> Renderable
-drawSpriteStretched wt pos theta flips stretched rs = do
+drawSpriteStretched wt pos theta flips stretched cam rs = do
   let renderer = e_renderer $ r_engine rs
   copyEx
     renderer
     (getTexture wt)
     (wt_sourceRect wt)
     (Just $ fmap round
-          $ Rectangle (P $ pos - (fmap fromIntegral (wt_origin wt) * stretched))
+          $ Rectangle (P $ pos - (fmap fromIntegral (wt_origin wt) * stretched) + cam)
           $ fmap fromIntegral (wt_size wt) * stretched)
     (CDouble theta)
     (Just $ fmap round

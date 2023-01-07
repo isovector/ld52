@@ -4,17 +4,20 @@ module Types
   , Generic
   , Word8
   , module Debug.Trace
+  , SF
+  , Event
   ) where
 
+import Data.Generics.Labels ()
 import Data.Map (Map)
 import Data.Text (Text)
 import Data.Word
+import Debug.Trace (trace, traceShowId, traceM)
+import FRP (SF, Event)
+import Foreign.C (CInt)
 import GHC.Generics
 import SDL hiding (Event)
 import SDL.Mixer (Chunk)
-import Debug.Trace (trace, traceShowId, traceM)
-import Foreign.C (CInt)
-import FRP (SF, Event)
 
 
 ------------------------------------------------------------------------------
@@ -72,7 +75,9 @@ data Resources = Resources
 ------------------------------------------------------------------------------
 
 type Color = V4 Word8
-type Renderable = Resources -> IO ()
+
+type Renderable = V2 Double -> ScreenRenderable
+type ScreenRenderable = Resources -> IO ()
 
 
 ------------------------------------------------------------------------------
@@ -138,7 +143,8 @@ tileSize = 8
 newtype ObjectId = ObjectId
   { getObjectId :: Int
   }
-  deriving newtype (Eq, Ord, Show, Read, Enum, Bounded)
+  deriving stock (Show, Read)
+  deriving newtype (Eq, Ord, Enum, Bounded)
 
 type Object = SF ObjectInput ObjectOutput
 
@@ -148,9 +154,25 @@ data ObjectInput = ObjectInput
   , oi_frameInfo :: FrameInfo
   }
 
-data ObjectOutput = ObjectOutput
-  { oo_die :: Event ()
-  , oo_spawn :: Event [Object]
-  , oo_render :: Renderable
+data ObjectEvents = ObjectEvents
+  { oe_die :: Event ()
+  , oe_spawn :: Event [Object]
+  , oe_focus :: Event ()
   }
+
+data ObjectOutput = ObjectOutput
+  { oo_events :: ObjectEvents
+  , oo_render :: Renderable
+  , oo_pos :: V2 Double
+  }
+
+data ObjectMap a = ObjectMap
+  { om_camera :: ObjectId
+  , om_map :: Map ObjectId a
+  }
+  deriving stock (Functor, Generic)
+
+
+logicalSize :: Num a => V2 a
+logicalSize = V2 320 240
 

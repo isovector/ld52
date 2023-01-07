@@ -95,7 +95,7 @@ isQuit (Keypress ScancodeCapsLock) = True
 isQuit _                           = False
 
 
-output :: Resources -> Bool -> Renderable -> IO Bool
+output :: Resources -> Bool -> ScreenRenderable -> IO Bool
 output rs _ render = do
   let e = r_engine rs
       renderer = e_renderer e

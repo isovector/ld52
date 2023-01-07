@@ -2,24 +2,11 @@
 
 module Game.World where
 
-import qualified Data.Set as S
 import Data.Set (Set)
 import Types
-import SDL
 import Data.Coerce (coerce)
 import Data.Foldable (toList)
-
-drawFilledRect :: Color -> Rectangle Int  -> Renderable
-drawFilledRect c rect rs = do
-  let renderer = e_renderer $ r_engine rs
-  rendererDrawColor renderer $= c
-  fillRect renderer $ Just $ fmap fromIntegral rect
-
-drawBackgroundColor :: Color -> Renderable
-drawBackgroundColor c rs = do
-  let renderer = e_renderer $ r_engine rs
-  rendererDrawColor renderer $= c
-  fillRect renderer Nothing
+import Drawing
 
 drawWorld :: Resources -> Set LevelLayer -> World -> Renderable
 drawWorld rs layers = foldMap (drawLevel rs layers) . toList . w_levels

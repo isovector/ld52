@@ -8,6 +8,7 @@ import           Control.Lens hiding (Level)
 import           Data.Aeson (eitherDecodeFileStrict)
 import           Data.Coerce (coerce)
 import           Data.Generics.Labels ()
+import           Data.List (find)
 import           Data.Map (Map)
 import qualified Data.Map as M
 import           Data.Monoid
@@ -17,11 +18,10 @@ import           Data.Traversable
 import qualified Data.Vector as V
 import           Drawing
 import qualified LDtk.Types as LDtk
+import           SDL (Rectangle(Rectangle))
 import           SDL.Vect hiding (trace)
 import           System.FilePath.Lens (basename)
 import           Types
-import SDL (Rectangle(Rectangle))
-import Data.List (find)
 
 ldtkColorToColor :: LDtk.Color -> Color
 ldtkColorToColor (LDtk.Color r g b) = V4 r g b 255

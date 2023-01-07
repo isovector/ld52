@@ -1,34 +1,38 @@
 module Game where
 
+import           Control.Lens ((^.))
+import           Control.Monad (void)
+import           Data.Bool (bool)
+import           Data.Foldable (fold)
 import qualified Data.Set as S
-import Data.Set (Set)
-import Control.Monad (void)
-import Data.Bool (bool)
-import FRP
-import Game.World (drawWorld)
-import SDL
-import SDL.Mixer
-import Types
-import Drawing
-import Control.Lens ((^.))
-import Data.Foldable (fold)
-import Game.Objects (renderObjects, addObject)
+import           Drawing
+import           FRP
+import           Game.Objects
+import           Game.World (drawWorld)
+import           SDL
+import           SDL.Mixer
+import           Types
+import Resources (loadResources)
 
-shrapnel :: V2 Double -> Double -> Object
-shrapnel pos0 theta = arr oi_frameInfo >>> loopPre pos0
+nowish :: a -> SF x (Types.Event a)
+nowish a = after 0.016 a
+
+shrapnel :: Int -> V2 Double -> Double -> Object
+shrapnel n pos0 theta = arr oi_frameInfo >>> loopPre pos0
   ( proc (fi, pos) -> do
-    die <- after 2 () -< ()
+    die <- never -< () -- after 2 () -< ()
+    focus <- after (fromIntegral n) () -< ()
     let dt = fi_dt fi
     let pos' = pos + V2 (cos theta) (sin theta) ^* 50 ^* dt
     returnA -<
       ( ObjectOutput
-          { oo_die = die
-          , oo_spawn = noEvent
+          { oo_events = ObjectEvents die noEvent focus
           , oo_render
               = drawFilledRect (V4 255 0 0 255)
               $ flip Rectangle 3
               $ P
               $ fmap round pos'
+          , oo_pos = pos'
           }
       , pos'
       )
@@ -38,27 +42,33 @@ shrapnel pos0 theta = arr oi_frameInfo >>> loopPre pos0
 grenade :: Object
 grenade =
   timedSequence
-    (arr $ const
-         $ ObjectOutput
-            (FRP.Event ())
-            (FRP.Event $ do
+    (proc _ -> do
+      die <- after 3 () -< ()
+      sp <- now () -< ()
+      returnA -<
+         ObjectOutput (ObjectEvents
+            die
+            (tag sp $ do
               n <- [id @Int 0 .. 5]
-              pure $ shrapnel pos $ traceShowId (2 * pi / 6 * fromIntegral n)
+              pure $ shrapnel n pos $ 2 * pi / 6 * fromIntegral n
             )
-            mempty) 0.5
+            noEvent
+            )
+            (drawFilledRect (V4 255 0 0 255) $ flip Rectangle 8 $ fmap round $ P pos)
+            pos
+
+    ) 0.5
     $ do
       col <- [V4 255 0 0 255, V4 0 255 0 255, V4 0 0 255 255]
       pure
         $ constant
-        $ ObjectOutput noEvent noEvent
-        $ drawFilledRect col $ flip Rectangle 8 $ fmap round $ P pos
+        $ ObjectOutput
+            (ObjectEvents noEvent noEvent noEvent)
+            (drawFilledRect col $ flip Rectangle 8 $ fmap round $ P pos)
+            pos
   where
     pos = V2 50 50
 
-
-
-logicalSize :: Num a => V2 a
-logicalSize = V2 320 240
 
 playSound :: Sound -> Resources -> IO ()
 playSound s r = do
@@ -71,17 +81,17 @@ data Player = Player
   , p_vel :: V2 Double
   }
 
-game :: Resources -> SF FrameInfo Renderable
+game :: Resources -> SF FrameInfo ScreenRenderable
 game rs
   = fmap fold
   $ par (\fi -> fmap (fi, ))
   $ thingsToRunAtOnce rs
 
-thingsToRunAtOnce :: Resources -> [SF FrameInfo Renderable]
+thingsToRunAtOnce :: Resources -> [SF FrameInfo ScreenRenderable]
 thingsToRunAtOnce rs =
-  -- [ game5 rs
-  -- , game4 rs
-  [ renderObjects $ addObject grenade mempty
+  [ -- game5 rs
+    -- game4 rs
+    renderObjects (V2 0 0) $ addObject grenade $ ObjectMap (ObjectId 0) mempty
   ]
 
 game5 :: Resources -> SF i Renderable
