@@ -1,8 +1,8 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use if" #-}
+{-# LANGUAGE CPP #-}
 module Game where
 
-import           Control.Monad (void)
 import           Data.Map (toList)
 import qualified Data.Set as S
 import           Drawing
@@ -10,23 +10,23 @@ import           FRP
 import           Game.Objects (renderObjects, addObject)
 import           Game.World (drawWorld)
 import           SDL
-import           SDL.Mixer
 import           Types
 import Control.Lens hiding (Level)
+
+#ifndef __HLINT__
 
 nowish :: a -> SF x (Types.Event a)
 nowish a = after 0.016 a
 
 shrapnel :: Int -> V2 WorldPos -> Double -> Object
-shrapnel n pos0 theta = Object noObjectMeta $ arr oi_frameInfo >>> loopPre pos0
+shrapnel _n pos0 theta = Object noObjectMeta $ arr oi_frameInfo >>> loopPre pos0
   ( proc (fi, pos) -> do
     die <- never -< () -- after 2 () -< ()
-    focus <- after (fromIntegral n) () -< ()
     let dt = fi_dt fi
     let pos' = pos + coerce (V2 (cos theta) (sin theta) ^* 50 ^* dt)
     returnA -<
       ( ObjectOutput
-          { oo_events = ObjectEvents die noEvent focus noEvent
+          { oo_events = ObjectEvents die noEvent noEvent noEvent
           , oo_render
               = drawFilledRect (V4 255 0 0 255)
               $ flip Rectangle 3
@@ -36,7 +36,6 @@ shrapnel n pos0 theta = Object noObjectMeta $ arr oi_frameInfo >>> loopPre pos0
       , pos'
       )
   )
-
 
 grenade :: Object
 grenade = Object noObjectMeta $
@@ -69,7 +68,6 @@ grenade = Object noObjectMeta $
   where
     pos = V2 50 50
 
-
 data Player = Player
   { p_pos :: V2 WorldPos
   , p_vel :: V2 Double
@@ -82,7 +80,7 @@ initialObjs rs
   $ ObjectMap (ObjectId 0) mempty
 
 player :: Resources -> Object
-player rs = Object noObjectMeta $ game4 rs >>> arr (\(p, r) -> ObjectOutput mempty r p)
+player rs = Object noObjectMeta $ game4 rs
 
 
 game :: Resources -> SF FrameInfo (Camera, Renderable)
@@ -92,11 +90,14 @@ game rs = proc fi -> do
   returnA -< (cam, bg <> objs)
 
 
-game4 :: Resources -> SF ObjectInput (V2 WorldPos, Renderable)
+game4 :: Resources -> SF ObjectInput ObjectOutput
 game4 rs =
   do
   loopPre (Player zero zero) $ proc (ObjectInput hit fi, Player pos vel) -> do
+    
+    focus <- nowish () -< ()
     let dt = fi_dt fi
+
     let grav = V2 0 10
     let jumpVel = V2 0 (-200)
     let stepSpeed = 2
@@ -117,7 +118,14 @@ game4 rs =
     let vel'' = V2 (if desiredPos ^. _x == pos' ^. _x then vel' ^. _x else 0) (if desiredPos ^. _y == pos' ^. _y then vel' ^. _y else 0)
     let player' = Player pos' vel''
 
-    returnA -< ((p_pos player', drawFilledRect (event (V4 255 0 0 255) (const $ V4 255 255 0 255) hit) $ Rectangle (P (p_pos player' - 3.5)) 7), player')
+    -- returnA -< ((p_pos player', drawFilledRect (event (V4 255 0 0 255) (const $ V4 255 255 0 255) hit) $ Rectangle (P (p_pos player' - 3.5)) 7), player')
+    returnA -< (ObjectOutput {
+      oo_events = ObjectEvents
+      {oe_die = noEvent, oe_spawn = noEvent, oe_focus = focus, oe_play_sound = noEvent},
+      oo_render = drawFilledRect (event (V4 255 0 0 255) (const $ V4 255 255 0 255) hit) $ Rectangle (P (p_pos player' - 3.5)) 7, 
+      oo_pos = pos'
+      }, 
+      player')
 
 posToTile :: V2 WorldPos -> V2 Tile
 posToTile = fmap $ Tile . floor . (/8) . getWorldPos
@@ -189,3 +197,5 @@ moveY f sz ydir pos =
 
 tileToPos :: V2 Tile -> V2 WorldPos
 tileToPos = fmap (WorldPos . fromIntegral . getTile) . (* tileSize)
+
+#endif

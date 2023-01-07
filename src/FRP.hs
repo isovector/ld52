@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -Wno-orphans #-}
+{-# LANGUAGE CPP #-}
 module FRP
   ( module FRP
   , module FRP.Yampa
@@ -10,6 +11,8 @@ import FRP.Yampa
 import Data.Bifunctor
 import Data.Tuple (swap)
 import Data.Foldable (traverse_)
+
+#ifndef __HLINT__
 
 newtype Swont i o a = Swont
   { runSwont' :: Cont (SF i o) a
@@ -105,3 +108,4 @@ runResumable s0 (Resumable sf) = swont $ loopPre s0 $
     Resumption s' o ev <- sf -< swap is
     returnA -< ((o, s' <$ ev), s')
 
+#endif
