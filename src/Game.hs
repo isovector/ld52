@@ -15,7 +15,7 @@ nowish :: a -> SF x (Types.Event a)
 nowish a = after 0.016 a
 
 shrapnel :: Int -> V2 WorldPos -> Double -> Object
-shrapnel n pos0 theta = arr oi_frameInfo >>> loopPre pos0
+shrapnel n pos0 theta = Object () $ arr oi_frameInfo >>> loopPre pos0
   ( proc (fi, pos) -> do
     die <- never -< () -- after 2 () -< ()
     focus <- after (fromIntegral n) () -< ()
@@ -23,7 +23,7 @@ shrapnel n pos0 theta = arr oi_frameInfo >>> loopPre pos0
     let pos' = pos + coerce (V2 (cos theta) (sin theta) ^* 50 ^* dt)
     returnA -<
       ( ObjectOutput
-          { oo_events = ObjectEvents die noEvent focus
+          { oo_events = ObjectEvents die noEvent focus noEvent
           , oo_render
               = drawFilledRect (V4 255 0 0 255)
               $ flip Rectangle 3
@@ -36,7 +36,7 @@ shrapnel n pos0 theta = arr oi_frameInfo >>> loopPre pos0
 
 
 grenade :: Object
-grenade =
+grenade = Object () $
   timedSequence
     (proc _ -> do
       die <- after 3 () -< ()
@@ -49,6 +49,7 @@ grenade =
               pure $ shrapnel n pos $ 2 * pi / 6 * fromIntegral n
             )
             noEvent
+            noEvent
             )
             (drawFilledRect (V4 255 0 0 255) $ flip Rectangle 8 $ P pos)
             pos
@@ -59,7 +60,7 @@ grenade =
       pure
         $ constant
         $ ObjectOutput
-            (ObjectEvents noEvent noEvent noEvent)
+            (ObjectEvents noEvent noEvent noEvent noEvent)
             (drawFilledRect col $ flip Rectangle 8 $ P pos)
             pos
   where
@@ -77,11 +78,14 @@ data Player = Player
   , p_vel :: V2 Double
   } deriving Show
 
-initialObjs :: Resources -> ObjectMap Object
-initialObjs rs = addObject (player rs) $ addObject grenade $ ObjectMap (ObjectId 0) mempty
+initialObjs :: Resources -> ObjectMap ObjSF
+initialObjs rs
+  = addObject (player rs)
+  $ addObject grenade
+  $ ObjectMap (ObjectId 0) mempty
 
 player :: Resources -> Object
-player rs = arr oi_frameInfo >>> game4 rs >>> arr (\r -> ObjectOutput mempty r 0)
+player rs = Object () $ arr oi_frameInfo >>> game4 rs >>> arr (\r -> ObjectOutput mempty r 0)
 
 
 game :: Resources -> SF FrameInfo (Camera, Renderable)

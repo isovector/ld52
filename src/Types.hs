@@ -20,7 +20,7 @@ import Foreign.C (CInt)
 import GHC.Generics
 import SDL hiding (Event)
 import SDL.Mixer (Chunk)
-import FRP.Yampa (noEvent)
+import Data.Functor.Compose (Compose)
 
 
 ------------------------------------------------------------------------------
@@ -158,7 +158,15 @@ newtype ObjectId = ObjectId
   deriving stock (Show, Read)
   deriving newtype (Eq, Ord, Enum, Bounded)
 
-type Object = SF ObjectInput ObjectOutput
+type ObjSF = SF ObjectInput ObjectOutput
+
+type Object = ObjectMeta ObjSF
+
+data ObjectMeta a = Object
+  { obj_metadata :: ()
+  , obj_data :: a
+  }
+  deriving stock (Functor, Foldable)
 
 data ObjectInput = ObjectInput
   -- TODO(sandy): THIS NEVER GETS CALLED YET
@@ -194,7 +202,7 @@ data ObjectOutput = ObjectOutput
 
 data ObjectMap a = ObjectMap
   { om_camera_focus :: ObjectId
-  , om_map :: Map ObjectId a
+  , om_map :: Compose (Map ObjectId) ObjectMeta a
   }
   deriving stock (Functor, Generic)
 
