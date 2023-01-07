@@ -15,7 +15,7 @@ nowish :: a -> SF x (Types.Event a)
 nowish a = after 0.016 a
 
 shrapnel :: Int -> V2 WorldPos -> Double -> Object
-shrapnel n pos0 theta = Object () $ arr oi_frameInfo >>> loopPre pos0
+shrapnel n pos0 theta = Object noObjectMeta $ arr oi_frameInfo >>> loopPre pos0
   ( proc (fi, pos) -> do
     die <- never -< () -- after 2 () -< ()
     focus <- after (fromIntegral n) () -< ()
@@ -36,7 +36,7 @@ shrapnel n pos0 theta = Object () $ arr oi_frameInfo >>> loopPre pos0
 
 
 grenade :: Object
-grenade = Object () $
+grenade = Object noObjectMeta $
   timedSequence
     (proc _ -> do
       die <- after 3 () -< ()
@@ -85,7 +85,7 @@ initialObjs rs
   $ ObjectMap (ObjectId 0) mempty
 
 player :: Resources -> Object
-player rs = Object () $ arr oi_frameInfo >>> game4 rs >>> arr (\r -> ObjectOutput mempty r 0)
+player rs = Object noObjectMeta $ arr oi_frameInfo >>> game4 rs >>> arr (\r -> ObjectOutput mempty r 0)
 
 
 game :: Resources -> SF FrameInfo (Camera, Renderable)
