@@ -88,10 +88,11 @@ pattern Keypress :: Scancode -> EventPayload
 pattern Keypress scan <- KeyboardEvent (KeyboardEventData _ Pressed _ (Keysym scan _ _))
 
 isQuit :: EventPayload -> Bool
-isQuit QuitEvent                 = True
-isQuit (WindowClosedEvent _)     = True
-isQuit (Keypress ScancodeEscape) = True
-isQuit _                         = False
+isQuit QuitEvent                   = True
+isQuit (WindowClosedEvent _)       = True
+isQuit (Keypress ScancodeEscape)   = True
+isQuit (Keypress ScancodeCapsLock) = True
+isQuit _                           = False
 
 
 output :: Resources -> Bool -> Renderable -> IO Bool
