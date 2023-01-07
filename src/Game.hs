@@ -8,9 +8,9 @@ import SDL
 import SDL.Mixer
 import Types
 import Drawing
-import Control.Lens ((^.))
 import Data.Foldable (fold)
 import Game.Objects (renderObjects, addObject)
+import Data.Map (toList)
 
 shrapnel :: V2 Double -> Double -> Object
 shrapnel pos0 theta = arr oi_frameInfo >>> loopPre pos0
@@ -77,9 +77,9 @@ game rs
 
 thingsToRunAtOnce :: Resources -> [SF FrameInfo Renderable]
 thingsToRunAtOnce rs =
-  -- [ game5 rs
-  -- , game4 rs
-  [ renderObjects $ addObject grenade mempty
+  [ game5 rs
+  , game4 rs
+  , renderObjects $ addObject grenade mempty
   ]
 
 game5 :: Resources -> SF i Renderable
@@ -104,7 +104,7 @@ game4 rs =
     let vel' = hvel + V2 0 1 * vvel
     let pos' = p_pos p + (Pos <$> dt SDL.*^ vel')
 
-    let lev = head $ toList $ w_levels $ r_worlds rs TestWorld
+    let (_name, lev) = head $ toList $ w_levels $ r_worlds rs TestWorld
     let hits = hitTiles lev Layer1 pos'
     let player' = if or hits then collide lev Layer1 (p_pos p) pos' else Player pos' vel'
 

@@ -29,6 +29,7 @@ library
       Drawing
       FRP
       Game
+      Game.Objects
       Game.World
       Level
       Resources
