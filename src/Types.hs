@@ -10,8 +10,10 @@ module Types
   ) where
 
 import Data.Coerce
+import Data.Functor.Compose (Compose)
 import Data.Generics.Labels ()
 import Data.Map (Map)
+import Data.Set (Set)
 import Data.Text (Text)
 import Data.Word
 import Debug.Trace (trace, traceShowId, traceM)
@@ -20,7 +22,6 @@ import Foreign.C (CInt)
 import GHC.Generics
 import SDL hiding (Event)
 import SDL.Mixer (Chunk)
-import Data.Functor.Compose (Compose)
 
 
 ------------------------------------------------------------------------------
@@ -160,17 +161,32 @@ newtype ObjectId = ObjectId
 
 type ObjSF = SF ObjectInput ObjectOutput
 
-type Object = ObjectMeta ObjSF
+type Object = WithMeta ObjSF
 
-data ObjectMeta a = Object
-  { obj_metadata :: ()
+data ObjectTag = IsPlayer | IsPowerup
+  deriving (Eq, Ord, Show, Enum, Bounded)
+
+data ObjectMeta = ObjectMeta
+  { om_tags :: Set ObjectTag
+  -- TODO(sandy): maybe this should be an objOut?
+  , om_hitSize :: Maybe (V2 Double)
+  }
+  deriving stock (Eq, Ord, Show)
+
+noObjectMeta :: ObjectMeta
+noObjectMeta = ObjectMeta mempty (Just 8)
+
+data WithMeta a = Object
+  { obj_metadata :: ObjectMeta
   , obj_data :: a
   }
-  deriving stock (Functor, Foldable)
+  deriving stock (Eq, Ord, Show, Functor, Foldable)
+
+type HitEvent = (ObjectId, ObjectMeta)
 
 data ObjectInput = ObjectInput
   -- TODO(sandy): THIS NEVER GETS CALLED YET
-  { oi_hit :: Event ()
+  { oi_hit :: Event [HitEvent]
   , oi_frameInfo :: FrameInfo
   }
 
@@ -201,8 +217,8 @@ data ObjectOutput = ObjectOutput
   }
 
 data ObjectMap a = ObjectMap
-  { om_camera_focus :: ObjectId
-  , om_map :: Compose (Map ObjectId) ObjectMeta a
+  { objm_camera_focus :: ObjectId
+  , objm_map :: Compose (Map ObjectId) WithMeta a
   }
   deriving stock (Functor, Generic)
 

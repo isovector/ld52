@@ -18,7 +18,7 @@ nowish :: a -> SF x (Types.Event a)
 nowish a = after 0.016 a
 
 shrapnel :: Int -> V2 WorldPos -> Double -> Object
-shrapnel n pos0 theta = Object () $ arr oi_frameInfo >>> loopPre pos0
+shrapnel n pos0 theta = Object noObjectMeta $ arr oi_frameInfo >>> loopPre pos0
   ( proc (fi, pos) -> do
     die <- never -< () -- after 2 () -< ()
     focus <- after (fromIntegral n) () -< ()
@@ -26,7 +26,7 @@ shrapnel n pos0 theta = Object () $ arr oi_frameInfo >>> loopPre pos0
     let pos' = pos + coerce (V2 (cos theta) (sin theta) ^* 50 ^* dt)
     returnA -<
       ( ObjectOutput
-          { oo_events = ObjectEvents die noEvent noEvent noEvent
+          { oo_events = ObjectEvents die noEvent focus noEvent
           , oo_render
               = drawFilledRect (V4 255 0 0 255)
               $ flip Rectangle 3
@@ -39,7 +39,7 @@ shrapnel n pos0 theta = Object () $ arr oi_frameInfo >>> loopPre pos0
 
 
 grenade :: Object
-grenade = Object () $
+grenade = Object noObjectMeta $
   timedSequence
     (proc _ -> do
       die <- after 3 () -< ()
@@ -88,7 +88,7 @@ initialObjs rs
   $ ObjectMap (ObjectId 0) mempty
 
 player :: Resources -> Object
-player rs = Object () $ arr oi_frameInfo >>> game4 rs >>> arr (\r -> ObjectOutput mempty r 0)
+player rs = Object noObjectMeta $ game4 rs >>> arr (\(p, r) -> ObjectOutput mempty r p)
 
 
 game :: Resources -> SF FrameInfo (Camera, Renderable)
@@ -98,10 +98,10 @@ game rs = proc fi -> do
   returnA -< (cam, bg <> objs)
 
 
-game4 :: Resources -> SF FrameInfo Renderable
+game4 :: Resources -> SF ObjectInput (V2 WorldPos, Renderable)
 game4 rs =
   do
-  loopPre (Player 0 0) $ proc (fi, Player pos vel) -> do
+  loopPre (Player zero zero) $ proc (ObjectInput hit fi, p) -> do
     let dt = fi_dt fi
     let grav = V2 0 10
     let jumpVel = V2 0 (-200)
@@ -121,8 +121,9 @@ game4 rs =
     let pos' = move (l_hitmap lev Layer1 . posToTile) 7 pos $ dpos
 
     let vel'' = V2 (if desiredPos ^. _x == pos' ^. _x then vel' ^. _x else 0) (if desiredPos ^. _y == pos' ^. _y then vel'  ^. _y else 0)
+    let player' = Player pos' vel''
 
-    returnA -< (drawFilledRect (V4 255 0 0 255) $ Rectangle (P $ pos' - 3.5) 7, Player pos' vel'')
+    returnA -< ((p_pos player', drawFilledRect (event (V4 255 0 0 255) (const $ V4 255 255 0 255) hit) $ Rectangle (P (p_pos player')) 8), player')
 
 posToTile :: V2 WorldPos -> V2 Tile
 posToTile = fmap $ Tile . floor . (/8) . getWorldPos
