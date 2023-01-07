@@ -23,7 +23,7 @@ shrapnel n pos0 theta = Object noObjectMeta $ arr oi_frameInfo >>> loopPre pos0
     let pos' = pos + coerce (V2 (cos theta) (sin theta) ^* 50 ^* dt)
     returnA -<
       ( ObjectOutput
-          { oo_events = ObjectEvents die noEvent focus noEvent
+          { oo_events = ObjectEvents die noEvent noEvent noEvent
           , oo_render
               = drawFilledRect (V4 255 0 0 255)
               $ flip Rectangle 3
@@ -85,7 +85,7 @@ initialObjs rs
   $ ObjectMap (ObjectId 0) mempty
 
 player :: Resources -> Object
-player rs = Object noObjectMeta $ arr oi_frameInfo >>> game4 rs >>> arr (\r -> ObjectOutput mempty r 0)
+player rs = Object noObjectMeta $ game4 rs >>> arr (\(p, r) -> ObjectOutput mempty r p)
 
 
 game :: Resources -> SF FrameInfo (Camera, Renderable)
@@ -95,10 +95,10 @@ game rs = proc fi -> do
   returnA -< (cam, bg <> objs)
 
 
-game4 :: Resources -> SF FrameInfo Renderable
+game4 :: Resources -> SF ObjectInput (V2 WorldPos, Renderable)
 game4 rs =
   do
-  loopPre (Player zero zero) $ proc (fi, p) -> do
+  loopPre (Player zero zero) $ proc (ObjectInput hit fi, p) -> do
     let dt = fi_dt fi
     let grav = V2 0 10
     let jumpVel = V2 0 (-300)
@@ -114,7 +114,7 @@ game4 rs =
     let hits = hitTiles lev Layer1 pos'
     let player' = if or hits then collide lev Layer1 (p_pos p) pos' else Player pos' vel'
 
-    returnA -< (drawFilledRect (V4 255 0 0 255) $ Rectangle (P (p_pos player')) 8, player')
+    returnA -< (((p_pos player'), drawFilledRect (event (V4 255 0 0 255) (const $ V4 255 255 0 255) hit) $ Rectangle (P (p_pos player')) 8), player')
 
 posToTile :: V2 WorldPos -> V2 Tile
 posToTile = fmap $ Tile . floor . (/8) . getWorldPos

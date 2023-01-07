@@ -8,40 +8,75 @@ module Game.Objects
   ) where
 
 import           Control.Lens ((%~), over, (.~))
+import           Control.Lens.Lens
+import           Data.Bool (bool)
 import           Data.Functor.Compose (getCompose)
 import           Data.Map (Map)
 import qualified Data.Map as M
+import           Data.Maybe (maybeToList)
 import           Data.Monoid
 import           FRP
 import           Game.Camera (camera)
+import           Geometry (intersects)
+import           SDL (Point(P), Rectangle (Rectangle))
 import           Types
-import SDL (Point(P), Rectangle (Rectangle))
-import Data.Maybe (maybeToList)
 
 
 renderObjects :: V2 WorldPos -> ObjectMap ObjSF -> SF FrameInfo (Camera, Renderable)
 renderObjects cam0 objs0 = proc fi -> do
-  objs <- router objs0 -< undefined -- fi
+  objs <- router objs0 -< fi
   let focuson = M.lookup (objm_camera_focus objs) $ getCompose $ objm_map objs
   focus <- camera cam0 -< (fi, maybe 0 (oo_pos . obj_data) focuson)
   returnA -< (focus, foldMap oo_render . fmap obj_data . getCompose $ objm_map objs)
 
+emptyObjMap :: ObjectMap a
+emptyObjMap = ObjectMap (ObjectId 0) $ mempty
 
-router :: ObjectMap ObjSF -> SF (FrameInfo, ObjectMap ObjectOutput) (ObjectMap ObjectOutput)
-router objs0 =
+router :: ObjectMap ObjSF -> SF FrameInfo (ObjectMap ObjectOutput)
+router om =
+  loopPre emptyObjMap $
+    router' om >>> arr dup
+
+router' :: ObjectMap ObjSF -> SF (FrameInfo, ObjectMap ObjectOutput) (ObjectMap ObjectOutput)
+router' objs0 =
   dpSwitch
     (\(fi, outs) -> routeHits fi outs  )
     objs0
     ((arr $ foldMap (uncurry route) . M.toList . fmap obj_data . getCompose . objm_map . snd) >>> notYet)
-    (\objs f -> router $ appEndo f objs)
+    (\objs f -> router' $ appEndo f objs)
+
 
 routeHits :: FrameInfo -> ObjectMap ObjectOutput -> ObjectMap sf -> ObjectMap (ObjectInput, sf)
 routeHits fi outs objs = do
   let hittable
-        = M.foldMapWithKey (\k -> maybeToList . sequenceA . (k, ) . getCollisionRect)
+        = M.fromList
+        $ M.foldMapWithKey (\k m -> maybeToList . sequenceA . (k, ) . fmap (obj_metadata m, ) $ getCollisionRect m)
         $ getCompose
         $ objm_map outs
-  undefined
+  objs & #objm_map . #_Compose %~ M.mapWithKey (pushHits fi hittable)
+
+
+pushHits
+    :: FrameInfo
+    -> Map ObjectId (ObjectMeta, Rectangle WorldPos)
+    -> ObjectId
+    -> WithMeta sf
+    -> WithMeta (ObjectInput, sf)
+pushHits fi hittable oid wm
+  | Just me <- M.lookup oid hittable
+  = fmap (ObjectInput (foldMap (doHit oid $ snd me) $ M.toList hittable) fi,) wm
+  | otherwise
+  = fmap (ObjectInput noEvent fi,) wm
+
+
+doHit :: ObjectId -> Rectangle WorldPos -> (ObjectId, (ObjectMeta, Rectangle WorldPos)) -> Event [HitEvent]
+doHit me rect (other, (meta, hit))
+  | me == other = noEvent
+  | otherwise
+    = fmap (pure . (other, ))
+    . maybeToEvent
+    $ bool Nothing (Just meta)
+    $ intersects rect hit
 
 
 getCollisionRect :: WithMeta ObjectOutput -> Maybe (Rectangle WorldPos)
