@@ -12,6 +12,49 @@ import Types
 import Drawing
 import Control.Lens ((^.))
 import Data.Foldable (fold)
+import Game.Objects (renderObjects, addObject)
+
+shrapnel :: V2 Double -> Double -> Object
+shrapnel pos0 theta = arr oi_frameInfo >>> loopPre pos0
+  ( proc (fi, pos) -> do
+    die <- after 2 () -< ()
+    let dt = fi_dt fi
+    let pos' = pos + V2 (cos theta) (sin theta) ^* 50 ^* dt
+    returnA -<
+      ( ObjectOutput
+          { oo_die = die
+          , oo_spawn = noEvent
+          , oo_render
+              = drawFilledRect (V4 255 0 0 255)
+              $ flip Rectangle 3
+              $ P
+              $ fmap round pos'
+          }
+      , pos'
+      )
+  )
+
+
+grenade :: Object
+grenade =
+  timedSequence
+    (arr $ const
+         $ ObjectOutput
+            (FRP.Event ())
+            (FRP.Event $ do
+              n <- [id @Int 0 .. 5]
+              pure $ shrapnel pos $ traceShowId (2 * pi / 6 * fromIntegral n)
+            )
+            mempty) 0.5
+    $ do
+      col <- [V4 255 0 0 255, V4 0 255 0 255, V4 0 0 255 255]
+      pure
+        $ constant
+        $ ObjectOutput noEvent noEvent
+        $ drawFilledRect col $ flip Rectangle 8 $ fmap round $ P pos
+  where
+    pos = V2 50 50
+
 
 
 logicalSize :: Num a => V2 a
@@ -36,8 +79,9 @@ game rs
 
 thingsToRunAtOnce :: Resources -> [SF FrameInfo Renderable]
 thingsToRunAtOnce rs =
-  [ game5 rs
-  , game4 rs
+  -- [ game5 rs
+  -- , game4 rs
+  [ renderObjects $ addObject grenade mempty
   ]
 
 game5 :: Resources -> SF i Renderable
