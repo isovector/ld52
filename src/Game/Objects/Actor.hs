@@ -33,10 +33,10 @@ actor sz input render pos0 = loopPre (pos0, 0) $
 
     let dpos = dt *^ vel'
     let desiredPos = pos + coerce dpos
-    let pos' = move (l_hitmap lev Layer1 . posToTile) sz pos $ dpos
+    let pos' = move (l_hitmap lev Layer1 . posToTile) (OriginRect sz (sz / 2)) pos $ dpos
 
     let vel''
-          = (\want have res -> bool 0 res $ want == have)
+          = (\want have res -> bool 0 res $ abs(want - have) <= epsilon )
               <$> desiredPos
               <*> pos'
               <*> vel'

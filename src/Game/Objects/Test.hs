@@ -38,7 +38,7 @@ grenade = Object noObjectMeta $
               pure $ shrapnel n pos $ 2 * pi / 6 * fromIntegral n
             )
             noEvent
-            ([NintendoSound] <$ die)
+            noEvent
             )
             (drawFilledRect (V4 255 0 0 255) $ flip Rectangle 8 $ P pos)
             pos

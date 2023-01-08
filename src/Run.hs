@@ -82,6 +82,7 @@ input win tRef _ = do
   pure (dt, Just $ FrameInfo (parseControls keys) dt)
 
 
+
 pattern Keypress :: Scancode -> EventPayload
 pattern Keypress scan <- KeyboardEvent (KeyboardEventData _ Pressed _ (Keysym scan _ _))
 

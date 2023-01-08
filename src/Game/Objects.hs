@@ -29,7 +29,13 @@ renderObjects rs cam0 objs0 = proc fi -> do
   let focuson = M.lookup (objm_camera_focus objs) $ getCompose $ objm_map objs
   focus <- camera cam0 -< (fi, maybe 0 (oo_pos . obj_data) focuson)
   let dat = toList $ fmap obj_data . getCompose $ objm_map objs
-  returnA -< (focus, flip foldMap dat (renderEvents rs . oo_events <> oo_render))
+  returnA -<
+    ( focus
+    , flip foldMap dat $ mconcat
+       [ renderEvents rs . oo_events
+       , oo_render
+       ]
+    )
 
 renderEvents :: Resources -> ObjectEvents -> Renderable
 renderEvents rs oe _ _ =

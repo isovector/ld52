@@ -162,7 +162,7 @@ defaultControls = Controls
   , c_dir = V2 0 0
   }
 
-tileSize :: Num a =>  V2 a
+tileSize :: Num a => a
 tileSize = 8
 
 
@@ -238,6 +238,11 @@ data ObjectMap a = ObjectMap
   }
   deriving stock (Functor, Generic)
 
+data OriginRect aff = OriginRect
+  { orect_size   :: V2 aff
+  , orect_offset :: V2 aff
+  }
+  deriving (Eq, Ord, Show, Functor, Generic)
 
 newtype Camera = Camera (V2 WorldPos)
 
