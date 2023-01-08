@@ -14,8 +14,12 @@ actor
     -> SF (ObjectInput, V2 WorldPos) Renderable
     -> V2 WorldPos
     -> SF (Bool, ObjectInput) ObjectOutput
-actor ore input render pos0 = loopPre (pos0, 0) $
-  proc ((can_double, oi@(ObjectInput _ _ fi os)), (pos, vel)) -> do
+actor ore input render pos0 = loopPre 0 $
+  proc ((can_double, oi@(ObjectInput _ _ fi os)), vel) -> do
+    -- TODO(sandy): bad pattern; fixme
+    start <- nowish () -< ()
+    let pos = event (os_pos $ oi_state oi) (const pos0) start
+
     let dt = fi_dt fi
     let lev = gs_currentLevel $ fi_global fi
         layers = gs_layerset $ fi_global fi
@@ -46,7 +50,7 @@ actor ore input render pos0 = loopPre (pos0, 0) $
             os & #os_pos .~ pos'
                & #os_collision .~ coerce (Just ore)
         }
-      , (pos', vel'')
+      , ( vel'')
       )
 
 

@@ -2,7 +2,7 @@
 module Game.Objects.Player where
 
 import           Collision (epsilon)
-import           Control.Lens ((*~), preview)
+import           Control.Lens ((*~), preview, (<>~))
 import           Data.Bool (bool)
 import           Data.Maybe (mapMaybe)
 import qualified Data.Set as S
@@ -13,6 +13,7 @@ import           Game.Objects.Actor (actor)
 import qualified SDL.Vect as SDL
 import           Types
 import           Utils
+import Game.Objects.TeleportBall (teleportBall)
 
 
 player :: V2 WorldPos -> Object
@@ -26,12 +27,17 @@ player pos0
                                   . snd
                             ) $ oi_hit oi
 
+        let me = oi_self oi
+        action <- edge -< c_z $ fi_controls $ oi_frameInfo oi
+
         let can_double_jump = can_double_jump0 || now_jump
         res <- actor ore playerPhysVelocity (drawPlayer ore) pos0 -< (can_double_jump, oi)
+        let pos = traceShowId $ res ^. #oo_state . #os_pos
         returnA -<
           ( res & #oo_state . #os_tags
                     %~ bool id (S.insert $ HasPowerup PowerupDoubleJump) now_jump
                 & #oo_state . #os_tags %~ S.insert IsPlayer
+                & #oo_events . #oe_spawn <>~ ([teleportBall me pos $ V2 200 (-100)] <$ action)
           , can_double_jump
           )
     )

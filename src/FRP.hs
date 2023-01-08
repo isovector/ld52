@@ -116,4 +116,13 @@ select f = proc (c, i) -> do
 fork :: [SF i o] -> SF i [o]
 fork = par $ \i -> fmap (i, )
 
+inject :: (a -> a) -> SF a b -> SF a b
+inject f sf =
+  dSwitch
+    (proc a -> do
+      b <- sf -< f a
+      returnA -< (b, Event ())
+    )
+    (const sf)
+
 #endif

@@ -138,7 +138,7 @@ sendMsg
     -> (ObjectState -> ObjectState)
     -> Map ObjectId (SF ObjectInput ObjectOutput)
     -> Map ObjectId (SF ObjectInput ObjectOutput)
-sendMsg oid msg = at oid . #_Just %~ (over #oi_state msg >=-)
+sendMsg oid msg = at oid . #_Just %~ inject (over #oi_state msg)
 
 
 addObject :: a -> ObjectMap a -> ObjectMap a
