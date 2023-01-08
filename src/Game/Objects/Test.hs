@@ -17,7 +17,7 @@ shrapnel _n pos0 theta = Object noObjectMeta $ arr oi_frameInfo >>> loopPre pos0
               = drawFilledRect (V4 255 0 0 255)
               $ flip Rectangle 3
               $ P pos'
-          , oo_pos = pos'
+          , oo_state = ObjectState pos' Nothing mempty
           }
       , pos'
       )
@@ -40,7 +40,7 @@ grenade pos life = Object noObjectMeta $
             }
             )
             (drawFilledRect (V4 255 0 0 255) $ flip Rectangle 8 $ P pos)
-            pos
+            (ObjectState pos Nothing mempty)
 
     ) 0.5
     $ do
@@ -50,5 +50,5 @@ grenade pos life = Object noObjectMeta $
         $ ObjectOutput
             mempty
             (drawFilledRect col $ flip Rectangle 8 $ P pos)
-            pos
+            (ObjectState pos Nothing mempty)
 

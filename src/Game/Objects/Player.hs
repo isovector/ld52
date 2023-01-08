@@ -15,25 +15,26 @@ import           Types
 import           Utils
 
 
-mkCenterdOriginRect :: Fractional a => V2 a -> OriginRect a
-mkCenterdOriginRect sz = OriginRect sz (sz / 2)
-
-
 player :: V2 WorldPos -> Object
 player pos0
-  = Object (noObjectMeta { om_tags = S.singleton IsPlayer })
+  = Object (noObjectMeta)
   $ ( loopPre False $ proc (oi, can_double_jump0) -> do
         let now_jump
               = event False ( any $ any (== PowerupDoubleJump)
                                   . mapMaybe (preview #_IsPowerup)
                                   . toList
-                                  . om_tags
+                                  . os_tags
                                   . snd
                             ) $ oi_hit oi
 
         let can_double_jump = can_double_jump0 || now_jump
         res <- actor ore playerPhysVelocity (drawPlayer ore) pos0 -< (can_double_jump, oi)
-        returnA -< (res, can_double_jump)
+        returnA -<
+          ( res & #oo_state . #os_tags
+                    %~ bool id (S.insert $ HasPowerup PowerupDoubleJump) now_jump
+                & #oo_state . #os_tags %~ S.insert IsPlayer
+          , can_double_jump
+          )
     )
   -- >>> actor ore playerPhysVelocity (drawPlayer ore) pos0
   >>> focusOn

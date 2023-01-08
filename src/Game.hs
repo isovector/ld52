@@ -3,20 +3,19 @@
 
 module Game where
 
+import           Control.Lens ((+~))
+import           Data.Bool (bool)
+import           Data.Foldable (find)
 import qualified Data.Map as M
 import qualified Data.Set as S
 import           Drawing
 import           FRP
 import           Game.Objects (renderObjects, addObject)
-import           Game.Objects.Player (mkCenterdOriginRect)
 import           Game.World (drawWorld)
+import           Globals (global_textures)
 import           SDL
 import           Types
-import Control.Lens ((+~))
-import Data.Foldable (find)
-import Data.Bool (bool)
-import Globals (global_textures)
-import Utils (setCenterOrigin)
+import           Utils (setCenterOrigin, mkCenterdOriginRect)
 
 #ifndef __HLINT__
 
@@ -35,7 +34,7 @@ game rs = loopPre (initialGlobalState rs) $
         -- BUG(sandy): this should be a signal!!!
         (initialObjs $ gs_currentLevel $ initialGlobalState rs)
           -< fi
-    let player = find (S.member IsPlayer . om_tags . obj_metadata) $ objm_map' objs
+    let player = find (S.member IsPlayer . os_tags . oo_state . obj_data) $ objm_map' objs
     bg <- constant $ drawWorld rs (S.singleton Layer1) $ r_worlds rs TestWorld -< fi
     returnA -<
       ( ( cam
@@ -70,7 +69,8 @@ game rs = loopPre (initialGlobalState rs) $
       drawOriginRect (V4 255 255 255 16) (mkCenterdOriginRect 20) $ ui_box_pos dx
 
 hasChicken :: WithMeta ObjectOutput -> Bool
-hasChicken _ = True
+hasChicken
+    = S.member (HasPowerup PowerupDoubleJump) . os_tags . oo_state . obj_data
 
 initialGlobalState :: Resources -> GlobalState
 initialGlobalState rs

@@ -14,7 +14,7 @@ actor
     -> V2 WorldPos
     -> SF (Bool, ObjectInput) ObjectOutput
 actor ore input render pos0 = loopPre (pos0, 0) $
-  proc ((can_double, oi@(ObjectInput _ fi)), (pos, vel)) -> do
+  proc ((can_double, oi@(ObjectInput _ fi os)), (pos, vel)) -> do
     let dt = fi_dt fi
     let lev = gs_currentLevel $ fi_global fi
 
@@ -38,7 +38,9 @@ actor ore input render pos0 = loopPre (pos0, 0) $
       ( ObjectOutput
         { oo_events = mempty
         , oo_render = img
-        , oo_pos = pos'
+        , oo_state =
+            os & #os_pos .~ pos'
+               & #os_collision .~ coerce (Just ore)
         }
       , (pos', vel'')
       )

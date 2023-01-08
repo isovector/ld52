@@ -1,15 +1,15 @@
 module Drawing where
 
 import Control.Monad (void)
+import Data.Foldable (for_)
 import FRP
 import Foreign.C
 import Game.Camera (viaCamera)
-import Geometry (orTopLeft)
 import Globals (global_resources, global_sprites, global_glyphs)
 import SDL
 import SDL.Mixer
 import Types
-import Data.Foldable (for_)
+import Utils (originRectToRect)
 
 
 playSound :: Resources -> Sound -> IO ()
@@ -18,10 +18,7 @@ playSound r s = do
   void $ playOn 0 Once $ r_sounds r s
 
 drawOriginRect :: Color -> OriginRect WorldPos -> V2 WorldPos -> Renderable
-drawOriginRect c ore pos =
-  drawFilledRect c
-    $ Rectangle (P $ orTopLeft pos ore)
-    $ orect_size ore
+drawOriginRect c ore = drawFilledRect c . originRectToRect ore
 
 
 drawFilledRect :: Color -> Rectangle WorldPos -> Renderable

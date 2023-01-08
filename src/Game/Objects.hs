@@ -17,6 +17,7 @@ import           FRP
 import           Game.Camera (camera)
 import           Geometry (intersects)
 import           Types
+import Utils (originRectToRect)
 
 
 renderObjects
@@ -27,7 +28,7 @@ renderObjects
 renderObjects rs cam0 objs0 = proc fi -> do
   objs <- router objs0 -< fi
   let focuson = M.lookup (objm_camera_focus objs) $ getCompose $ objm_map objs
-  focus <- camera cam0 -< (fi, maybe 0 (oo_pos . obj_data) focuson)
+  focus <- camera cam0 -< (fi, maybe 0 (os_pos . oo_state . obj_data) focuson)
   let dat = toList $ fmap obj_data . getCompose $ objm_map objs
   returnA -<
     ( focus
@@ -78,26 +79,40 @@ routeHits :: FrameInfo -> ObjectMap ObjectOutput -> ObjectMap sf -> ObjectMap (O
 routeHits fi outs objs = do
   let hittable
         = M.fromList
-        $ M.foldMapWithKey (\k m -> maybeToList . sequenceA . (k, ) . fmap (obj_metadata m, ) $ getCollisionRect m)
+        $ M.foldMapWithKey (\k m -> maybeToList . sequenceA . (k, ) . fmap (m, ) $ getCollisionRect $ oo_state m)
+        $ fmap obj_data
         $ getCompose
         $ objm_map outs
-  objs & #objm_map . #_Compose %~ M.mapWithKey (pushHits fi hittable)
+  objs & #objm_map . #_Compose %~ M.mapWithKey (pushHits fi $ fmap (first oo_state) hittable)
 
 
 pushHits
     :: FrameInfo
-    -> Map ObjectId (ObjectMeta, Rectangle WorldPos)
+    -> Map ObjectId (ObjectState, Rectangle WorldPos)
     -> ObjectId
     -> WithMeta sf
     -> WithMeta (ObjectInput, sf)
-pushHits fi hittable oid wm
-  | Just me <- M.lookup oid hittable
-  = fmap (ObjectInput (foldMap (doHit oid $ snd me) $ M.toList hittable) fi,) wm
+pushHits fi objs oid wm
+  | Just me <- M.lookup oid objs
+  = fmap (ObjectInput (foldMap (doHit oid $ snd me) $ M.toList objs) fi om,) wm
   | otherwise
-  = fmap (ObjectInput noEvent fi,) wm
+  = fmap (ObjectInput noEvent fi om, ) wm
+  where
+    om = maybe noObjectState fst $ M.lookup oid objs
+
+noObjectState :: ObjectState
+noObjectState = ObjectState
+  { os_pos = 0
+  , os_collision = Nothing
+  , os_tags = mempty
+  }
 
 
-doHit :: ObjectId -> Rectangle WorldPos -> (ObjectId, (ObjectMeta, Rectangle WorldPos)) -> Event [HitEvent]
+doHit
+    :: ObjectId
+    -> Rectangle WorldPos
+    -> (ObjectId, (ObjectState, Rectangle WorldPos))
+    -> Event [HitEvent]
 doHit me rect (other, (meta, hit))
   | me == other = noEvent
   | otherwise
@@ -107,8 +122,8 @@ doHit me rect (other, (meta, hit))
     $ intersects rect hit
 
 
-getCollisionRect :: WithMeta ObjectOutput -> Maybe (Rectangle WorldPos)
-getCollisionRect (Object om oo) = Rectangle (P $ oo_pos oo) . coerce <$> om_hitSize om
+getCollisionRect :: ObjectState -> Maybe (Rectangle WorldPos)
+getCollisionRect os = flip originRectToRect (os_pos os) . coerce <$> os_collision os
 
 
 route :: ObjectId -> ObjectOutput -> Event (Endo (ObjectMap ObjSF))

@@ -2,6 +2,7 @@ module Utils where
 
 import Types
 import FRP
+import Geometry (orTopLeft)
 
 nowish :: a -> SF x (Types.Event a)
 nowish a = after 0.016 a
@@ -38,3 +39,12 @@ wrappedToOriginRect wt = fmap fromIntegral $ OriginRect
   , orect_offset = wt_origin wt
   }
 
+
+mkCenterdOriginRect :: Fractional a => V2 a -> OriginRect a
+mkCenterdOriginRect sz = OriginRect sz (sz / 2)
+
+
+originRectToRect :: Num a => OriginRect a -> V2 a -> Rectangle a
+originRectToRect ore pos =
+  Rectangle (P $ orTopLeft pos ore)
+    $ orect_size ore

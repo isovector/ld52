@@ -201,18 +201,14 @@ data PowerupType = PowerupDoubleJump
 data ObjectTag
     = IsPlayer
     | IsPowerup PowerupType
+    | HasPowerup PowerupType
   deriving (Eq, Ord, Show, Generic)
 
 data ObjectMeta = ObjectMeta
-  { om_tags :: Set ObjectTag
-  -- TODO(sandy): maybe this should be an objOut?
-  -- TODO(sandy): this should definitely be an OriginRect
-  , om_hitSize :: Maybe (V2 Double)
-  }
   deriving stock (Eq, Ord, Show, Generic)
 
 noObjectMeta :: ObjectMeta
-noObjectMeta = ObjectMeta mempty (Just 8)
+noObjectMeta = ObjectMeta
 
 data WithMeta a = Object
   { obj_metadata :: ObjectMeta
@@ -220,11 +216,12 @@ data WithMeta a = Object
   }
   deriving stock (Eq, Ord, Show, Functor, Foldable, Generic)
 
-type HitEvent = (ObjectId, ObjectMeta)
+type HitEvent = (ObjectId, ObjectState)
 
 data ObjectInput = ObjectInput
   { oi_hit :: Event [HitEvent]
   , oi_frameInfo :: FrameInfo
+  , oi_state :: ObjectState
   }
   deriving stock Generic
 
@@ -257,10 +254,17 @@ instance Monoid ObjectEvents where
         {oe_die = mempty, oe_spawn = mempty, oe_focus = mempty,
          oe_play_sound = mempty, oe_global_omnipotence = fmap appEndo mempty}
 
+data ObjectState = ObjectState
+  { os_pos :: V2 WorldPos
+  , os_collision :: Maybe (OriginRect Double)
+  , os_tags :: Set ObjectTag
+  }
+  deriving stock Generic
+
 data ObjectOutput = ObjectOutput
   { oo_events :: ObjectEvents
   , oo_render :: Renderable
-  , oo_pos :: V2 WorldPos
+  , oo_state :: ObjectState
   }
   deriving stock Generic
 
