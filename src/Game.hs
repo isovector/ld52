@@ -7,7 +7,6 @@ import           FRP
 import           Game.Objects (renderObjects, addObject)
 import           Game.Objects.Actor (actor)
 import           Game.Objects.Player
-import           Game.Objects.Test
 import           Game.World (drawWorld)
 import           SDL
 import           Types
@@ -16,10 +15,13 @@ import           Types
 
 initialObjs :: Resources -> ObjectMap ObjSF
 initialObjs rs
-  = addObject (player rs)
-  $ addObject (dude rs)
-  $ addObject grenade
-  $ ObjectMap (ObjectId 0) mempty
+  = addObject (player rs 0)
+  $ foldr addObject (ObjectMap (ObjectId 0) mempty)
+  $ l_defaultObjs
+  $ head
+  $ toList
+  $ w_levels
+  $ r_worlds rs TestWorld
 
 
 dude :: Resources -> Object

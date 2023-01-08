@@ -24,11 +24,11 @@ shrapnel _n pos0 theta = Object noObjectMeta $ arr oi_frameInfo >>> loopPre pos0
   )
 
 
-grenade :: Object
-grenade = Object noObjectMeta $
+grenade :: V2 WorldPos -> Double -> Object
+grenade pos life = Object noObjectMeta $
   timedSequence
     (proc _ -> do
-      die <- after 3 () -< ()
+      die <- after life () -< ()
       sp <- now () -< ()
       returnA -<
          ObjectOutput (ObjectEvents
@@ -52,6 +52,4 @@ grenade = Object noObjectMeta $
             (ObjectEvents noEvent noEvent noEvent noEvent)
             (drawFilledRect col $ flip Rectangle 8 $ P pos)
             pos
-  where
-    pos = V2 50 50
 

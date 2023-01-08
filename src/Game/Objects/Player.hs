@@ -9,11 +9,11 @@ import Drawing
 mkCenterdOriginRect :: Fractional a => V2 a -> OriginRect a
 mkCenterdOriginRect sz = OriginRect sz (sz / 2)
 
-player :: Resources -> Object
-player rs
+player :: Resources -> V2 WorldPos -> Object
+player rs pos0
   = Object noObjectMeta
   $ arr (head $ toList $ w_levels $ r_worlds rs TestWorld ,)
-    >>> actor (mkCenterdOriginRect sz) playerPhysVelocity (drawPlayer rs sz) (V2 0 30)
+    >>> actor (mkCenterdOriginRect sz) playerPhysVelocity (drawPlayer rs sz) pos0
     >>> focusOn
   where
     sz :: Num a => a

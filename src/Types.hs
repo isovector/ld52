@@ -76,6 +76,7 @@ data Level = Level
   , l_bounds  :: Rect Pixel
   , l_tiles  :: LevelLayer -> Resources -> Renderable
   , l_hitmap :: LevelLayer -> V2 Tile -> Bool
+  , l_defaultObjs :: [Object]
   }
   deriving stock Generic
 

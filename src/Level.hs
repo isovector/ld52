@@ -1,9 +1,11 @@
+{-# LANGUAGE OverloadedStrings                  #-}
 {-# OPTIONS_GHC -Wno-compat-unqualified-imports #-}
 
 module Level where
 
 import           Control.Lens hiding (Level)
 import           Data.Aeson (eitherDecodeFileStrict)
+import           Data.Either (partitionEithers)
 import           Data.Generics.Labels ()
 import           Data.List (find)
 import           Data.Map (Map)
@@ -15,6 +17,7 @@ import           Data.Traversable
 import qualified Data.Vector as V
 import           Drawing
 import qualified LDtk.Types as LDtk
+import           Registry
 import           SDL.Vect hiding (trace)
 import           System.FilePath.Lens (basename)
 import           Types
@@ -60,6 +63,23 @@ parseLayer l = do
         $ (l ^. #intGridCsv)
   (cols, foldMap (drawTile $ l ^. #__tilesetRelPath) $ l ^. #autoLayerTiles)
 
+
+
+parseEntities :: LDtk.Layer -> ([Text], [Object])
+parseEntities l = partitionEithers $ do
+  e <- l ^. #entityInstances
+  pure $
+    buildEntity
+      (e ^. #__identifier)
+      (fmap (WorldPos . fromIntegral) $ pairToV2 $ e ^. #px)
+      (buildMap $ e ^. #fieldInstances)
+
+buildMap :: [LDtk.Field] -> M.Map Text LDtk.FieldValue
+buildMap =
+  foldMap $ \x ->
+    M.singleton (x ^. #__identifier) (x ^. #__value)
+
+
 drawTile :: Maybe Text -> LDtk.Tile -> Resources -> Renderable
 drawTile Nothing _ _ = mempty
 drawTile (Just tsstr) t rs = do
@@ -98,6 +118,10 @@ parseLevels root = either (error . mappend "couldn't parse level: " . unlines) i
     let ls = lev ^. #layerInstances
         ll = fmap parseLayer . getLayerFromLevel ls
 
+        (errs, ents) = foldMap parseEntities ls
+
+    traceM $ unlines $ fmap (T.unpack . mappend "[WARNING] level: ") errs
+
     pure
       ( nm
       , Level
@@ -106,5 +130,6 @@ parseLevels root = either (error . mappend "couldn't parse level: " . unlines) i
           bounds
           (fmap (maybe mempty snd) ll)
           (coerce $ fmap (maybe mempty fst) ll)
+          ents
       )
 
