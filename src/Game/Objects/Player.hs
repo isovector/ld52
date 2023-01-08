@@ -10,7 +10,7 @@ player :: Resources -> Object
 player rs
   = Object noObjectMeta
   $ arr (head $ toList $ w_levels $ r_worlds rs TestWorld ,)
-    >>> actor 7 playerPhysVelocity (drawPlayer rs 7) 0
+    >>> actor 32 playerPhysVelocity (drawPlayer rs 32) (V2 0 30)
     >>> focusOn
 
 playerPhysVelocity :: SF FrameInfo (V2 Double)
