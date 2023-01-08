@@ -237,22 +237,32 @@ data ObjectEvents = ObjectEvents
   , oe_spawn :: Event [Object]
   , oe_focus :: Event ()
   , oe_play_sound :: Event [Sound]
-  , oe_global_omnipotence :: Event (GlobalState -> GlobalState)
+  , oe_send_message :: Event [(ObjectId, ObjectState -> ObjectState)]
+  , oe_omnipotence :: Event (ObjectMap ObjSF -> ObjectMap ObjSF )
   }
   deriving stock Generic
 
 instance Semigroup ObjectEvents where
-  (ObjectEvents ev ev' ev2 ev3 ev4) <> (ObjectEvents ev5 ev6 ev7 ev8
-                                                     ev9)
+  (ObjectEvents ev ev' ev2 ev3 sm1 ev4) <> (ObjectEvents ev5 ev6 ev7 ev8 sm2 ev9)
     = ObjectEvents
-        {oe_die = ev <> ev5, oe_spawn = ev' <> ev6, oe_focus = ev2 <> ev7,
-         oe_play_sound = ev3 <> ev8, oe_global_omnipotence = fmap appEndo $ coerce ev4 <> coerce ev9}
+        { oe_die = ev <> ev5
+        , oe_spawn = ev' <> ev6
+        , oe_focus = ev2 <> ev7
+        , oe_play_sound = ev3 <> ev8
+        , oe_send_message = sm1 <> sm2
+        , oe_omnipotence = fmap appEndo $ coerce ev4 <> coerce ev9
+        }
 
 instance Monoid ObjectEvents where
   mempty
     = ObjectEvents
-        {oe_die = mempty, oe_spawn = mempty, oe_focus = mempty,
-         oe_play_sound = mempty, oe_global_omnipotence = fmap appEndo mempty}
+        { oe_die = mempty
+        , oe_spawn = mempty
+        , oe_focus = mempty
+        , oe_play_sound = mempty
+        , oe_send_message = mempty
+        , oe_omnipotence = fmap appEndo mempty
+        }
 
 data ObjectState = ObjectState
   { os_pos :: V2 WorldPos

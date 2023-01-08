@@ -5,6 +5,7 @@ module Game.Objects
   , addObject
   ) where
 
+import           Control.Lens (at)
 import           Control.Lens.Lens
 import           Data.Bool (bool)
 import           Data.Map (Map)
@@ -128,8 +129,16 @@ route oid (oo_events -> ObjectEvents {..}) = mconcat $
   [ Endo (#objm_map %~ M.delete oid) <$ oe_die
   , Endo (#objm_camera_focus .~ oid) <$ oe_focus
   , foldMap (Endo . over #objm_map . insertObject)  <$> oe_spawn
-  , Endo . over #objm_globalState <$> oe_global_omnipotence
+  , Endo <$> oe_omnipotence
+  , foldMap (Endo . over #objm_map . uncurry sendMsg) <$> oe_send_message
   ]
+
+sendMsg
+    :: ObjectId
+    -> (ObjectState -> ObjectState)
+    -> Map ObjectId (SF ObjectInput ObjectOutput)
+    -> Map ObjectId (SF ObjectInput ObjectOutput)
+sendMsg oid msg = at oid . #_Just %~ (over #oi_state msg >=-)
 
 
 addObject :: a -> ObjectMap a -> ObjectMap a

@@ -12,7 +12,10 @@ shrapnel _n pos0 theta = arr oi_frameInfo >>> loopPre pos0
     let pos' = pos + coerce (V2 (cos theta) (sin theta) ^* 50 ^* dt)
     returnA -<
       ( ObjectOutput
-          { oo_events = ObjectEvents die noEvent noEvent noEvent noEvent
+          { oo_events =
+              mempty
+                { oe_die = die
+                }
           , oo_render
               = drawFilledRect (V4 255 0 0 255)
               $ flip Rectangle 3
