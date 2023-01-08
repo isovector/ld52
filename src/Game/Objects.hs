@@ -18,6 +18,7 @@ import           Game.Camera (camera)
 import           Geometry (intersects)
 import           Types
 import           Utils (originRectToRect)
+import Control.Monad (void)
 
 
 renderObjects
@@ -81,22 +82,24 @@ routeHits (RawFrameInfo c dt) outs objs = do
         = M.fromList
         $ M.foldMapWithKey (\k m -> maybeToList . sequenceA . (k, ) . fmap (m, ) $ getCollisionRect $ oo_state m)
         $ objm_map outs
-  objs & #objm_map %~ M.mapWithKey (pushHits fi $ fmap (first oo_state) hittable)
+  objs & #objm_map %~ M.mapWithKey (pushHits fi (fmap oo_state $ objm_map outs) $ fmap (first oo_state) hittable)
 
 
 pushHits
     :: FrameInfo
+    -> Map ObjectId (ObjectState)
+    -- TODO(sandy): this should just take the rect, look up the os in the above
     -> Map ObjectId (ObjectState, Rectangle WorldPos)
     -> ObjectId
     -> sf
     -> (ObjectInput, sf)
-pushHits fi objs oid wm
+pushHits fi everyone objs oid wm
   | Just me <- M.lookup oid objs
   = (ObjectInput oid (foldMap (doHit oid $ snd me) $ M.toList objs) fi om, wm)
   | otherwise
   = (ObjectInput oid noEvent fi om, wm)
   where
-    om = maybe noObjectState fst $ M.lookup oid objs
+    om = maybe (trace ("creating obj " <> show oid) noObjectState) id $ M.lookup oid everyone
 
 noObjectState :: ObjectState
 noObjectState = ObjectState

@@ -272,7 +272,7 @@ data ObjectState = ObjectState
   , os_collision :: Maybe (OriginRect Double)
   , os_tags :: Set ObjectTag
   }
-  deriving stock Generic
+  deriving stock (Eq, Ord, Show, Generic)
 
 data ObjectOutput = ObjectOutput
   { oo_events :: ObjectEvents
