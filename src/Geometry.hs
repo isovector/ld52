@@ -29,6 +29,16 @@ orRightDist :: Num a => OriginRect a -> V2 a
 orRightDist ore = (ore ^. #orect_size - ore ^. #orect_offset) & _y .~ 0
 
 
+rectContains :: (Ord a, Num a) => Rectangle a -> V2 a -> Bool
+rectContains (Rectangle (P (V2 x0 y0)) (V2 w h)) (V2 x y) =
+  and
+    [ x0 <= x
+    , x <= x0 + w
+    , y0 <= y
+    , y <= y0 + h
+    ]
+
+
 intersects :: (Ord a, Num a) => Rectangle a -> Rectangle a -> Bool
 intersects r1 r2 = isJust $ getIntersection r1 r2
 

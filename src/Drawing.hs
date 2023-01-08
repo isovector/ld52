@@ -10,12 +10,14 @@ import SDL
 import SDL.Mixer
 import Types
 import Utils (originRectToRect)
+import Geometry (rectContains)
 
 
 playSound :: Resources -> Sound -> IO ()
 playSound r s = do
   halt 0
   void $ playOn 0 Once $ r_sounds r s
+
 
 drawOriginRect :: Color -> OriginRect WorldPos -> V2 WorldPos -> Renderable
 drawOriginRect c ore = drawFilledRect c . originRectToRect ore
@@ -41,20 +43,24 @@ drawSpriteStretched
     -> V2 Bool         -- ^ mirroring
     -> V2 Double       -- ^ scaling factor
     -> Renderable
-drawSpriteStretched wt pos theta flips stretched cam = do
-  let renderer = e_renderer $ r_engine global_resources
-  copyEx
-    renderer
-    (getTexture wt)
-    (wt_sourceRect wt)
-    (Just $ fmap round
-          $ Rectangle (P $ coerce $ viaCamera cam $ pos - coerce (fmap fromIntegral (wt_origin wt) * stretched))
-          $ fmap fromIntegral (wt_size wt) * stretched)
-    (CDouble theta)
-    (Just $ fmap round
-          $ P
-          $ fmap fromIntegral (wt_origin wt) * stretched)
-    flips
+drawSpriteStretched wt pos theta flips stretched cam
+  | let wp = viaCamera cam $ pos - coerce (fmap fromIntegral (wt_origin wt) * stretched)
+  , rectContains screenRect wp
+  = do
+      let renderer = e_renderer $ r_engine global_resources
+      copyEx
+        renderer
+        (getTexture wt)
+        (wt_sourceRect wt)
+        (Just $ fmap round
+              $ Rectangle (P $ coerce wp)
+              $ fmap fromIntegral (wt_size wt) * stretched)
+        (CDouble theta)
+        (Just $ fmap round
+              $ P
+              $ fmap fromIntegral (wt_origin wt) * stretched)
+        flips
+  | otherwise = mempty
 
 drawSprite
     :: WrappedTexture
@@ -80,15 +86,18 @@ atScreenPos f _ = f $ Camera 0
 
 
 drawText :: Double -> V3 Word8 -> String -> V2 WorldPos -> Renderable
-drawText sz color text (V2 x y) cam = do
-  let renderer = e_renderer $ r_engine global_resources
-  for_ (zip text [0..]) $ \(c, i) -> do
-    let glyph = global_glyphs c
-    textureColorMod glyph $= color
-    copy renderer glyph Nothing
-      $ Just
-      $ fmap round
-      $ Rectangle (P $ coerce $ viaCamera cam $ V2 (x + coerce (i * sz)) y)
-      $ V2 sz sz
-  rendererDrawBlendMode renderer $= BlendAlphaBlend
+drawText sz color text pos@(V2 x y) cam
+  | rectContains screenRect pos
+  = do
+      let renderer = e_renderer $ r_engine global_resources
+      for_ (zip text [0..]) $ \(c, i) -> do
+        let glyph = global_glyphs c
+        textureColorMod glyph $= color
+        copy renderer glyph Nothing
+          $ Just
+          $ fmap round
+          $ Rectangle (P $ coerce $ viaCamera cam $ V2 (x + coerce (i * sz)) y)
+          $ V2 sz sz
+      rendererDrawBlendMode renderer $= BlendAlphaBlend
+  | otherwise = mempty
 

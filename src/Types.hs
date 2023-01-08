@@ -286,6 +286,9 @@ newtype Camera = Camera (V2 WorldPos)
 logicalSize :: Num a => V2 a
 logicalSize = V2 320 240
 
+screenRect :: (Fractional a) => Rectangle a
+screenRect = Rectangle (P $ -logicalSize / 2) (logicalSize * 2)
+
 -- WHY DOESNT THIS EXIST
 instance (Bounded b, Enum a, Enum b) => Enum (a, b) where
   toEnum n =
