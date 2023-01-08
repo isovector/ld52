@@ -19,8 +19,17 @@ actor sz input render pos0 = loopPre (pos0, 0) $
 
     vel'0 <- input -< fi
 
+    let (lbc, rbc) = cornersX sz 1 pos
+    let onGround = or $ fmap (l_hitmap lev Layer1 . posToTile . (+ V2 0 1)) [lbc, rbc]
+
     let grav = V2 0 10
-    let vel' = vel + vel'0 + grav
+    let dir' = signum $ vel'0
+    let maxXSpeed = 100
+    let walkVel = maxXSpeed *^ dir'
+    let uncappedVel = if onGround then V2 1 0 * walkVel + V2 0 1 * (vel + vel'0 + grav) else vel + vel'0 + grav
+    let vel' = (case compare (abs (uncappedVel ^. _x)) maxXSpeed of
+           LT -> uncappedVel
+           _ -> uncappedVel & _x .~ ((dir' ^. _x) * maxXSpeed))
 
     let dpos = dt *^ vel'
     let desiredPos = pos + coerce dpos
@@ -42,4 +51,3 @@ actor sz input render pos0 = loopPre (pos0, 0) $
         }
       , (pos', vel'')
       )
-

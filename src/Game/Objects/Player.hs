@@ -16,7 +16,7 @@ player rs
 playerPhysVelocity :: SF FrameInfo (V2 Double)
 playerPhysVelocity = proc fi -> do
   let jumpVel = V2 0 (-200)
-  let stepSpeed = 2
+  let stepSpeed = 10
   jumpEv <- edge -< c_space (fi_controls fi) -- TODO: Only jump when on the ground
   let jump = event 0 (const jumpVel) jumpEv
   let vx = V2 stepSpeed 0 * (realToFrac <$> c_dir (fi_controls fi))

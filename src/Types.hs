@@ -14,6 +14,8 @@ module Types
   , module Control.Lens
   , (*^)
   , (^*)
+  , _x
+  , _y
   , distance
   , toList
   ) where

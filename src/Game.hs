@@ -1,5 +1,4 @@
 {-# LANGUAGE CPP              #-}
-{-# LANGUAGE OverloadedLabels #-}
 
 module Game where
 
