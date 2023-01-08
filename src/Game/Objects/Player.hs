@@ -17,8 +17,7 @@ import           Utils
 
 player :: V2 WorldPos -> Object
 player pos0
-  = Object (noObjectMeta)
-  $ ( loopPre False $ proc (oi, can_double_jump0) -> do
+  = ( loopPre False $ proc (oi, can_double_jump0) -> do
         let now_jump
               = event False ( any $ any (== PowerupDoubleJump)
                                   . mapMaybe (preview #_IsPowerup)

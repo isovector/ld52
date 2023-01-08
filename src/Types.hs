@@ -27,7 +27,6 @@ module Types
 
 import Control.Lens ((&), (^.), (.~), (%~), view, set, over)
 import Data.Coerce
-import Data.Functor.Compose (Compose, getCompose)
 import Data.Generics.Labels ()
 import Data.Map (Map)
 import Data.Set (Set)
@@ -193,7 +192,7 @@ newtype ObjectId = ObjectId
 
 type ObjSF = SF ObjectInput ObjectOutput
 
-type Object = WithMeta ObjSF
+type Object = ObjSF
 
 data PowerupType = PowerupDoubleJump
   deriving (Eq, Ord, Show, Enum, Bounded, Generic)
@@ -209,12 +208,6 @@ data ObjectMeta = ObjectMeta
 
 noObjectMeta :: ObjectMeta
 noObjectMeta = ObjectMeta
-
-data WithMeta a = Object
-  { obj_metadata :: ObjectMeta
-  , obj_data :: a
-  }
-  deriving stock (Eq, Ord, Show, Functor, Foldable, Generic)
 
 type HitEvent = (ObjectId, ObjectState)
 
@@ -270,12 +263,9 @@ data ObjectOutput = ObjectOutput
 
 data ObjectMap a = ObjectMap
   { objm_camera_focus :: ObjectId
-  , objm_map :: Compose (Map ObjectId) WithMeta a
+  , objm_map :: Map ObjectId a
   }
   deriving stock (Functor, Generic, Foldable)
-
-objm_map' :: ObjectMap a -> Map ObjectId (WithMeta a)
-objm_map' = getCompose . objm_map
 
 data OriginRect aff = OriginRect
   { orect_size   :: V2 aff

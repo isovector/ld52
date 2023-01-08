@@ -34,7 +34,7 @@ game rs = loopPre (initialGlobalState rs) $
         -- BUG(sandy): this should be a signal!!!
         (initialObjs $ gs_currentLevel $ initialGlobalState rs)
           -< fi
-    let player = find (S.member IsPlayer . os_tags . oo_state . obj_data) $ objm_map' objs
+    let player = find (S.member IsPlayer . os_tags . oo_state) $ objm_map objs
     bg <- constant $ drawWorld rs (S.singleton Layer1) $ r_worlds rs TestWorld -< fi
     returnA -<
       ( ( cam
@@ -68,9 +68,9 @@ game rs = loopPre (initialGlobalState rs) $
     ui_box dx = atScreenPos $
       drawOriginRect (V4 255 255 255 16) (mkCenterdOriginRect 20) $ ui_box_pos dx
 
-hasChicken :: WithMeta ObjectOutput -> Bool
+hasChicken :: ObjectOutput -> Bool
 hasChicken
-    = S.member (HasPowerup PowerupDoubleJump) . os_tags . oo_state . obj_data
+    = S.member (HasPowerup PowerupDoubleJump) . os_tags . oo_state
 
 initialGlobalState :: Resources -> GlobalState
 initialGlobalState rs

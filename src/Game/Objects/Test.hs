@@ -5,7 +5,7 @@ import FRP
 import Types
 
 shrapnel :: Int -> V2 WorldPos -> Double -> Object
-shrapnel _n pos0 theta = Object noObjectMeta $ arr oi_frameInfo >>> loopPre pos0
+shrapnel _n pos0 theta = arr oi_frameInfo >>> loopPre pos0
   ( proc (fi, pos) -> do
     die <- never -< () -- after 2 () -< ()
     let dt = fi_dt fi
@@ -25,7 +25,7 @@ shrapnel _n pos0 theta = Object noObjectMeta $ arr oi_frameInfo >>> loopPre pos0
 
 
 grenade :: V2 WorldPos -> Double -> Object
-grenade pos life = Object noObjectMeta $
+grenade pos life =
   timedSequence
     (proc _ -> do
       die <- after life () -< ()

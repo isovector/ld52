@@ -7,7 +7,6 @@ module Game.Objects
 
 import           Control.Lens.Lens
 import           Data.Bool (bool)
-import           Data.Functor.Compose (getCompose)
 import           Data.Map (Map)
 import qualified Data.Map as M
 import           Data.Maybe (maybeToList)
@@ -17,7 +16,7 @@ import           FRP
 import           Game.Camera (camera)
 import           Geometry (intersects)
 import           Types
-import Utils (originRectToRect)
+import           Utils (originRectToRect)
 
 
 renderObjects
@@ -27,9 +26,9 @@ renderObjects
     -> SF FrameInfo (Camera, ObjectMap ObjectOutput, Renderable)
 renderObjects rs cam0 objs0 = proc fi -> do
   objs <- router objs0 -< fi
-  let focuson = M.lookup (objm_camera_focus objs) $ getCompose $ objm_map objs
-  focus <- camera cam0 -< (fi, maybe 0 (os_pos . oo_state . obj_data) focuson)
-  let dat = toList $ fmap obj_data . getCompose $ objm_map objs
+  let focuson = M.lookup (objm_camera_focus objs) $ objm_map objs
+  focus <- camera cam0 -< (fi, maybe 0 (os_pos . oo_state) focuson)
+  let dat = toList $ objm_map objs
   returnA -<
     ( focus
     , objs
@@ -67,8 +66,6 @@ router' objs0 =
     ((arr
         $ foldMap (uncurry route)
         . M.toList
-        . fmap obj_data
-        . getCompose
         . objm_map
         . snd
      ) >>> notYet)
@@ -80,23 +77,21 @@ routeHits fi outs objs = do
   let hittable
         = M.fromList
         $ M.foldMapWithKey (\k m -> maybeToList . sequenceA . (k, ) . fmap (m, ) $ getCollisionRect $ oo_state m)
-        $ fmap obj_data
-        $ getCompose
         $ objm_map outs
-  objs & #objm_map . #_Compose %~ M.mapWithKey (pushHits fi $ fmap (first oo_state) hittable)
+  objs & #objm_map %~ M.mapWithKey (pushHits fi $ fmap (first oo_state) hittable)
 
 
 pushHits
     :: FrameInfo
     -> Map ObjectId (ObjectState, Rectangle WorldPos)
     -> ObjectId
-    -> WithMeta sf
-    -> WithMeta (ObjectInput, sf)
+    -> sf
+    -> (ObjectInput, sf)
 pushHits fi objs oid wm
   | Just me <- M.lookup oid objs
-  = fmap (ObjectInput (foldMap (doHit oid $ snd me) $ M.toList objs) fi om,) wm
+  = (ObjectInput (foldMap (doHit oid $ snd me) $ M.toList objs) fi om, wm)
   | otherwise
-  = fmap (ObjectInput noEvent fi om, ) wm
+  = (ObjectInput noEvent fi om, wm)
   where
     om = maybe noObjectState fst $ M.lookup oid objs
 
@@ -128,14 +123,14 @@ getCollisionRect os = flip originRectToRect (os_pos os) . coerce <$> os_collisio
 
 route :: ObjectId -> ObjectOutput -> Event (Endo (ObjectMap ObjSF))
 route oid (oo_events -> ObjectEvents {..}) = mconcat $
-  [ Endo (#objm_map . #_Compose %~ M.delete oid) <$ oe_die
+  [ Endo (#objm_map %~ M.delete oid) <$ oe_die
   , Endo (#objm_camera_focus .~ oid) <$ oe_focus
-  , foldMap (Endo . over (#objm_map . #_Compose) . insertObject)  <$> oe_spawn
+  , foldMap (Endo . over #objm_map . insertObject)  <$> oe_spawn
   ]
 
 
-addObject :: WithMeta a -> ObjectMap a -> ObjectMap a
-addObject a = #objm_map . #_Compose %~ insertObject a
+addObject :: a -> ObjectMap a -> ObjectMap a
+addObject a = #objm_map %~ insertObject a
 
 
 insertObject :: a -> Map ObjectId a -> Map ObjectId a
