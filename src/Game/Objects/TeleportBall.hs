@@ -20,7 +20,7 @@ teleportBall owner pos0 vel0 = proc oi -> do
   returnA -< ObjectOutput
     { oo_events = mempty
         { oe_die = die
-        , oe_send_message = [(owner, #os_pos .~ pos)] <$ die
+        , oe_send_message = [(owner, TeleportTo pos)] <$ die
         }
     , oo_render = drawOriginRect (V4 0 255 255 255) (mkCenterdOriginRect 4) pos'
     , oo_state = noObjectState pos'

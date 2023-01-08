@@ -14,6 +14,7 @@ import qualified SDL.Vect as SDL
 import           Types
 import           Utils
 import Game.Objects.TeleportBall (teleportBall)
+import Data.Monoid
 
 
 player :: V2 WorldPos -> Object
@@ -25,19 +26,33 @@ player pos0
                                   . toList
                                   . os_tags
                                   . snd
-                            ) $ oi_hit oi
+                            ) $ oie_hit $ oi_events oi
+        let do_teleport :: V2 WorldPos -> V2 WorldPos
+            do_teleport
+              = event id ( appEndo
+                         . foldMap ( foldMap (Endo . const)
+                                   . preview #_TeleportTo
+                                   )
+                         )
+              $ oie_receive
+              $ oi_events oi
 
         let me = oi_self oi
         action <- edge -< c_z $ fi_controls $ oi_frameInfo oi
 
         let can_double_jump = can_double_jump0 || now_jump
         res <- actor ore playerPhysVelocity (drawPlayer ore) pos0 -< (can_double_jump, oi)
-        let pos = traceShowId $ res ^. #oo_state . #os_pos
+        let pos = do_teleport $ res ^. #oo_state . #os_pos
+
+        edir <- edgeBy diffDir 0 -< pos
+        dir <- hold True -< edir
+
         returnA -<
           ( res & #oo_state . #os_tags
                     %~ bool id (S.insert $ HasPowerup PowerupDoubleJump) now_jump
+                & #oo_state . #os_pos .~ pos
                 & #oo_state . #os_tags %~ S.insert IsPlayer
-                & #oo_events . #oe_spawn <>~ ([teleportBall me pos $ V2 200 (-100)] <$ action)
+                & #oo_events . #oe_spawn <>~ ([teleportBall me pos $ V2 (bool negate id dir 200) (-100)] <$ action)
           , can_double_jump
           )
     )

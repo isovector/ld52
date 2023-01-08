@@ -5,7 +5,7 @@ module Game.Objects
   , addObject
   ) where
 
-import           Control.Lens (at)
+import           Control.Lens (at, (<>~), non)
 import           Control.Lens.Lens
 import           Data.Bool (bool)
 import           Data.Map (Map)
@@ -18,7 +18,6 @@ import           Game.Camera (camera)
 import           Geometry (intersects)
 import           Types
 import           Utils (originRectToRect)
-import Control.Monad (void)
 
 
 renderObjects
@@ -46,14 +45,19 @@ renderEvents rs oe _ =
 
 
 emptyObjMap :: ObjectMap a
-emptyObjMap =
-  ObjectMap (ObjectId 0) (error "emptyObjMap: called global state too soon") mempty
+emptyObjMap = ObjectMap
+  { objm_camera_focus = ObjectId 0  -- TODO(sandy): should be Nothing
+  , objm_undeliveredMsgs = mempty
+  , objm_globalState = error "emptyObjMap: called global state too soon"
+  , objm_map = mempty
+  }
 
 
 router :: ObjectMap ObjSF -> SF RawFrameInfo (ObjectMap ObjectOutput)
 router om =
   loopPre emptyObjMap $
     router' om >>> arr dup
+
 
 
 router' :: ObjectMap ObjSF -> SF (RawFrameInfo, ObjectMap ObjectOutput) (ObjectMap ObjectOutput)
@@ -64,42 +68,59 @@ router' objs0 =
       @ObjectInput
       @ObjectOutput
       @(Endo (ObjectMap ObjSF))
-    (\(fi, outs) -> routeHits fi outs )
-    objs0
+    (\(fi, outlast) -> routeHits fi outlast)
+    (objs0)
     ((arr
         $ foldMap (uncurry route)
         . M.toList
         . objm_map
         . snd
-     ) >>> notYet)
-    (\objs f -> router' $ appEndo f objs)
+     )
+     >>> notYet
+    )
+    -- NOTE(sandy): this only gets called on a new event!!!
+    (\new f -> router' $ appEndo f $ new & #objm_undeliveredMsgs .~ mempty)
 
 
 routeHits :: RawFrameInfo -> ObjectMap ObjectOutput -> ObjectMap sf -> ObjectMap (ObjectInput, sf)
-routeHits (RawFrameInfo c dt) outs objs = do
-  let fi = FrameInfo c dt $ objm_globalState objs
+routeHits (RawFrameInfo c dt) outlast new = do
+  let fi = FrameInfo c dt $ objm_globalState new
       hittable
         = M.fromList
         $ M.foldMapWithKey (\k m -> maybeToList . sequenceA . (k, ) . fmap (m, ) $ getCollisionRect $ oo_state m)
-        $ objm_map outs
-  objs & #objm_map %~ M.mapWithKey (pushHits fi (fmap oo_state $ objm_map outs) $ fmap (first oo_state) hittable)
+        $ objm_map outlast
+  new
+       & #objm_map %~ M.mapWithKey
+    (\oid sf -> (, sf) $ ObjectInput
+        { oi_self = oid
+        , oi_events = mconcat
+            [ pushHits oid (fmap (first oo_state) hittable)
+            , recv oid $ objm_undeliveredMsgs new
+            ]
+        , oi_frameInfo = fi
+        , oi_state
+            = maybe (trace ("creating obj " <> show oid) noObjectState) id
+            $ fmap oo_state
+            $ M.lookup oid
+            $ objm_map outlast
+        }
+    )
+
+recv :: ObjectId -> Map ObjectId [Message] -> ObjectInEvents
+recv oid
+    = foldMap (\msgs -> mempty & #oie_receive <>~ foldMap (pure . pure) msgs)
+    . M.lookup oid
 
 
 pushHits
-    :: FrameInfo
-    -> Map ObjectId (ObjectState)
-    -- TODO(sandy): this should just take the rect, look up the os in the above
+    :: ObjectId
     -> Map ObjectId (ObjectState, Rectangle WorldPos)
-    -> ObjectId
-    -> sf
-    -> (ObjectInput, sf)
-pushHits fi everyone objs oid wm
+    -> ObjectInEvents
+pushHits oid objs
   | Just me <- M.lookup oid objs
-  = (ObjectInput oid (foldMap (doHit oid $ snd me) $ M.toList objs) fi om, wm)
+  = foldMap (doHit oid $ snd me) $ M.toList objs
   | otherwise
-  = (ObjectInput oid noEvent fi om, wm)
-  where
-    om = maybe (trace ("creating obj " <> show oid) noObjectState) id $ M.lookup oid everyone
+  = mempty
 
 noObjectState :: ObjectState
 noObjectState = ObjectState
@@ -113,14 +134,16 @@ doHit
     :: ObjectId
     -> Rectangle WorldPos
     -> (ObjectId, (ObjectState, Rectangle WorldPos))
-    -> Event [HitEvent]
+    -> ObjectInEvents
 doHit me rect (other, (meta, hit))
-  | me == other = noEvent
+  | me == other = mempty
   | otherwise
-    = fmap (pure . (other, ))
-    . maybeToEvent
-    $ bool Nothing (Just meta)
-    $ intersects rect hit
+    = mempty
+      { oie_hit = fmap (pure . (other, ))
+          . maybeToEvent
+          $ bool Nothing (Just meta)
+          $ intersects rect hit
+      }
 
 
 getCollisionRect :: ObjectState -> Maybe (Rectangle WorldPos)
@@ -133,15 +156,13 @@ route oid (oo_events -> ObjectEvents {..}) = mconcat $
   , Endo (#objm_camera_focus .~ oid) <$ oe_focus
   , foldMap (Endo . over #objm_map . insertObject)  <$> oe_spawn
   , Endo <$> oe_omnipotence
-  , foldMap (Endo . over #objm_map . uncurry sendMsg) <$> oe_send_message
+  , foldMap (Endo . uncurry sendMsg) <$> oe_send_message
+    -- NOTE(sandy): looks stupid but necessary to flush the pipes
+  , Event (Endo id)
   ]
 
-sendMsg
-    :: ObjectId
-    -> (ObjectState -> ObjectState)
-    -> Map ObjectId (SF ObjectInput ObjectOutput)
-    -> Map ObjectId (SF ObjectInput ObjectOutput)
-sendMsg oid msg = at oid . #_Just %~ inject (over #oi_state msg)
+sendMsg :: ObjectId -> Message -> ObjectMap ObjSF -> ObjectMap ObjSF
+sendMsg oid m = #objm_undeliveredMsgs . at oid . non mempty <>~ [m]
 
 
 addObject :: a -> ObjectMap a -> ObjectMap a

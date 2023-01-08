@@ -36,7 +36,7 @@ import Debug.Trace (trace, traceShowId, traceM)
 import FRP (SF, Event)
 import Foreign.C (CInt)
 import GHC.Generics
-import SDL hiding (Event)
+import SDL hiding (trace, Event)
 import SDL.Mixer (Chunk)
 import Data.Foldable (toList)
 import Data.Monoid (Endo(Endo), appEndo)
@@ -223,11 +223,24 @@ type HitEvent = (ObjectId, ObjectState)
 
 data ObjectInput = ObjectInput
   { oi_self :: ObjectId
-  , oi_hit :: Event [HitEvent]
+  , oi_events :: ObjectInEvents
   , oi_frameInfo :: FrameInfo
   , oi_state :: ObjectState
   }
   deriving stock Generic
+
+data ObjectInEvents = ObjectInEvents
+  { oie_hit :: Event [HitEvent]
+  , oie_receive :: Event [Message]
+  }
+  deriving stock Generic
+
+instance Semigroup ObjectInEvents where
+  (ObjectInEvents ev ev') <> (ObjectInEvents ev2 ev3)
+    = ObjectInEvents {oie_hit = ev <> ev2, oie_receive = ev' <> ev3}
+
+instance Monoid ObjectInEvents where
+  mempty = ObjectInEvents {oie_hit = mempty, oie_receive = mempty}
 
 data GlobalState = GlobalState
   { gs_currentLevel :: ~Level
@@ -240,7 +253,7 @@ data ObjectEvents = ObjectEvents
   , oe_spawn :: Event [Object]
   , oe_focus :: Event ()
   , oe_play_sound :: Event [Sound]
-  , oe_send_message :: Event [(ObjectId, ObjectState -> ObjectState)]
+  , oe_send_message :: Event [(ObjectId, Message)]
   , oe_omnipotence :: Event (ObjectMap ObjSF -> ObjectMap ObjSF )
   }
   deriving stock Generic
@@ -283,6 +296,7 @@ data ObjectOutput = ObjectOutput
 
 data ObjectMap a = ObjectMap
   { objm_camera_focus :: ObjectId
+  , objm_undeliveredMsgs :: Map ObjectId [Message]
   , objm_globalState :: ~GlobalState
   , objm_map :: Map ObjectId a
   }
@@ -327,4 +341,16 @@ data DrawSpriteDetails = DrawSpriteDetails
   , dsd_rotation :: Double
   , dsd_flips :: V2 Bool
   }
+  deriving stock (Eq, Ord, Show, Read, Generic)
+
+
+data Message
+  = TeleportTo (V2 WorldPos)
+  deriving stock (Eq, Ord, Show, Read, Generic)
+
+traceF :: Show b => (a -> b) -> a -> a
+traceF f a = trace (show $ f a) a
+
+traceFX :: Show b => String -> (a -> b) -> a -> a
+traceFX herald f a = trace (mappend (herald <> ": ") . show $ f a) a
 

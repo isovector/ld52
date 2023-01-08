@@ -21,7 +21,7 @@ import           Utils (setCenterOrigin, mkCenterdOriginRect)
 
 initialObjs :: GlobalState -> ObjectMap ObjSF
 initialObjs gs
-  = foldr addObject (ObjectMap (ObjectId 0) gs mempty)
+  = foldr addObject (ObjectMap (ObjectId 0) mempty gs mempty)
   $ l_defaultObjs $ gs_currentLevel gs
 
 

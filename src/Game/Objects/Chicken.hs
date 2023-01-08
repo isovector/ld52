@@ -10,7 +10,7 @@ import Utils (mkCenterdOriginRect)
 chicken :: V2 WorldPos -> Object
 chicken pos =
   proc oi -> do
-    let hit = oi_hit oi
+    let hit = oie_hit $ oi_events oi
     returnA -< ObjectOutput
       { oo_events =
           mempty
