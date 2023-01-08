@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-orphans #-}
 module Game.Objects.Player where
 
 import Types
@@ -6,6 +7,10 @@ import Game.Objects.Actor (actor)
 import Utils
 import Drawing
 import Control.Lens ((*~))
+import Collision (epsilon)
+import FRP.Yampa ((*^))
+import qualified SDL.Vect as SDL
+import Data.Bool (bool)
 
 mkCenterdOriginRect :: Fractional a => V2 a -> OriginRect a
 mkCenterdOriginRect sz = OriginRect sz (sz / 2)
@@ -35,11 +40,37 @@ playerPhysVelocity = proc fi -> do
 drawPlayer :: OriginRect WorldPos -> SF (ObjectInput, V2 WorldPos) Renderable
 drawPlayer sz = arr mconcat <<< fork
   [ arr $ \(_, pos) -> mconcat
-      [ drawOriginRect (V4 255 255 0 64) sz pos
+      [ drawOriginRect (V4 255 255 0 16) sz pos
       , drawFilledRect (V4 255 0 0 255)
           $ flip Rectangle 1
           $ P
           $ pos
       ]
-  , arr (\(_, pos) -> (DrawSpriteDetails Run 0 $ pure False, pos)) >>> mkAnim MainCharacter
+  , proc (_, pos) -> do
+      -- We can fully animate the player as a function of the position!
+      edir <- edgeBy diffDir 0 -< pos
+      dir <- hold True -< edir
+      vel <- derivative -< pos
+      mkAnim MainCharacter
+        -<  ( DrawSpriteDetails
+                (bool Idle Run $ norm vel >= epsilon)
+                0
+                (V2 (not dir) False)
+            , pos
+            )
   ]
+
+
+instance VectorSpace (V2 WorldPos) WorldPos where
+  zeroVector = 0
+  (*^) = (Types.*^)
+  (^+^) = (+)
+  dot = SDL.dot
+
+
+diffDir :: ( Ord a, Floating a) =>V2 a -> V2 a -> Maybe Bool
+diffDir (V2 old _) (V2 new _) =
+  case abs (old - new) <= epsilon of
+    True -> Nothing
+    False -> Just $ new > old
+
