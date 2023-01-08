@@ -20,11 +20,11 @@ actor ore input render pos0 = loopPre (pos0, 0) $
     let lev = gs_currentLevel $ fi_global fi
         layers = gs_layerset $ fi_global fi
 
-        collision = (getAny . foldMap ((Any .) . l_hitmap lev) layers . posToTile)
+        collision purpose = (getAny . foldMap ((fmap Any .) . l_hitmap lev) layers purpose . posToTile)
 
     vel'0 <- input -< fi
 
-    let onGround = touchingGround collision ore pos
+    let onGround = touchingGround (collision CollisionCheckGround) ore pos
     let vel' = updateVel (can_double || onGround) vel vel'0
     let dpos = dt *^ vel'
     let desiredPos = pos + coerce dpos

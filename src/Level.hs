@@ -15,13 +15,15 @@ import           Data.Text (Text)
 import qualified Data.Text as T
 import           Data.Traversable
 import qualified Data.Vector as V
+import           Drawing
+import           Globals (global_tilesets)
 import qualified LDtk.Types as LDtk
-import {-# SOURCE #-} Registry
-import Drawing
 import           SDL.Vect hiding (trace)
 import           System.FilePath.Lens (basename)
 import           Types
-import Globals (global_tilesets)
+
+import {-# SOURCE #-} Registry
+
 
 ldtkColorToColor :: LDtk.Color -> Color
 ldtkColorToColor (LDtk.Color r g b) = V4 r g b 255
@@ -32,14 +34,22 @@ loadWorld fp = do
     Left e -> error e
     Right root -> pure $ World $ parseLevels root
 
-buildCollisionMap :: V2 Tile -> [Int] -> V2 Tile -> Any
-buildCollisionMap sz csv = \(coerce -> V2 x y) ->
+buildCollisionMap :: V2 Tile -> [Int] -> CollisionPurpose -> V2 Tile -> Any
+buildCollisionMap sz csv = \purpose (coerce -> V2 x y) ->
     if x < 0 || y < 0 || x >= sz ^. _x || y >= sz ^. _y
       then Any False
-      else Any $ col V.! getTile y V.! getTile x /= 0
+      else Any $ checkPurpose purpose $ col V.! getTile y V.! getTile x
   where
     col :: V.Vector (V.Vector Int)
     col = rectangularize (coerce sz) csv
+
+checkPurpose :: CollisionPurpose -> Int -> Bool
+checkPurpose _ 0 = False
+checkPurpose _ 1 = True
+checkPurpose CollisionGround 2 = True
+checkPurpose CollisionCheckGround 2 = True
+checkPurpose _ 2 = False
+checkPurpose _ i = error $ "unknown tile: " <> show i
 
 chunksOf :: Int -> [a] -> [[a]]
 chunksOf _ [] = []
@@ -55,14 +65,17 @@ rectangularize (V2 x _)
 
 parseLayer
     :: LDtk.Layer
-    -> ( V2 Tile -> Any
+    -> ( CollisionPurpose -> V2 Tile -> Any
        , Renderable
        )
 parseLayer l = do
   let cols
         = buildCollisionMap (parseV2 Tile l #__cWid #__cHei)
         $ (l ^. #intGridCsv)
-  (cols, foldMap (drawTile $ l ^. #__tilesetRelPath) $ l ^. #autoLayerTiles)
+  (   cols
+    , foldMap (drawTile $ l ^. #__tilesetRelPath)
+       $ l ^. #autoLayerTiles
+    )
 
 
 

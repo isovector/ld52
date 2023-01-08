@@ -5,8 +5,10 @@ import Types
 import Utils
 import Control.Lens (Lens')
 import Geometry
+import Data.Bool (bool)
 
 data DeltaDir = Negative | Zero | Positive
+  deriving (Eq, Ord, Show, Enum, Bounded)
 
 hitTile :: (V2 Tile -> Bool) -> V2 WorldPos -> Bool
 hitTile f = f . posToTile
@@ -35,14 +37,21 @@ cornersY _ Zero pos = pure pos
 cornersY ore Positive pos = makeLine (orTopRight pos ore) (orBotRight pos ore)
 
 
-move :: (V2 WorldPos -> Bool) -> OriginRect Double -> V2 WorldPos -> V2 Double -> V2 WorldPos
+move
+    :: (CollisionPurpose -> V2 WorldPos -> Bool)
+    -> OriginRect Double
+    -> V2 WorldPos
+    -> V2 Double
+    -> V2 WorldPos
 move f sz pos (dpos) = do
   let (V2 xd yd) = fmap deltaDir dpos
       subdivs :: Int
       subdivs = ceiling $ norm dpos
   head
     $ drop subdivs
-    $ iterate (moveX f sz xd . moveY f sz yd . (+ coerce dpos / fromIntegral subdivs))
+    $ iterate ( moveX (f CollisionWall) sz xd
+              . moveY (f (bool CollisionCeiling CollisionGround $ yd == Positive)) sz yd
+               . (+ coerce dpos / fromIntegral subdivs))
     $ pos
 
 deltaDir :: RealFrac a => a -> DeltaDir

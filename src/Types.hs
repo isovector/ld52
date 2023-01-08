@@ -75,12 +75,19 @@ data World = World
   { w_levels :: Map Text Level
   }
 
+data CollisionPurpose
+  = CollisionWall
+  | CollisionGround
+  | CollisionCeiling
+  | CollisionCheckGround
+  deriving (Eq, Ord, Show, Enum, Bounded, Read, Generic)
+
 data Level = Level
   { l_bgcolor :: Color
   , l_tilebounds :: Rect Tile
   , l_bounds  :: Rect Pixel
   , l_tiles  :: LevelLayer -> Renderable
-  , l_hitmap :: LevelLayer -> V2 Tile -> Bool
+  , l_hitmap :: LevelLayer -> CollisionPurpose -> V2 Tile -> Bool
   , l_defaultObjs :: [Object]
   }
   deriving stock Generic
