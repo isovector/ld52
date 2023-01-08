@@ -26,7 +26,7 @@ dude :: Resources -> Object
 dude rs
   = Object noObjectMeta
   $ arr (head $ toList $ w_levels $ r_worlds rs TestWorld ,)
-    >>> actor 7 (constant 0) (drawPlayer rs 7) (V2 100 0)
+    >>> actor (OriginRect 7 (7/2)) (constant 0) (drawPlayer rs 7) (V2 100 0)
 
 
 game :: Resources -> SF FrameInfo (Camera, Renderable)
