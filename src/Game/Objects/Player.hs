@@ -25,9 +25,18 @@ playerPhysVelocity = proc fi -> do
   returnA -< vel'
 
 drawPlayer :: Resources -> V2 Double -> SF (ObjectInput, V2 WorldPos) Renderable
-drawPlayer rs sz = arr $ \(_, pos) ->
-  drawSprite
-    (setGroundOrigin $ r_textures rs MainCharacter)
-    (pos - coerce sz / 2)
-    0
-    (V2 False False)
+drawPlayer rs sz = arr $ \(_, pos) -> mconcat
+  [ drawFilledRect (V4 255 255 0 64)
+      $ flip Rectangle (coerce sz)
+      $ P
+      $ pos - coerce sz / 2
+  , drawFilledRect (V4 255 0 0 255)
+      $ flip Rectangle 1
+      $ P
+      $ pos
+  -- , drawSprite
+  --     (setGroundOrigin $ r_textures rs MainCharacter)
+  --     (pos - coerce sz / 2)
+  --     0
+  --     (V2 False False)
+  ]
