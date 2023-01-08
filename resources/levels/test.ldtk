@@ -11,7 +11,7 @@
 	"iid": "a22d35f0-7820-11ed-b6fd-213e885f30da",
 	"jsonVersion": "1.2.2",
 	"appBuildId": 464719,
-	"nextUid": 126,
+	"nextUid": 127,
 	"identifierStyle": "Capitalize",
 	"worldLayout": "LinearHorizontal",
 	"worldGridWidth": 128,
@@ -647,6 +647,33 @@
 					"tilesetUid": null
 				}
 			]
+		},
+		{
+			"identifier": "Chicken",
+			"uid": 126,
+			"tags": [],
+			"width": 20,
+			"height": 20,
+			"resizableX": false,
+			"resizableY": false,
+			"keepAspectRatio": false,
+			"tileOpacity": 1,
+			"fillOpacity": 1,
+			"lineOpacity": 1,
+			"hollow": false,
+			"color": "#E43B44",
+			"renderMode": "Rectangle",
+			"showName": true,
+			"tilesetId": null,
+			"tileRenderMode": "FitInside",
+			"tileRect": null,
+			"nineSliceBorders": [],
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0,
+			"pivotY": 0,
+			"fieldDefs": []
 		}
 	], "tilesets": [
 		{
@@ -781,6 +808,20 @@
 							"defUid": 124,
 							"px": [12,20],
 							"fieldInstances": [{ "__identifier": "Lifetime", "__value": 3, "__type": "Float", "__tile": null, "defUid": 125, "realEditorValues": [] }]
+						},
+						{
+							"__identifier": "Chicken",
+							"__grid": [29,23],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#E43B44",
+							"iid": "219085a0-7820-11ed-aa43-054cedec39f7",
+							"width": 20,
+							"height": 20,
+							"defUid": 126,
+							"px": [232,184],
+							"fieldInstances": []
 						}
 					]
 				},

@@ -136,6 +136,7 @@ data RawFrameInfo = RawFrameInfo
 -- | Textures used by the game.
 data GameTexture
     = NintendoLogo
+    | ChickenTexture
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 data Tileset
@@ -200,6 +201,7 @@ data ObjectTag = IsPlayer | IsPowerup
 data ObjectMeta = ObjectMeta
   { om_tags :: Set ObjectTag
   -- TODO(sandy): maybe this should be an objOut?
+  -- TODO(sandy): this should definitely be an OriginRect
   , om_hitSize :: Maybe (V2 Double)
   }
   deriving stock (Eq, Ord, Show)

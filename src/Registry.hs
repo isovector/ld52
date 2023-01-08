@@ -2,13 +2,14 @@
 
 module Registry where
 
+import           Data.Map (Map)
 import qualified Data.Map as M
-import Data.Map (Map)
-import Game.Objects.Test
-import Data.Text (Text)
+import           Data.Text (Text)
+import           Game.Objects.Player (player)
+import           Game.Objects.Test
 import qualified LDtk.Types as LDtk
-import Types
-import Game.Objects.Player (player)
+import           Game.Objects.Chicken (chicken)
+import           Types
 
 
 asFloat :: Text -> Text -> Map Text LDtk.FieldValue -> Either Text Float
@@ -24,6 +25,7 @@ asFloat obj field m
 
 buildEntity :: Text -> V2 WorldPos -> Map Text LDtk.FieldValue -> Either Text Object
 buildEntity "Player" pos _ = pure $ player pos
+buildEntity "Chicken" pos _ = pure $ chicken pos
 buildEntity "Grenade" pos props = do
   life <- asFloat "Grenade" "Lifetime" props
   pure $ grenade pos $ realToFrac life

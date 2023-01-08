@@ -93,6 +93,7 @@ instance IsResource GameTexture WrappedTexture where
   resourceFolder = "textures"
   resourceExt    = "png"
   resourceName NintendoLogo = "nintendo"
+  resourceName ChickenTexture = "chicken"
 
 instance IsResource Sound Chunk where
   load _ _ = Mixer.load
