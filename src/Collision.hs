@@ -34,15 +34,22 @@ orLeftDist ore = orect_offset ore & _y .~ 0
 orRightDist :: Num a => OriginRect a -> V2 a
 orRightDist ore = (ore ^. #orect_size - ore ^. #orect_offset) & _y .~ 0
 
-makeLine :: V2 a -> V2 a -> [V2 a]
-makeLine a b = [a, b]
+makeLine :: (Floating a, RealFrac a) => V2 a -> V2 a -> [V2 a]
+makeLine a b = do
+  let dist = distance a b
+      n = round @_ @Int dist
+  case dist <= tileSize of
+    True -> [a, b]
+    False -> do
+      ix <- [0 .. n]
+      pure $ a + (b - a) / fromIntegral n * fromIntegral ix
 
-cornersX :: Num a => OriginRect a -> DeltaDir -> V2 a -> [V2 a]
+cornersX :: (RealFrac a, Floating a) => OriginRect a -> DeltaDir -> V2 a -> [V2 a]
 cornersX ore Negative pos = makeLine (orTopLeft pos ore) (orTopRight pos ore)
 cornersX _ Zero pos = pure pos
 cornersX ore Positive pos = makeLine (orBotLeft pos ore) (orBotRight pos ore)
 
-cornersY :: Num a => OriginRect a -> DeltaDir -> V2 a -> [V2 a]
+cornersY :: (RealFrac a, Floating a) => OriginRect a -> DeltaDir -> V2 a -> [V2 a]
 cornersY ore Negative pos = makeLine (orTopLeft pos ore) (orBotLeft pos ore)
 cornersY _ Zero pos = pure pos
 cornersY ore Positive pos = makeLine (orTopRight pos ore) (orBotRight pos ore)
