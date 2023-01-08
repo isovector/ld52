@@ -3,14 +3,12 @@ module Collision where
 import SDL
 import Types
 import Utils
+import Control.Lens (Lens')
 
 data DeltaDir = Negative | Zero | Positive
 
 hitTile :: (V2 Tile -> Bool) -> V2 WorldPos -> Bool
 hitTile f = f . posToTile
-
-testOR :: OriginRect Double
-testOR = OriginRect 16 8
 
 orTopLeft :: Num a => V2 a -> OriginRect a -> V2 a
 orTopLeft pos ore = pos - orect_offset ore
@@ -72,24 +70,30 @@ epsilon :: Fractional a => a
 epsilon = 0.001
 
 
-moveX :: (V2 WorldPos -> Bool) -> OriginRect Double -> DeltaDir -> V2 WorldPos -> V2 WorldPos
-moveX f (coerce -> sz) xdir pos =
-  case any f $ cornersY sz xdir pos of
+
+moveXY
+    :: (OriginRect WorldPos -> DeltaDir -> V2 WorldPos -> [V2 WorldPos])
+    -> (OriginRect WorldPos -> V2 WorldPos)
+    -> (OriginRect WorldPos -> V2 WorldPos)
+    -> Lens' (V2 WorldPos) WorldPos
+    -> (V2 WorldPos -> Bool)
+    -> OriginRect Double
+    -> DeltaDir
+    -> V2 WorldPos
+    -> V2 WorldPos
+moveXY cs ld rd coord f (coerce -> sz) xdir pos =
+  case any f $ cs sz xdir pos of
     False -> pos
     True ->
       case xdir of
-        Negative -> pos & _x .~ coerce ((tileToPos (posToTile (pos - orLeftDist sz) + 1) + orLeftDist sz + epsilon) ^. _x)
+        Negative -> pos & coord .~ coerce ((tileToPos (posToTile (pos - ld sz) + 1) + ld sz + epsilon) ^. coord)
         Zero -> pos -- already in the wall
-        Positive -> pos & _x .~ coerce ((tileToPos (posToTile $ pos + orRightDist sz) - orRightDist sz - epsilon) ^. _x)
+        Positive -> pos & coord .~ coerce ((tileToPos (posToTile $ pos + rd sz) - rd sz - epsilon) ^. coord)
+
+moveX :: (V2 WorldPos -> Bool) -> OriginRect Double -> DeltaDir -> V2 WorldPos -> V2 WorldPos
+moveX = moveXY cornersY orLeftDist orRightDist _x
 
 
 moveY :: (V2 WorldPos -> Bool) -> OriginRect Double -> DeltaDir -> V2 WorldPos -> V2 WorldPos
-moveY f (coerce -> sz) ydir pos =
-  case any f $ cornersX sz ydir pos of
-    False -> pos
-    True ->
-      case ydir of
-        Negative -> pos & _y .~ coerce ((tileToPos (posToTile (pos - orTopDist sz) + 1) + orTopDist sz + epsilon) ^. _y)
-        Zero -> pos -- already in the wall
-        Positive -> pos & _y .~ coerce ((tileToPos (posToTile $ pos + orBotDist sz) - orBotDist sz - epsilon) ^. _y)
+moveY = moveXY cornersX orTopDist orBotDist _y
 
