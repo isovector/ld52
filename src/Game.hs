@@ -5,12 +5,14 @@ module Game where
 
 import qualified Data.Map as M
 import qualified Data.Set as S
+import           Drawing
 import           FRP
 import           Game.Objects (renderObjects, addObject)
+import           Game.Objects.Player (mkCenterdOriginRect)
 import           Game.World (drawWorld)
 import           SDL
 import           Types
-import Drawing (drawText)
+import Control.Lens ((+~))
 
 #ifndef __HLINT__
 
@@ -30,7 +32,23 @@ game rs = loopPre (initialGlobalState rs) $
         (initialObjs $ gs_currentLevel $ initialGlobalState rs)
           -< fi
     bg <- constant $ drawWorld rs (S.singleton Layer1) $ r_worlds rs TestWorld -< fi
-    returnA -< ((cam, bg <> objs <> drawText 6 (V3 255 0 255) "hello world" 20), gs)
+    returnA -<
+      ( ( cam
+        , mconcat
+            [ bg
+            , objs
+            , ui_box (-17)
+            , ui_box 17
+            , drawText 6 (V3 255 0 255) "hello world" 20
+            ]
+        )
+      , gs
+      )
+  where
+    ui_box dx = atScreenPos $
+      drawOriginRect (V4 255 255 255 16) (mkCenterdOriginRect 20) $ (logicalSize / 2)
+        & _x +~ dx
+        & _y .~ 20
 
 initialGlobalState :: Resources -> GlobalState
 initialGlobalState rs

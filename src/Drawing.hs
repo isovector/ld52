@@ -77,6 +77,11 @@ mkAnim sprite = select $ \dsd ->
     $ global_sprites sprite
     $ dsd_anim dsd
 
+
+atScreenPos :: Renderable -> Renderable
+atScreenPos f _ = f $ Camera 0
+
+
 drawText :: CInt -> V3 Word8 -> String -> V2 ScreenPos -> Renderable
 drawText sz color text (V2 (round -> x) (round -> y)) _ = do
   let renderer = e_renderer $ r_engine global_resources
