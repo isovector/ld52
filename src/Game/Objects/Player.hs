@@ -6,11 +6,12 @@ import FRP
 import Game.Objects.Actor (actor)
 import Utils
 import Drawing
-import Control.Lens ((*~))
+import Control.Lens ((*~), preview)
 import Collision (epsilon)
 import FRP.Yampa ((*^))
 import qualified SDL.Vect as SDL
 import Data.Bool (bool)
+import Data.Maybe (mapMaybe)
 
 mkCenterdOriginRect :: Fractional a => V2 a -> OriginRect a
 mkCenterdOriginRect sz = OriginRect sz (sz / 2)
@@ -18,8 +19,21 @@ mkCenterdOriginRect sz = OriginRect sz (sz / 2)
 player :: V2 WorldPos -> Object
 player pos0
   = Object noObjectMeta
-  $ actor ore playerPhysVelocity (drawPlayer ore) pos0
-    >>> focusOn
+  $ ( loopPre False $ proc (oi, can_double_jump0) -> do
+        let now_jump
+              = event False ( any $ any (== PowerupDoubleJump)
+                                  . mapMaybe (preview #_IsPowerup)
+                                  . toList
+                                  . om_tags
+                                  . snd
+                            ) $ oi_hit oi
+
+        let can_double_jump = can_double_jump0 || now_jump
+        res <- actor ore playerPhysVelocity (drawPlayer ore) pos0 -< (can_double_jump, oi)
+        returnA -< (res, can_double_jump)
+    )
+  -- >>> actor ore playerPhysVelocity (drawPlayer ore) pos0
+  >>> focusOn
   where
     ore = OriginRect sz $ sz & _x *~ 0.5
 

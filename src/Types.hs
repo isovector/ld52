@@ -195,8 +195,13 @@ type ObjSF = SF ObjectInput ObjectOutput
 
 type Object = WithMeta ObjSF
 
-data ObjectTag = IsPlayer | IsPowerup
-  deriving (Eq, Ord, Show, Enum, Bounded)
+data PowerupType = PowerupDoubleJump
+  deriving (Eq, Ord, Show, Enum, Bounded, Generic)
+
+data ObjectTag
+    = IsPlayer
+    | IsPowerup PowerupType
+  deriving (Eq, Ord, Show, Generic)
 
 data ObjectMeta = ObjectMeta
   { om_tags :: Set ObjectTag
@@ -204,7 +209,7 @@ data ObjectMeta = ObjectMeta
   -- TODO(sandy): this should definitely be an OriginRect
   , om_hitSize :: Maybe (V2 Double)
   }
-  deriving stock (Eq, Ord, Show)
+  deriving stock (Eq, Ord, Show, Generic)
 
 noObjectMeta :: ObjectMeta
 noObjectMeta = ObjectMeta mempty (Just 8)
@@ -213,7 +218,7 @@ data WithMeta a = Object
   { obj_metadata :: ObjectMeta
   , obj_data :: a
   }
-  deriving stock (Eq, Ord, Show, Functor, Foldable)
+  deriving stock (Eq, Ord, Show, Functor, Foldable, Generic)
 
 type HitEvent = (ObjectId, ObjectMeta)
 
