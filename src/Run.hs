@@ -9,11 +9,11 @@ import Data.IORef
 import Data.Time.Clock.System
 import FRP.Yampa
 import Game
-import Resources (loadResources)
 import SDL hiding (copy, Stereo)
 import SDL.Mixer hiding (quit)
 import System.Exit
 import Types
+import Globals (veryUnsafeEngineIORef, global_resources)
 
 
 screenSize :: Num a => V2 a
@@ -50,7 +50,8 @@ main = do
         { e_renderer = renderer
         , e_window = window
         }
-  rs <- loadResources engine
+  writeIORef veryUnsafeEngineIORef engine
+  !rs <- pure global_resources
 
   tS <- getSystemTime
   let seconds = floatSeconds tS
@@ -100,7 +101,7 @@ output rs _ (cam, render) = do
       renderer = e_renderer e
   rendererDrawColor renderer $= V4 100 149 237 255
   clear renderer
-  render cam rs
+  render cam
   present renderer
   pure False
 

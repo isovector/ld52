@@ -106,7 +106,7 @@ data Resources = Resources
 
 type Color = V4 Word8
 
-type Renderable = Camera -> Resources -> IO ()
+type Renderable = Camera -> IO ()
 
 
 ------------------------------------------------------------------------------

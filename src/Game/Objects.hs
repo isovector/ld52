@@ -38,7 +38,7 @@ renderObjects rs cam0 objs0 = proc fi -> do
     )
 
 renderEvents :: Resources -> ObjectEvents -> Renderable
-renderEvents rs oe _ _ =
+renderEvents rs oe _ =
   foldMap (foldMap $ playSound rs) $ oe_play_sound oe
 
 emptyObjMap :: ObjectMap a

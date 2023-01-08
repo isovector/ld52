@@ -15,9 +15,9 @@ import           Data.Text (Text)
 import qualified Data.Text as T
 import           Data.Traversable
 import qualified Data.Vector as V
-import           Drawing
 import qualified LDtk.Types as LDtk
-import           Registry
+import {-# SOURCE #-} Registry
+import Drawing
 import           SDL.Vect hiding (trace)
 import           System.FilePath.Lens (basename)
 import           Types

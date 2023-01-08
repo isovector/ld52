@@ -1,12 +1,14 @@
 module Drawing where
 
 import Control.Monad (void)
+import FRP
 import Foreign.C
 import Game.Camera (viaCamera)
+import Geometry (orTopLeft)
+import Globals (global_resources, global_sprites)
 import SDL
 import SDL.Mixer
 import Types
-import Geometry (orTopLeft)
 
 
 playSound :: Resources -> Sound -> IO ()
@@ -22,15 +24,15 @@ drawOriginRect c ore pos =
 
 
 drawFilledRect :: Color -> Rectangle WorldPos -> Renderable
-drawFilledRect c (Rectangle (P v) sz) cam rs = do
+drawFilledRect c (Rectangle (P v) sz) cam = do
   let rect' = Rectangle (P $ viaCamera cam v) $ coerce sz
-  let renderer = e_renderer $ r_engine rs
+  let renderer = e_renderer $ r_engine global_resources
   rendererDrawColor renderer $= c
   fillRect renderer $ Just $ fmap (round . getScreenPos) rect'
 
 drawBackgroundColor :: Color -> Renderable
-drawBackgroundColor c _ rs = do
-  let renderer = e_renderer $ r_engine rs
+drawBackgroundColor c _ = do
+  let renderer = e_renderer $ r_engine global_resources
   rendererDrawColor renderer $= c
   fillRect renderer Nothing
 
@@ -41,8 +43,8 @@ drawSpriteStretched
     -> V2 Bool         -- ^ mirroring
     -> V2 Double       -- ^ scaling factor
     -> Renderable
-drawSpriteStretched wt pos theta flips stretched cam rs = do
-  let renderer = e_renderer $ r_engine rs
+drawSpriteStretched wt pos theta flips stretched cam = do
+  let renderer = e_renderer $ r_engine global_resources
   copyEx
     renderer
     (getTexture wt)
@@ -64,4 +66,12 @@ drawSprite
     -> Renderable
 drawSprite wt pos theta flips =
   drawSpriteStretched wt pos theta flips 1
+
+
+mkAnim :: Sprite -> SF (Anim, V2 WorldPos) Renderable
+mkAnim sprite = select $ \anim ->
+  timedSequence (error "mkAnim: impossible") 0.1
+    $ fmap (\wt -> arr $ \pos -> drawSprite wt pos 0 (pure False))
+    $ cycle
+    $ global_sprites sprite anim
 

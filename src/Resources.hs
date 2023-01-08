@@ -3,17 +3,18 @@
 module Resources where
 
 import           Control.Monad ((<=<))
-import           Level (loadWorld)
+import           Data.Traversable (for)
 import           Resources.Machinery
 import           SDL (Texture, textureWidth, textureHeight)
 import qualified SDL.Image as Image
 import           SDL.Mixer (Chunk)
 import qualified SDL.Mixer as Mixer
 import           SDL.Video (queryTexture)
+import           System.FilePath ((</>), (<.>))
 import           Types
-import System.FilePath ((</>), (<.>))
-import Utils (setGroundOrigin)
-import Data.Traversable (for)
+import           Utils (setGroundOrigin)
+
+import {-# SOURCE #-} Level (loadWorld)
 
 
 frameCounts :: Sprite -> Anim -> Int

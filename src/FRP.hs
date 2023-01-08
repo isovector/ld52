@@ -113,4 +113,7 @@ select f = proc (c, i) -> do
   rs <- parB f -< i
   returnA -< rs c
 
+fork :: [SF i o] -> SF i [o]
+fork = par $ \i -> fmap (i, )
+
 #endif

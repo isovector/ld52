@@ -19,7 +19,7 @@ player pos0
     ore = OriginRect sz $ sz & _x *~ 0.5
 
     sz :: Num a => V2 a
-    sz = V2 16 24
+    sz = V2 8 16
 
 playerPhysVelocity :: SF FrameInfo (V2 Double)
 playerPhysVelocity = proc fi -> do
@@ -33,15 +33,13 @@ playerPhysVelocity = proc fi -> do
   returnA -< vel'
 
 drawPlayer :: OriginRect WorldPos -> SF (ObjectInput, V2 WorldPos) Renderable
-drawPlayer sz = arr $ \(_, pos) -> mconcat
-  [ drawOriginRect (V4 255 255 0 64) sz pos
-  , drawFilledRect (V4 255 0 0 255)
-      $ flip Rectangle 1
-      $ P
-      $ pos
-  -- , drawSprite
-  --     (setGroundOrigin $ r_textures rs MainCharacter)
-  --     (pos - coerce sz / 2)
-  --     0
-  --     (V2 False False)
+drawPlayer sz = arr mconcat <<< fork
+  [ arr $ \(_, pos) -> mconcat
+      [ drawOriginRect (V4 255 255 0 64) sz pos
+      , drawFilledRect (V4 255 0 0 255)
+          $ flip Rectangle 1
+          $ P
+          $ pos
+      ]
+  , arr (\(_, pos) -> (Run, pos)) >>> mkAnim MainCharacter
   ]
