@@ -8,7 +8,7 @@ nowish :: a -> SF x (Types.Event a)
 nowish a = after 0.016 a
 
 posToTile :: V2 WorldPos -> V2 Tile
-posToTile = fmap $ Tile . floor . (/8) . getWorldPos
+posToTile = fmap $ Tile . floor . (/ tileSize) . getWorldPos
 
 tileToPos :: V2 Tile -> V2 WorldPos
 tileToPos = fmap (WorldPos . fromIntegral . getTile) . (* tileSize)

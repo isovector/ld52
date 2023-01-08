@@ -142,6 +142,7 @@ data Tileset
   -- NOTE: It's important that the tileset names line up with their png names,
   -- so levels can import them properly.
   = Cavernas_by_Adam_Saltsman
+  | Stringstar_Fields
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 
@@ -179,7 +180,7 @@ defaultControls = Controls
   }
 
 tileSize :: Num a => a
-tileSize = 8
+tileSize = 16
 
 
 ------------------------------------------------------------------------------
