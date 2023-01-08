@@ -5,10 +5,11 @@ import FRP
 import Foreign.C
 import Game.Camera (viaCamera)
 import Geometry (orTopLeft)
-import Globals (global_resources, global_sprites)
+import Globals (global_resources, global_sprites, global_glyphs)
 import SDL
 import SDL.Mixer
 import Types
+import Data.Foldable (for_)
 
 
 playSound :: Resources -> Sound -> IO ()
@@ -75,4 +76,16 @@ mkAnim sprite = select $ \dsd ->
     $ cycle
     $ global_sprites sprite
     $ dsd_anim dsd
+
+drawText :: CInt -> V3 Word8 -> String -> V2 ScreenPos -> Renderable
+drawText sz color text (V2 (round -> x) (round -> y)) _ = do
+  let renderer = e_renderer $ r_engine global_resources
+  for_ (zip text [0..]) $ \(c, i) -> do
+    let glyph = global_glyphs c
+    textureColorMod glyph $= color
+    copy renderer glyph Nothing
+      $ Just
+      $ Rectangle (P $ V2 (x + i * sz) y)
+      $ V2 sz sz
+  rendererDrawBlendMode renderer $= BlendAlphaBlend
 

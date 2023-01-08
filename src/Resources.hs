@@ -16,6 +16,13 @@ import           Utils (setGroundOrigin)
 
 import {-# SOURCE #-} Level (loadWorld)
 
+newtype Char' = Char' { getChar' :: Char }
+  deriving (Eq, Ord, Show, Enum)
+
+instance Bounded Char' where
+  minBound = Char' $ toEnum 32
+  maxBound = Char' $ toEnum 122
+
 
 frameCounts :: Sprite -> Anim -> Int
 frameCounts _ Idle   = 4
@@ -63,6 +70,21 @@ instance IsResource Tileset WrappedTexture where
   resourceExt    = "png"
   resourceName = show
 
+instance IsResource Char' Texture where
+  load _
+      = Image.loadTexture
+      . e_renderer
+  resourceFolder = "font"
+  resourceExt    = "png"
+  resourceName c = "font-" <> pad 3 '0' (show $ fromEnum c)
+
+pad :: Int -> Char -> String -> String
+pad n c s =
+  let len = length s
+   in case len >= n of
+        True -> s
+        False -> replicate (n - len) c <> s
+
 instance IsResource GameTexture WrappedTexture where
   load _
       = (wrapTexture <=<)
@@ -92,6 +114,7 @@ loadResources engine = do
   sounds   <- loadResource engine
   worlds   <- loadResource engine
   sprites  <- loadResource engine
+  glyphs   <- loadResource engine
 
   pure $ Resources
     { r_engine   = engine
@@ -100,5 +123,6 @@ loadResources engine = do
     , r_sounds   = sounds
     , r_worlds   = worlds
     , r_sprites  = curry sprites
+    , r_glyphs   = glyphs . Char'
     }
 

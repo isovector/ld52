@@ -10,6 +10,7 @@ import           Game.Objects (renderObjects, addObject)
 import           Game.World (drawWorld)
 import           SDL
 import           Types
+import Drawing (drawText)
 
 #ifndef __HLINT__
 
@@ -29,7 +30,7 @@ game rs = loopPre (initialGlobalState rs) $
         (initialObjs $ gs_currentLevel $ initialGlobalState rs)
           -< fi
     bg <- constant $ drawWorld rs (S.singleton Layer1) $ r_worlds rs TestWorld -< fi
-    returnA -< ((cam, bg <> objs), gs)
+    returnA -< ((cam, bg <> objs <> drawText 8 (V3 255 0 255) "hello world" 20), gs)
 
 initialGlobalState :: Resources -> GlobalState
 initialGlobalState rs

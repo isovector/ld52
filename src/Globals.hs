@@ -6,6 +6,7 @@ import Resources (loadResources)
 import SDL.Mixer (Chunk)
 import System.IO.Unsafe
 import Types
+import SDL (Texture)
 
 veryUnsafeEngineIORef :: IORef Engine
 veryUnsafeEngineIORef = unsafePerformIO $ newIORef $ error "no unsafe engine io ref"
@@ -20,6 +21,7 @@ global_textures :: GameTexture -> WrappedTexture
 global_sounds :: Sound -> Chunk
 global_worlds :: WorldName -> World
 global_sprites :: Sprite -> Anim -> [WrappedTexture]
+global_glyphs :: Char -> Texture
 
 Resources
   { r_tilesets = global_tilesets
@@ -27,6 +29,7 @@ Resources
   , r_sounds   = global_sounds
   , r_worlds   = global_worlds
   , r_sprites  = global_sprites
+  , r_glyphs   = global_glyphs
   } = global_resources
 
 
@@ -35,3 +38,5 @@ Resources
 {-# NOINLINE global_sounds   #-}
 {-# NOINLINE global_worlds   #-}
 {-# NOINLINE global_sprites  #-}
+{-# NOINLINE global_glyphs  #-}
+

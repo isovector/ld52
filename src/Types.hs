@@ -104,6 +104,7 @@ data Resources = Resources
   , r_sounds   :: Sound -> Chunk
   , r_worlds   :: WorldName -> World
   , r_sprites  :: Sprite -> Anim -> [WrappedTexture]
+  , r_glyphs   :: Char -> Texture
   }
 
 
