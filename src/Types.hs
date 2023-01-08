@@ -27,7 +27,7 @@ module Types
 
 import Control.Lens ((&), (^.), (.~), (%~), view, set, over)
 import Data.Coerce
-import Data.Functor.Compose (Compose)
+import Data.Functor.Compose (Compose, getCompose)
 import Data.Generics.Labels ()
 import Data.Map (Map)
 import Data.Set (Set)
@@ -268,7 +268,10 @@ data ObjectMap a = ObjectMap
   { objm_camera_focus :: ObjectId
   , objm_map :: Compose (Map ObjectId) WithMeta a
   }
-  deriving stock (Functor, Generic)
+  deriving stock (Functor, Generic, Foldable)
+
+objm_map' :: ObjectMap a -> Map ObjectId (WithMeta a)
+objm_map' = getCompose . objm_map
 
 data OriginRect aff = OriginRect
   { orect_size   :: V2 aff

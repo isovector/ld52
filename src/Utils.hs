@@ -19,6 +19,13 @@ setGroundOrigin wt =
         { wt_origin = V2 (div w 2) h
         }
 
+setCenterOrigin :: WrappedTexture -> WrappedTexture
+setCenterOrigin wt =
+  let (V2 w h) = wt_size wt
+   in wt
+        { wt_origin = V2 (div w 2) (div h 2)
+        }
+
 focusOn :: SF ObjectOutput ObjectOutput
 focusOn = proc oo -> do
   ev <- nowish () -< ()

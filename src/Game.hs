@@ -13,6 +13,10 @@ import           Game.World (drawWorld)
 import           SDL
 import           Types
 import Control.Lens ((+~))
+import Data.Foldable (find)
+import Data.Bool (bool)
+import Globals (global_textures)
+import Utils (setCenterOrigin)
 
 #ifndef __HLINT__
 
@@ -26,18 +30,31 @@ game :: Resources -> SF RawFrameInfo (Camera, Renderable)
 game rs = loopPre (initialGlobalState rs) $
   proc (RawFrameInfo c dt , gs) -> do
     let fi = FrameInfo c dt gs
-    (cam, objs) <-
+    (cam, objs, to_draw) <-
       renderObjects rs (V2 0 0)
         -- BUG(sandy): this should be a signal!!!
         (initialObjs $ gs_currentLevel $ initialGlobalState rs)
           -< fi
+    let player = find (S.member IsPlayer . om_tags . obj_metadata) $ objm_map' objs
     bg <- constant $ drawWorld rs (S.singleton Layer1) $ r_worlds rs TestWorld -< fi
     returnA -<
       ( ( cam
         , mconcat
             [ bg
-            , objs
+            , to_draw
             , ui_box (-17)
+            , maybe mempty
+                ( bool mempty
+                    ( atScreenPos $
+                        drawSpriteStretched
+                          (setCenterOrigin $ global_textures ChickenTexture)
+                          (ui_box_pos (-17))
+                          0
+                          (pure False)
+                          0.3
+                    )
+                  . hasChicken
+                ) player
             , ui_box 17
             , drawText 6 (V3 255 0 255) "hello world" 20
             ]
@@ -45,10 +62,15 @@ game rs = loopPre (initialGlobalState rs) $
       , gs
       )
   where
-    ui_box dx = atScreenPos $
-      drawOriginRect (V4 255 255 255 16) (mkCenterdOriginRect 20) $ (logicalSize / 2)
+    ui_box_pos dx =
+      (logicalSize / 2)
         & _x +~ dx
         & _y .~ 20
+    ui_box dx = atScreenPos $
+      drawOriginRect (V4 255 255 255 16) (mkCenterdOriginRect 20) $ ui_box_pos dx
+
+hasChicken :: WithMeta ObjectOutput -> Bool
+hasChicken _ = True
 
 initialGlobalState :: Resources -> GlobalState
 initialGlobalState rs

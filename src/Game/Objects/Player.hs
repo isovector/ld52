@@ -1,24 +1,27 @@
 {-# OPTIONS_GHC -Wno-orphans #-}
 module Game.Objects.Player where
 
-import Types
-import FRP
-import Game.Objects.Actor (actor)
-import Utils
-import Drawing
-import Control.Lens ((*~), preview)
-import Collision (epsilon)
-import FRP.Yampa ((*^))
+import           Collision (epsilon)
+import           Control.Lens ((*~), preview)
+import           Data.Bool (bool)
+import           Data.Maybe (mapMaybe)
+import qualified Data.Set as S
+import           Drawing
+import           FRP
+import           FRP.Yampa ((*^))
+import           Game.Objects.Actor (actor)
 import qualified SDL.Vect as SDL
-import Data.Bool (bool)
-import Data.Maybe (mapMaybe)
+import           Types
+import           Utils
+
 
 mkCenterdOriginRect :: Fractional a => V2 a -> OriginRect a
 mkCenterdOriginRect sz = OriginRect sz (sz / 2)
 
+
 player :: V2 WorldPos -> Object
 player pos0
-  = Object noObjectMeta
+  = Object (noObjectMeta { om_tags = S.singleton IsPlayer })
   $ ( loopPre False $ proc (oi, can_double_jump0) -> do
         let now_jump
               = event False ( any $ any (== PowerupDoubleJump)
@@ -40,6 +43,7 @@ player pos0
     sz :: Num a => V2 a
     sz = V2 8 16
 
+
 playerPhysVelocity :: SF FrameInfo (V2 Double)
 playerPhysVelocity = proc fi -> do
   let jumpVel = V2 0 (-200)
@@ -50,6 +54,7 @@ playerPhysVelocity = proc fi -> do
   let vy = jump
   let vel' = vx + vy
   returnA -< vel'
+
 
 drawPlayer :: OriginRect WorldPos -> SF (ObjectInput, V2 WorldPos) Renderable
 drawPlayer sz = arr mconcat <<< fork

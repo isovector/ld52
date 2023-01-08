@@ -23,7 +23,7 @@ renderObjects
     :: Resources
     -> V2 WorldPos
     -> ObjectMap ObjSF
-    -> SF FrameInfo (Camera, Renderable)
+    -> SF FrameInfo (Camera, ObjectMap ObjectOutput, Renderable)
 renderObjects rs cam0 objs0 = proc fi -> do
   objs <- router objs0 -< fi
   let focuson = M.lookup (objm_camera_focus objs) $ getCompose $ objm_map objs
@@ -31,6 +31,7 @@ renderObjects rs cam0 objs0 = proc fi -> do
   let dat = toList $ fmap obj_data . getCompose $ objm_map objs
   returnA -<
     ( focus
+    , objs
     , flip foldMap dat $ mconcat
        [ renderEvents rs . oo_events
        , oo_render
