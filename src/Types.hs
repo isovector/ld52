@@ -40,6 +40,7 @@ import GHC.Generics
 import SDL hiding (Event)
 import SDL.Mixer (Chunk)
 import Data.Foldable (toList)
+import Data.Monoid (Endo(Endo), appEndo)
 
 
 ------------------------------------------------------------------------------
@@ -230,20 +231,23 @@ data ObjectEvents = ObjectEvents
   , oe_spawn :: Event [Object]
   , oe_focus :: Event ()
   , oe_play_sound :: Event [Sound]
+  -- TODO(sandy): not yet connected to anything
+  , oe_global_omnipotence :: Event (GlobalState -> GlobalState)
   }
   deriving stock Generic
 
 instance Semigroup ObjectEvents where
-  (ObjectEvents ev ev' ev2 ev3) <> (ObjectEvents ev4 ev5 ev6 ev7)
+  (ObjectEvents ev ev' ev2 ev3 ev4) <> (ObjectEvents ev5 ev6 ev7 ev8
+                                                     ev9)
     = ObjectEvents
-        {oe_die = ev <> ev4, oe_spawn = ev' <> ev5, oe_focus = ev2 <> ev6,
-         oe_play_sound = ev3 <> ev7}
+        {oe_die = ev <> ev5, oe_spawn = ev' <> ev6, oe_focus = ev2 <> ev7,
+         oe_play_sound = ev3 <> ev8, oe_global_omnipotence = fmap appEndo $ coerce ev4 <> coerce ev9}
 
 instance Monoid ObjectEvents where
   mempty
     = ObjectEvents
         {oe_die = mempty, oe_spawn = mempty, oe_focus = mempty,
-         oe_play_sound = mempty}
+         oe_play_sound = mempty, oe_global_omnipotence = fmap appEndo mempty}
 
 data ObjectOutput = ObjectOutput
   { oo_events :: ObjectEvents

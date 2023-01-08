@@ -41,20 +41,35 @@ renderEvents :: Resources -> ObjectEvents -> Renderable
 renderEvents rs oe _ =
   foldMap (foldMap $ playSound rs) $ oe_play_sound oe
 
+
 emptyObjMap :: ObjectMap a
 emptyObjMap = ObjectMap (ObjectId 0) $ mempty
+
 
 router :: ObjectMap ObjSF -> SF FrameInfo (ObjectMap ObjectOutput)
 router om =
   loopPre emptyObjMap $
     router' om >>> arr dup
 
+
 router' :: ObjectMap ObjSF -> SF (FrameInfo, ObjectMap ObjectOutput) (ObjectMap ObjectOutput)
 router' objs0 =
   dpSwitch
-    (\(fi, outs) -> routeHits fi outs  )
+      @ObjectMap
+      @(FrameInfo, ObjectMap ObjectOutput)
+      @ObjectInput
+      @ObjectOutput
+      @(Endo (ObjectMap ObjSF))
+    (\(fi, outs) -> routeHits fi outs )
     objs0
-    ((arr $ foldMap (uncurry route) . M.toList . fmap obj_data . getCompose . objm_map . snd) >>> notYet)
+    ((arr
+        $ foldMap (uncurry route)
+        . M.toList
+        . fmap obj_data
+        . getCompose
+        . objm_map
+        . snd
+     ) >>> notYet)
     (\objs f -> router' $ appEndo f objs)
 
 

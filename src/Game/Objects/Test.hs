@@ -12,7 +12,7 @@ shrapnel _n pos0 theta = Object noObjectMeta $ arr oi_frameInfo >>> loopPre pos0
     let pos' = pos + coerce (V2 (cos theta) (sin theta) ^* 50 ^* dt)
     returnA -<
       ( ObjectOutput
-          { oo_events = ObjectEvents die noEvent noEvent noEvent
+          { oo_events = ObjectEvents die noEvent noEvent noEvent noEvent
           , oo_render
               = drawFilledRect (V4 255 0 0 255)
               $ flip Rectangle 3
@@ -31,14 +31,13 @@ grenade pos life = Object noObjectMeta $
       die <- after life () -< ()
       sp <- now () -< ()
       returnA -<
-         ObjectOutput (ObjectEvents
-            die
-            (tag sp $ do
-              n <- [id @Int 0 .. 5]
-              pure $ shrapnel n pos $ 2 * pi / 6 * fromIntegral n
-            )
-            noEvent
-            noEvent
+         ObjectOutput (
+          mempty
+            { oe_die = die
+            , oe_spawn = tag sp $ do
+                n <- [id @Int 0 .. 5]
+                pure $ shrapnel n pos $ 2 * pi / 6 * fromIntegral n
+            }
             )
             (drawFilledRect (V4 255 0 0 255) $ flip Rectangle 8 $ P pos)
             pos
@@ -49,7 +48,7 @@ grenade pos life = Object noObjectMeta $
       pure
         $ constant
         $ ObjectOutput
-            (ObjectEvents noEvent noEvent noEvent noEvent)
+            mempty
             (drawFilledRect col $ flip Rectangle 8 $ P pos)
             pos
 
