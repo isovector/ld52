@@ -12,12 +12,16 @@ packages:
   original:
     hackage: Yampa-0.13.7
 - completed:
-    hackage: ldtk-types-0.1.0.0@sha256:db6aadccbbebf7590ee810422ae0f9b282884d82870c3fbfbb54e1867c82090d,2226
+    name: ldtk-types
+    version: 0.2.0.0
+    git: https://github.com/isovector/ldtk-types.git
     pantry-tree:
-      size: 364
-      sha256: aecda286616f91d5626397ba35bbd98ba43427fe2fefa4c6a72f26b39567eecb
+      size: 685
+      sha256: c8151379c793eb15c77e5b5df4f2ae5558070788892f992f1863153f29d40472
+    commit: 0be47b237f36e4a16c6fac5d384adc733ed07711
   original:
-    hackage: ldtk-types-0.1.0.0
+    git: https://github.com/isovector/ldtk-types.git
+    commit: 0be47b237f36e4a16c6fac5d384adc733ed07711
 snapshots:
 - completed:
     size: 586296

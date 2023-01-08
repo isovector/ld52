@@ -86,6 +86,7 @@ parseEntities l = partitionEithers $ do
     buildEntity
       (e ^. #__identifier)
       (fmap (WorldPos . fromIntegral) $ pairToV2 $ e ^. #px)
+      (parseV2 fromIntegral e #width #height)
       (buildMap $ e ^. #fieldInstances)
 
 buildMap :: [LDtk.Field] -> M.Map Text LDtk.FieldValue

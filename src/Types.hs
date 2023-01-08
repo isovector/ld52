@@ -23,6 +23,7 @@ module Types
   , _y
   , distance
   , toList
+  , bool
   ) where
 
 import Control.Lens ((&), (^.), (.~), (%~), view, set, over)
@@ -40,7 +41,7 @@ import SDL hiding (trace, Event)
 import SDL.Mixer (Chunk)
 import Data.Foldable (toList)
 import Data.Monoid (Endo(Endo), appEndo)
-
+import Data.Bool (bool)
 
 ------------------------------------------------------------------------------
 
