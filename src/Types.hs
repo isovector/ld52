@@ -1,4 +1,8 @@
+{-# LANGUAGE StrictData #-}
+
 {-# OPTIONS_GHC -Wno-orphans #-}
+{-# OPTIONS_GHC -funbox-strict-fields #-}
+
 module Types
   ( module Types
   , V2 (..)
@@ -284,4 +288,10 @@ data Anim
   | NoAnim
   | Run
   deriving stock (Eq, Ord, Show, Read, Enum, Bounded, Generic)
+
+data DrawSpriteDetails = DrawSpriteDetails
+  { dsd_anim :: Anim
+  , dsd_rotation :: Double
+  , dsd_flips :: V2 Bool
+  }
 

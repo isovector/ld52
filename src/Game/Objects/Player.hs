@@ -41,5 +41,5 @@ drawPlayer sz = arr mconcat <<< fork
           $ P
           $ pos
       ]
-  , arr (\(_, pos) -> (Run, pos)) >>> mkAnim MainCharacter
+  , arr (\(_, pos) -> (DrawSpriteDetails Run 0 $ pure False, pos)) >>> mkAnim MainCharacter
   ]

@@ -68,10 +68,11 @@ drawSprite wt pos theta flips =
   drawSpriteStretched wt pos theta flips 1
 
 
-mkAnim :: Sprite -> SF (Anim, V2 WorldPos) Renderable
-mkAnim sprite = select $ \anim ->
+mkAnim :: Sprite -> SF (DrawSpriteDetails, V2 WorldPos) Renderable
+mkAnim sprite = select $ \dsd ->
   timedSequence (error "mkAnim: impossible") 0.1
-    $ fmap (\wt -> arr $ \pos -> drawSprite wt pos 0 (pure False))
+    $ fmap (\wt -> arr $ \pos -> drawSprite wt pos (dsd_rotation dsd) $ dsd_flips dsd)
     $ cycle
-    $ global_sprites sprite anim
+    $ global_sprites sprite
+    $ dsd_anim dsd
 
