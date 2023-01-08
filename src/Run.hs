@@ -57,14 +57,14 @@ main = do
   tRef <- newIORef seconds
 
   reactimate
-    (pure $ FrameInfo defaultControls 0.016)
+    (pure $ RawFrameInfo defaultControls 0.016)
     (input window tRef)
     (output rs)
     (game rs)
   quit
 
 
-input :: Window -> IORef Double -> Bool -> IO (Double, Maybe FrameInfo)
+input :: Window -> IORef Double -> Bool -> IO (Double, Maybe RawFrameInfo)
 input win tRef _ = do
   pumpEvents
   es <- pollEvents
@@ -79,8 +79,7 @@ input win tRef _ = do
   keys <- getKeyboardState
 
   let dt = min 0.016 (seconds' - seconds)
-  pure (dt, Just $ FrameInfo (parseControls keys) dt)
-
+  pure (dt, Just $ RawFrameInfo (parseControls keys) dt)
 
 
 pattern Keypress :: Scancode -> EventPayload

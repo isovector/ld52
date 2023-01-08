@@ -76,6 +76,7 @@ data Level = Level
   , l_bounds  :: Rect Pixel
   , l_tiles  :: LevelLayer -> Resources -> Renderable
   , l_hitmap :: LevelLayer -> V2 Tile -> Bool
+  , l_defaultObjs :: [Object]
   }
   deriving stock Generic
 
@@ -111,6 +112,14 @@ type Renderable = Camera -> Resources -> IO ()
 data FrameInfo = FrameInfo
   { fi_controls :: Controls
   , fi_dt :: Double
+  , fi_global :: GlobalState
+  }
+  deriving stock Generic
+
+-- TODO(sandy): stupid duplicate
+data RawFrameInfo = RawFrameInfo
+  { rfi_controls :: Controls
+  , rfi_dt :: Double
   }
   deriving stock Generic
 
@@ -202,6 +211,12 @@ type HitEvent = (ObjectId, ObjectMeta)
 data ObjectInput = ObjectInput
   { oi_hit :: Event [HitEvent]
   , oi_frameInfo :: FrameInfo
+  }
+  deriving stock Generic
+
+data GlobalState = GlobalState
+  { gs_currentLevel :: Level
+  , gs_layerset :: Set LevelLayer
   }
   deriving stock Generic
 

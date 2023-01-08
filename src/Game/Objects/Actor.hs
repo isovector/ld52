@@ -12,10 +12,11 @@ actor
     -> SF FrameInfo (V2 Double)
     -> SF (ObjectInput, V2 WorldPos) Renderable
     -> V2 WorldPos
-    -> SF (Level, ObjectInput) ObjectOutput
+    -> SF (ObjectInput) ObjectOutput
 actor ore input render pos0 = loopPre (pos0, 0) $
-  proc ((lev, oi@(ObjectInput _ fi)), (pos, vel)) -> do
+  proc ((oi@(ObjectInput _ fi)), (pos, vel)) -> do
     let dt = fi_dt fi
+    let lev = gs_currentLevel $ fi_global fi
 
     vel'0 <- input -< fi
 

@@ -6,12 +6,17 @@ import Game.Objects.Actor (actor)
 import Utils
 import Drawing
 
-player :: Resources -> Object
-player rs
+mkCenterdOriginRect :: Fractional a => V2 a -> OriginRect a
+mkCenterdOriginRect sz = OriginRect sz (sz / 2)
+
+player :: V2 WorldPos -> Object
+player pos0
   = Object noObjectMeta
-  $ arr (head $ toList $ w_levels $ r_worlds rs TestWorld ,)
-    >>> actor (OriginRect 7 (7/2)) playerPhysVelocity (drawPlayer rs 32) (V2 0 30)
+  $ actor (mkCenterdOriginRect sz) playerPhysVelocity (drawPlayer sz) pos0
     >>> focusOn
+  where
+    sz :: Num a => a
+    sz = 32
 
 playerPhysVelocity :: SF FrameInfo (V2 Double)
 playerPhysVelocity = proc fi -> do
@@ -24,8 +29,8 @@ playerPhysVelocity = proc fi -> do
   let vel' = vx + vy
   returnA -< vel'
 
-drawPlayer :: Resources -> V2 Double -> SF (ObjectInput, V2 WorldPos) Renderable
-drawPlayer rs sz = arr $ \(_, pos) -> mconcat
+drawPlayer :: V2 Double -> SF (ObjectInput, V2 WorldPos) Renderable
+drawPlayer sz = arr $ \(_, pos) -> mconcat
   [ drawFilledRect (V4 255 255 0 64)
       $ flip Rectangle (coerce sz)
       $ P
