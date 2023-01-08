@@ -79,15 +79,16 @@ atScreenPos :: Renderable -> Renderable
 atScreenPos f _ = f $ Camera 0
 
 
-drawText :: CInt -> V3 Word8 -> String -> V2 ScreenPos -> Renderable
-drawText sz color text (V2 (round -> x) (round -> y)) _ = do
+drawText :: Double -> V3 Word8 -> String -> V2 WorldPos -> Renderable
+drawText sz color text (V2 x y) cam = do
   let renderer = e_renderer $ r_engine global_resources
   for_ (zip text [0..]) $ \(c, i) -> do
     let glyph = global_glyphs c
     textureColorMod glyph $= color
     copy renderer glyph Nothing
       $ Just
-      $ Rectangle (P $ V2 (x + i * sz) y)
+      $ fmap round
+      $ Rectangle (P $ coerce $ viaCamera cam $ V2 (x + coerce (i * sz)) y)
       $ V2 sz sz
   rendererDrawBlendMode renderer $= BlendAlphaBlend
 

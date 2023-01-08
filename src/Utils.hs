@@ -48,3 +48,6 @@ originRectToRect :: Num a => OriginRect a -> V2 a -> Rectangle a
 originRectToRect ore pos =
   Rectangle (P $ orTopLeft pos ore)
     $ orect_size ore
+
+noObjectState :: V2 WorldPos -> ObjectState
+noObjectState pos = ObjectState pos Nothing mempty
