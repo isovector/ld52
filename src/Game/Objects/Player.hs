@@ -15,8 +15,8 @@ player pos0
   $ actor (mkCenterdOriginRect sz) playerPhysVelocity (drawPlayer sz) pos0
     >>> focusOn
   where
-    sz :: Num a => a
-    sz = 32
+    sz :: Num a => V2 a
+    sz = V2 16 24
 
 playerPhysVelocity :: SF FrameInfo (V2 Double)
 playerPhysVelocity = proc fi -> do

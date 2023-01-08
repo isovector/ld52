@@ -24,3 +24,10 @@ focusOn = proc oo -> do
   ev <- nowish () -< ()
   returnA -< oo & #oo_events . #oe_focus .~ ev
 
+
+wrappedToOriginRect :: WrappedTexture -> OriginRect Double
+wrappedToOriginRect wt = fmap fromIntegral $ OriginRect
+  { orect_size = wt_size wt
+  , orect_offset = wt_origin wt
+  }
+

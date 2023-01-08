@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-orphans #-}
 module Types
   ( module Types
   , V2 (..)
@@ -97,6 +98,7 @@ data Resources = Resources
   , r_textures :: GameTexture -> WrappedTexture
   , r_sounds   :: Sound -> Chunk
   , r_worlds   :: WorldName -> World
+  , r_sprites  :: Sprite -> Anim -> [WrappedTexture]
   }
 
 
@@ -128,7 +130,6 @@ data RawFrameInfo = RawFrameInfo
 -- | Textures used by the game.
 data GameTexture
     = NintendoLogo
-    | MainCharacter
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 data Tileset
@@ -263,4 +264,24 @@ newtype Camera = Camera (V2 WorldPos)
 
 logicalSize :: Num a => V2 a
 logicalSize = V2 320 240
+
+-- WHY DOESNT THIS EXIST
+instance (Bounded b, Enum a, Enum b) => Enum (a, b) where
+  toEnum n =
+    let a = n `div` (1 + fromEnum (maxBound @b))
+        b = n `mod` (1 + fromEnum (maxBound @b))
+     in (toEnum a, toEnum b)
+  fromEnum (a, b) = fromEnum a * (1 + fromEnum (maxBound @b)) + fromEnum b
+
+
+data Sprite
+  = MainCharacter
+  deriving stock (Eq, Ord, Show, Read, Enum, Bounded, Generic)
+
+
+data Anim
+  = Idle
+  | NoAnim
+  | Run
+  deriving stock (Eq, Ord, Show, Read, Enum, Bounded, Generic)
 

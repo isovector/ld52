@@ -11,6 +11,16 @@ import           SDL.Mixer (Chunk)
 import qualified SDL.Mixer as Mixer
 import           SDL.Video (queryTexture)
 import           Types
+import System.FilePath ((</>), (<.>))
+import Utils (setGroundOrigin)
+import Data.Traversable (for)
+
+
+frameCounts :: Sprite -> Anim -> Int
+frameCounts _ Idle   = 4
+frameCounts _ NoAnim = 1
+frameCounts _ Run    = 4
+
 
 wrapTexture :: Texture -> IO WrappedTexture
 wrapTexture t = do
@@ -22,8 +32,29 @@ wrapTexture t = do
     , wt_origin = 0
     }
 
+instance IsResource (Sprite, Anim) [WrappedTexture] where
+  resourceFolder = "sprites"
+  resourceExt = "png"
+  resourceName _ = "unused"
+  load (cn, an) e _ = do
+    for [0 .. frameCounts cn an - 1] $ \i -> do
+      let fp = "resources" </> "sprites" </> charName cn </> animName an <> "_" <> show i <.> "png"
+      wt <- wrapTexture =<< Image.loadTexture (e_renderer e) fp
+      pure $ setGroundOrigin wt
+
+
+animName :: Anim -> FilePath
+animName Idle = "idle"
+animName NoAnim = "no_anim"
+animName Run = "run"
+
+
+charName :: Sprite -> FilePath
+charName MainCharacter = "mc"
+
+
 instance IsResource Tileset WrappedTexture where
-  load
+  load _
       = (wrapTexture <=<)
       . Image.loadTexture
       . e_renderer
@@ -32,23 +63,22 @@ instance IsResource Tileset WrappedTexture where
   resourceName = show
 
 instance IsResource GameTexture WrappedTexture where
-  load
+  load _
       = (wrapTexture <=<)
       . Image.loadTexture
       . e_renderer
   resourceFolder = "textures"
   resourceExt    = "png"
   resourceName NintendoLogo = "nintendo"
-  resourceName MainCharacter = "char"
 
 instance IsResource Sound Chunk where
-  load _ = Mixer.load
+  load _ _ = Mixer.load
   resourceFolder = "sounds"
   resourceExt    = "wav"
   resourceName NintendoSound = "ding"
 
 instance IsResource WorldName World where
-  load _ = loadWorld
+  load _ _ = loadWorld
   resourceFolder = "levels"
   resourceExt    = "ldtk"
   resourceName TestWorld = "test"
@@ -60,6 +90,7 @@ loadResources engine = do
   textures <- loadResource engine
   sounds   <- loadResource engine
   worlds   <- loadResource engine
+  sprites  <- loadResource engine
 
   pure $ Resources
     { r_engine   = engine
@@ -67,5 +98,6 @@ loadResources engine = do
     , r_textures = textures
     , r_sounds   = sounds
     , r_worlds   = worlds
+    , r_sprites  = curry sprites
     }
 
