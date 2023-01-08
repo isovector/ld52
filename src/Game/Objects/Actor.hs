@@ -15,7 +15,7 @@ actor
     -> V2 WorldPos
     -> SF (Bool, ObjectInput) ObjectOutput
 actor ore input render pos0 = loopPre (pos0, 0) $
-  proc ((can_double, oi@(ObjectInput _ fi os)), (pos, vel)) -> do
+  proc ((can_double, oi@(ObjectInput _ _ fi os)), (pos, vel)) -> do
     let dt = fi_dt fi
     let lev = gs_currentLevel $ fi_global fi
         layers = gs_layerset $ fi_global fi

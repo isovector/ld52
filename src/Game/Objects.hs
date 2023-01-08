@@ -92,9 +92,9 @@ pushHits
     -> (ObjectInput, sf)
 pushHits fi objs oid wm
   | Just me <- M.lookup oid objs
-  = (ObjectInput (foldMap (doHit oid $ snd me) $ M.toList objs) fi om, wm)
+  = (ObjectInput oid (foldMap (doHit oid $ snd me) $ M.toList objs) fi om, wm)
   | otherwise
-  = (ObjectInput noEvent fi om, wm)
+  = (ObjectInput oid noEvent fi om, wm)
   where
     om = maybe noObjectState fst $ M.lookup oid objs
 

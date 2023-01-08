@@ -220,7 +220,8 @@ noObjectMeta = ObjectMeta
 type HitEvent = (ObjectId, ObjectState)
 
 data ObjectInput = ObjectInput
-  { oi_hit :: Event [HitEvent]
+  { oi_self :: ObjectId
+  , oi_hit :: Event [HitEvent]
   , oi_frameInfo :: FrameInfo
   , oi_state :: ObjectState
   }
