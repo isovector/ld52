@@ -6,12 +6,18 @@ import Game.Objects.Actor (actor)
 import Utils
 import Drawing
 
+mkCenterdOriginRect :: Fractional a => V2 a -> OriginRect a
+mkCenterdOriginRect sz = OriginRect sz (sz / 2)
+
 player :: Resources -> Object
 player rs
   = Object noObjectMeta
   $ arr (head $ toList $ w_levels $ r_worlds rs TestWorld ,)
-    >>> actor (OriginRect 7 (7/2)) playerPhysVelocity (drawPlayer rs 32) (V2 0 30)
+    >>> actor (mkCenterdOriginRect sz) playerPhysVelocity (drawPlayer rs sz) (V2 0 30)
     >>> focusOn
+  where
+    sz :: Num a => a
+    sz = 32
 
 playerPhysVelocity :: SF FrameInfo (V2 Double)
 playerPhysVelocity = proc fi -> do
