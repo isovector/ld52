@@ -6,12 +6,19 @@ import Game.Camera (viaCamera)
 import SDL
 import SDL.Mixer
 import Types
+import Geometry (orTopLeft)
 
 
 playSound :: Resources -> Sound -> IO ()
 playSound r s = do
   halt 0
   void $ playOn 0 Once $ r_sounds r s
+
+drawOriginRect :: Color -> OriginRect WorldPos -> V2 WorldPos -> Renderable
+drawOriginRect c ore pos =
+  drawFilledRect c
+    $ Rectangle (P $ orTopLeft pos ore)
+    $ orect_size ore
 
 
 drawFilledRect :: Color -> Rectangle WorldPos -> Renderable

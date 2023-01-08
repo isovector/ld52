@@ -2,6 +2,31 @@ module Geometry where
 
 import SDL
 import Data.Maybe (isJust)
+import Types
+
+orTopLeft :: Num a => V2 a -> OriginRect a -> V2 a
+orTopLeft pos ore = pos - orect_offset ore
+
+orBotLeft :: Num a => V2 a -> OriginRect a -> V2 a
+orBotLeft pos ore = orTopLeft pos ore + (orect_size ore & _x .~ 0)
+
+orTopRight :: Num a => V2 a -> OriginRect a -> V2 a
+orTopRight pos ore = orTopLeft pos ore + (orect_size ore & _y .~ 0)
+
+orBotRight :: Num a => V2 a -> OriginRect a -> V2 a
+orBotRight pos ore = orTopLeft pos ore + orect_size ore
+
+orTopDist :: Num a => OriginRect a -> V2 a
+orTopDist ore = orect_offset ore & _x .~ 0
+
+orBotDist :: Num a => OriginRect a -> V2 a
+orBotDist ore = (ore ^. #orect_size - ore ^. #orect_offset) & _x .~ 0
+
+orLeftDist :: Num a => OriginRect a -> V2 a
+orLeftDist ore = orect_offset ore & _y .~ 0
+
+orRightDist :: Num a => OriginRect a -> V2 a
+orRightDist ore = (ore ^. #orect_size - ore ^. #orect_offset) & _y .~ 0
 
 
 intersects :: (Ord a, Num a) => Rectangle a -> Rectangle a -> Bool

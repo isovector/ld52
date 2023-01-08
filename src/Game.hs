@@ -7,8 +7,6 @@ import qualified Data.Map as M
 import qualified Data.Set as S
 import           FRP
 import           Game.Objects (renderObjects, addObject)
-import           Game.Objects.Actor (actor)
-import           Game.Objects.Player
 import           Game.World (drawWorld)
 import           SDL
 import           Types
@@ -19,12 +17,6 @@ initialObjs :: Level -> ObjectMap ObjSF
 initialObjs
   = foldr addObject (ObjectMap (ObjectId 0) mempty)
   . l_defaultObjs
-
-
-dude :: Object
-dude
-  = Object noObjectMeta
-  $ actor (OriginRect 7 (7/2)) (constant 0) (drawPlayer 7) (V2 100 0)
 
 
 game :: Resources -> SF RawFrameInfo (Camera, Renderable)
