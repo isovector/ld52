@@ -79,7 +79,7 @@ data Level = Level
   { l_bgcolor :: Color
   , l_tilebounds :: Rect Tile
   , l_bounds  :: Rect Pixel
-  , l_tiles  :: LevelLayer -> Resources -> Renderable
+  , l_tiles  :: LevelLayer -> Renderable
   , l_hitmap :: LevelLayer -> V2 Tile -> Bool
   , l_defaultObjs :: [Object]
   }
@@ -119,7 +119,7 @@ type Renderable = Camera -> IO ()
 data FrameInfo = FrameInfo
   { fi_controls :: Controls
   , fi_dt :: Double
-  , fi_global :: GlobalState
+  , fi_global :: ~GlobalState
   }
   deriving stock Generic
 
@@ -219,7 +219,7 @@ data ObjectInput = ObjectInput
   deriving stock Generic
 
 data GlobalState = GlobalState
-  { gs_currentLevel :: Level
+  { gs_currentLevel :: ~Level
   , gs_layerset :: Set LevelLayer
   }
   deriving stock Generic
@@ -229,7 +229,6 @@ data ObjectEvents = ObjectEvents
   , oe_spawn :: Event [Object]
   , oe_focus :: Event ()
   , oe_play_sound :: Event [Sound]
-  -- TODO(sandy): not yet connected to anything
   , oe_global_omnipotence :: Event (GlobalState -> GlobalState)
   }
   deriving stock Generic
@@ -263,6 +262,7 @@ data ObjectOutput = ObjectOutput
 
 data ObjectMap a = ObjectMap
   { objm_camera_focus :: ObjectId
+  , objm_globalState :: ~GlobalState
   , objm_map :: Map ObjectId a
   }
   deriving stock (Functor, Generic, Foldable)

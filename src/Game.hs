@@ -11,7 +11,7 @@ import qualified Data.Set as S
 import           Drawing
 import           FRP
 import           Game.Objects (renderObjects, addObject)
-import           Game.World (drawWorld)
+import           Game.World (drawLevel)
 import           Globals (global_textures)
 import           SDL
 import           Types
@@ -19,47 +19,45 @@ import           Utils (setCenterOrigin, mkCenterdOriginRect)
 
 #ifndef __HLINT__
 
-initialObjs :: Level -> ObjectMap ObjSF
-initialObjs
-  = foldr addObject (ObjectMap (ObjectId 0) mempty)
-  . l_defaultObjs
+initialObjs :: GlobalState -> ObjectMap ObjSF
+initialObjs gs
+  = foldr addObject (ObjectMap (ObjectId 0) gs mempty)
+  $ l_defaultObjs $ gs_currentLevel gs
 
 
 game :: Resources -> SF RawFrameInfo (Camera, Renderable)
-game rs = loopPre (initialGlobalState rs) $
-  proc (RawFrameInfo c dt , gs) -> do
-    let fi = FrameInfo c dt gs
+game rs =
+  proc rfi -> do
     (cam, objs, to_draw) <-
       renderObjects rs (V2 0 0)
         -- BUG(sandy): this should be a signal!!!
-        (initialObjs $ gs_currentLevel $ initialGlobalState rs)
-          -< fi
+        (initialObjs $ initialGlobalState rs)
+          -< rfi
+    let gs = objm_globalState objs
     let player = find (S.member IsPlayer . os_tags . oo_state) $ objm_map objs
-    bg <- constant $ drawWorld rs (S.singleton Layer1) $ r_worlds rs TestWorld -< fi
+    bg <- arr $ uncurry drawLevel -< (gs_layerset gs, gs_currentLevel gs)
     returnA -<
-      ( ( cam
-        , mconcat
-            [ bg
-            , to_draw
-            , ui_box (-17)
-            , maybe mempty
-                ( bool mempty
-                    ( atScreenPos $
-                        drawSpriteStretched
-                          (setCenterOrigin $ global_textures ChickenTexture)
-                          (ui_box_pos (-17))
-                          0
-                          (pure False)
-                          0.3
-                    )
-                  . hasChicken
-                ) player
-            , ui_box 17
-            , drawText 6 (V3 255 0 255) "hello world" 20
-            ]
+      ( cam
+      , mconcat
+          [ bg
+          , to_draw
+          , ui_box (-17)
+          , maybe mempty
+              ( bool mempty
+                  ( atScreenPos $
+                      drawSpriteStretched
+                        (setCenterOrigin $ global_textures ChickenTexture)
+                        (ui_box_pos (-17))
+                        0
+                        (pure False)
+                        0.3
+                  )
+                . hasChicken
+              ) player
+          , ui_box 17
+          , drawText 6 (V3 255 0 255) "hello world" 20
+          ]
         )
-      , gs
-      )
   where
     ui_box_pos dx =
       (logicalSize / 2)

@@ -16,6 +16,7 @@ chicken pos =
           mempty
             { oe_die = () <$ hit
             , oe_play_sound = [NintendoSound] <$ hit
+            , oe_global_omnipotence = (#gs_layerset %~ S.insert Layer2) <$ hit
             }
       , oo_render =
           drawSprite (global_textures ChickenTexture) pos 0 (pure False)

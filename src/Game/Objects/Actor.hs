@@ -5,6 +5,7 @@ import FRP
 import Collision
 import Utils
 import Data.Bool (bool)
+import Data.Monoid
 
 
 actor
@@ -17,6 +18,7 @@ actor ore input render pos0 = loopPre (pos0, 0) $
   proc ((can_double, oi@(ObjectInput _ fi os)), (pos, vel)) -> do
     let dt = fi_dt fi
     let lev = gs_currentLevel $ fi_global fi
+        layers = gs_layerset $ fi_global fi
 
     vel'0 <- input -< fi
 
@@ -24,7 +26,7 @@ actor ore input render pos0 = loopPre (pos0, 0) $
     let vel' = updateVel (can_double || onGround) vel vel'0
     let dpos = dt *^ vel'
     let desiredPos = pos + coerce dpos
-    let pos' = move (l_hitmap lev Layer1 . posToTile) (coerce ore) pos $ dpos
+    let pos' = move (getAny . foldMap ((Any .) . l_hitmap lev) layers . posToTile) (coerce ore) pos $ dpos
 
     let vel''
           = (\want have res -> bool 0 res $ abs(want - have) <= epsilon )

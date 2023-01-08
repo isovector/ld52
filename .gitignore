@@ -1,4 +1,6 @@
 .stack-work/
 .vscode/
 *.cabal
+*.svg
+*.prof
 *~

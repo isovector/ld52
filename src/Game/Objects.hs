@@ -23,7 +23,7 @@ renderObjects
     :: Resources
     -> V2 WorldPos
     -> ObjectMap ObjSF
-    -> SF FrameInfo (Camera, ObjectMap ObjectOutput, Renderable)
+    -> SF RawFrameInfo (Camera, ObjectMap ObjectOutput, Renderable)
 renderObjects rs cam0 objs0 = proc fi -> do
   objs <- router objs0 -< fi
   let focuson = M.lookup (objm_camera_focus objs) $ objm_map objs
@@ -44,20 +44,21 @@ renderEvents rs oe _ =
 
 
 emptyObjMap :: ObjectMap a
-emptyObjMap = ObjectMap (ObjectId 0) $ mempty
+emptyObjMap =
+  ObjectMap (ObjectId 0) (error "emptyObjMap: called global state too soon") mempty
 
 
-router :: ObjectMap ObjSF -> SF FrameInfo (ObjectMap ObjectOutput)
+router :: ObjectMap ObjSF -> SF RawFrameInfo (ObjectMap ObjectOutput)
 router om =
   loopPre emptyObjMap $
     router' om >>> arr dup
 
 
-router' :: ObjectMap ObjSF -> SF (FrameInfo, ObjectMap ObjectOutput) (ObjectMap ObjectOutput)
+router' :: ObjectMap ObjSF -> SF (RawFrameInfo, ObjectMap ObjectOutput) (ObjectMap ObjectOutput)
 router' objs0 =
   dpSwitch
       @ObjectMap
-      @(FrameInfo, ObjectMap ObjectOutput)
+      @(RawFrameInfo, ObjectMap ObjectOutput)
       @ObjectInput
       @ObjectOutput
       @(Endo (ObjectMap ObjSF))
@@ -72,9 +73,10 @@ router' objs0 =
     (\objs f -> router' $ appEndo f objs)
 
 
-routeHits :: FrameInfo -> ObjectMap ObjectOutput -> ObjectMap sf -> ObjectMap (ObjectInput, sf)
-routeHits fi outs objs = do
-  let hittable
+routeHits :: RawFrameInfo -> ObjectMap ObjectOutput -> ObjectMap sf -> ObjectMap (ObjectInput, sf)
+routeHits (RawFrameInfo c dt) outs objs = do
+  let fi = FrameInfo c dt $ objm_globalState objs
+      hittable
         = M.fromList
         $ M.foldMapWithKey (\k m -> maybeToList . sequenceA . (k, ) . fmap (m, ) $ getCollisionRect $ oo_state m)
         $ objm_map outs
@@ -126,6 +128,7 @@ route oid (oo_events -> ObjectEvents {..}) = mconcat $
   [ Endo (#objm_map %~ M.delete oid) <$ oe_die
   , Endo (#objm_camera_focus .~ oid) <$ oe_focus
   , foldMap (Endo . over #objm_map . insertObject)  <$> oe_spawn
+  , Endo . over #objm_globalState <$> oe_global_omnipotence
   ]
 
 

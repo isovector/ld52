@@ -8,10 +8,10 @@ import FRP.Yampa
 
 camera
     :: V2 WorldPos
-    -> SF (FrameInfo, V2 WorldPos)
+    -> SF (RawFrameInfo, V2 WorldPos)
           Camera
 camera = flip loopPre $ arr $ \((fi, focus), pos) -> do
-  let dt = fi_dt fi
+  let dt = rfi_dt fi
       pos' = pos + (focus - pos) ^* coerce dt * cameraSpeed
   case focus == pos || distance focus pos <= cameraDeadzone of
     True -> (Camera $ centerScreen pos, pos)

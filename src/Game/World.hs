@@ -4,13 +4,13 @@ import Data.Set (Set)
 import Drawing
 import Types
 
-drawWorld :: Resources -> Set LevelLayer -> World -> Renderable
-drawWorld rs layers = foldMap (drawLevel rs layers) . toList . w_levels
+drawWorld :: Set LevelLayer -> World -> Renderable
+drawWorld layers = foldMap (drawLevel layers) . toList . w_levels
 
-drawLevel :: Resources -> Set LevelLayer -> Level -> Renderable
-drawLevel rs layers lv = mconcat
+drawLevel :: Set LevelLayer -> Level -> Renderable
+drawLevel layers lv = mconcat
   [ drawBackgroundColor $ l_bgcolor lv
-  , flip foldMap layers $ \l -> l_tiles lv l rs
+  , flip foldMap layers $ \l -> l_tiles lv l
   ]
 
 tileToWorld :: V2 Tile -> V2 Int

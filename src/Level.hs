@@ -21,6 +21,7 @@ import Drawing
 import           SDL.Vect hiding (trace)
 import           System.FilePath.Lens (basename)
 import           Types
+import Globals (global_tilesets)
 
 ldtkColorToColor :: LDtk.Color -> Color
 ldtkColorToColor (LDtk.Color r g b) = V4 r g b 255
@@ -55,7 +56,7 @@ rectangularize (V2 x _)
 parseLayer
     :: LDtk.Layer
     -> ( V2 Tile -> Any
-       , Resources -> Renderable
+       , Renderable
        )
 parseLayer l = do
   let cols
@@ -80,15 +81,16 @@ buildMap =
     M.singleton (x ^. #__identifier) (x ^. #__value)
 
 
-drawTile :: Maybe Text -> LDtk.Tile -> Resources -> Renderable
-drawTile Nothing _ _ = mempty
-drawTile (Just tsstr) t rs = do
-  let ts = read @Tileset $ view basename $ T.unpack tsstr
-      wt = r_tilesets rs ts
-      wt' = wt { wt_sourceRect = Just (Rectangle (P $ fmap fromIntegral $ pairToV2 $ t ^. #src) tileSize)
+drawTile :: Maybe Text -> LDtk.Tile -> Renderable
+drawTile Nothing = \_ -> mempty
+drawTile (Just tsstr) = \t -> do
+  let wt' = wt { wt_sourceRect = Just (Rectangle (P $ fmap fromIntegral $ pairToV2 $ t ^. #src) tileSize)
                , wt_size = tileSize
                }
   drawSprite wt' (fmap fromIntegral $ pairToV2 $ t ^. #px) 0 (flipToMirrors $ t ^. #tile_flip)
+  where
+    ts = read @Tileset $ view basename $ T.unpack tsstr
+    wt = global_tilesets ts
 
 flipToMirrors :: LDtk.Flip -> V2 Bool
 flipToMirrors LDtk.NoFlip = V2 False False
