@@ -1,8 +1,8 @@
 module Collision where
 
+import SDL
 import Types
 import Utils
-import SDL
 
 
 hitTile :: (V2 Tile -> Bool) -> V2 WorldPos -> Bool
@@ -24,13 +24,18 @@ cornersY ((/ 2) -> V2 sx (coerce -> sy)) xdir p =
 
 
 move :: (V2 WorldPos -> Bool) -> V2 Double -> V2 WorldPos -> V2 Double -> V2 WorldPos
-move f sz pos dpos =
+move f sz pos (dpos) = do
   let (V2 xd yd) = fmap (round @_ @Int) $ signum dpos
-   in  moveX f sz xd (moveY f sz yd (pos + coerce dpos))
+      subdivs :: Int
+      subdivs = ceiling $ norm dpos
+  head
+    $ drop subdivs
+    $ iterate (moveX f sz xd . moveY f sz yd . (+ coerce dpos / fromIntegral subdivs ))
+    $ pos
 
 
 epsilon :: Fractional a => a
-epsilon = 0.01
+epsilon = 0.001
 
 
 moveX :: (V2 WorldPos -> Bool) -> V2 Double -> Int -> V2 WorldPos -> V2 WorldPos

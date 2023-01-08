@@ -160,7 +160,7 @@ defaultControls = Controls
   , c_dir = V2 0 0
   }
 
-tileSize :: Num a =>  V2 a
+tileSize :: Num a => a
 tileSize = 8
 
 
