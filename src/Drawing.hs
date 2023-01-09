@@ -9,7 +9,7 @@ import Data.Foldable (for_, traverse_)
 import FRP
 import Foreign.C
 import Game.Camera (viaCamera)
-import Globals (global_resources, global_sprites, global_glyphs, global_textures)
+import Globals (global_resources, global_sprites, global_glyphs, global_textures, global_songs)
 import SDL
 import SDL.Mixer
 import Types
@@ -99,6 +99,9 @@ drawSprite
 drawSprite wt pos theta flips =
   drawSpriteStretched wt pos theta flips 1
 
+playSong :: Song -> IO ()
+playSong s = do
+  playMusic Forever (global_songs s)
 
 mkAnim :: Sprite -> SF (DrawSpriteDetails, V2 WorldPos) Renderable
 mkAnim sprite = select $ \dsd ->

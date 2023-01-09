@@ -15,6 +15,7 @@ import           Globals (global_textures, global_resources)
 import           SDL
 import           Types
 import           Utils (setCenterOrigin, mkCenterdOriginRect, tileToPos)
+import Types (Song(WarmDuckShuffle))
 
 #ifndef __HLINT__
 
@@ -40,6 +41,7 @@ game =
     let player = find (S.member IsPlayer . os_tags . oo_state) $ objm_map objs
 
     bg <- arr $ uncurry drawLevel -< (gs_layerset gs, gs_currentLevel gs)
+
     returnA -<
       ( cam
       , mconcat
