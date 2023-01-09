@@ -14,7 +14,7 @@ import           Game.World (drawLevel)
 import           Globals (global_textures, global_resources)
 import           SDL
 import           Types
-import           Utils (setCenterOrigin, mkCenterdOriginRect)
+import           Utils (setCenterOrigin, mkCenterdOriginRect, tileToPos)
 
 #ifndef __HLINT__
 
@@ -28,7 +28,7 @@ game :: SF RawFrameInfo (Camera, Renderable)
 game =
   proc rfi -> do
     (cam, objs, to_draw) <-
-      renderObjects global_resources (V2 0 0)
+      renderObjects global_resources (tileToPos $ V2 19 50)
         -- BUG(sandy): this should be a signal!!!
         (initialObjs $ initialGlobalState global_resources)
           -< rfi

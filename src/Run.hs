@@ -62,8 +62,8 @@ main = do
     (pure $ RawFrameInfo defaultControls 0.016)
     (input window tRef)
     (output rs)
-    -- (game rs)
-    runIntro
+    game
+    -- runIntro
   quit
 
 

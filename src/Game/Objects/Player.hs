@@ -37,9 +37,11 @@ player pos0 = proc oi -> do
       do_teleport :: V2 WorldPos -> V2 WorldPos
       do_teleport = event id appEndo am_teleporting
 
+  reset <- edge -< c_reset $ fi_controls $ oi_frameInfo oi
   cp_pos <- hold pos0 -< listenInbox (preview #_SetCheckpoint) $ oi_events oi
   let dying :: Bool
       dying = event False (const True)
+            $ merge reset
             $ listenInbox (preview #_Die)
             $ oi_events oi
 
