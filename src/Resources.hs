@@ -104,6 +104,12 @@ instance IsResource GameTexture WrappedTexture where
   resourceName ChargeTexture = "charge"
   resourceName TeleTexture = "teleball"
 
+instance IsResource Song Mixer.Music where
+  load _ _ = Mixer.load
+  resourceFolder = "songs"
+  resourceExt    = "wav"
+  resourceName WarmDuckShuffle = "warm-duck-shuffle"
+
 instance IsResource Sound Chunk where
   load _ _ = Mixer.load
   resourceFolder = "sounds"
@@ -129,6 +135,7 @@ loadResources :: Engine -> IO Resources
 loadResources engine = do
   tilesets <- loadResource engine
   textures <- loadResource engine
+  songs    <- loadResource engine
   sounds   <- loadResource engine
   worlds   <- loadResource engine
   sprites  <- loadResource engine
@@ -139,6 +146,7 @@ loadResources engine = do
     , r_tilesets = tilesets
     , r_textures = textures
     , r_sounds   = sounds
+    , r_songs    = songs
     , r_worlds   = worlds
     , r_sprites  = curry sprites
     , r_glyphs   = glyphs . Char'
