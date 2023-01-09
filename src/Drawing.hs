@@ -85,7 +85,7 @@ drawSpriteOriginRect wt ore pos theta flips cam
         (wt_sourceRect wt)
         (Just $ fmap round $ originRectToRect ore $ coerce wp)
         (CDouble theta)
-        (Just $ P $ fmap round wp)
+        (Just $ P $ fmap round $ orect_offset ore)
         flips
   | otherwise = mempty
 

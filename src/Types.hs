@@ -148,6 +148,7 @@ data GameTexture
     | Parallax0
     | Parallax1
     | Parallax2
+    | ChargeTexture
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 data Tileset

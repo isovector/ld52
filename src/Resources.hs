@@ -101,6 +101,7 @@ instance IsResource GameTexture WrappedTexture where
   resourceName Parallax0 = "parallax0"
   resourceName Parallax1 = "parallax1"
   resourceName Parallax2 = "parallax2"
+  resourceName ChargeTexture = "charge"
 
 instance IsResource Sound Chunk where
   load _ _ = Mixer.load
