@@ -36,6 +36,7 @@ dependencies:
 - errors
 - vector
 - aeson
+- deepseq
 
 ghc-options:
 - -Wall

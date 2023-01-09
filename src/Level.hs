@@ -3,6 +3,7 @@
 
 module Level where
 
+import           Control.DeepSeq (force)
 import           Control.Lens hiding (Level)
 import           Data.Aeson (eitherDecodeFileStrict)
 import           Data.Either (partitionEithers)
@@ -10,6 +11,7 @@ import           Data.Generics.Labels ()
 import           Data.List (find)
 import           Data.Map (Map)
 import qualified Data.Map as M
+import           Data.Maybe (fromMaybe)
 import           Data.Monoid
 import           Data.Text (Text)
 import qualified Data.Text as T
@@ -34,14 +36,11 @@ loadWorld fp = do
     Left e -> error e
     Right root -> pure $ World $ parseLevels root
 
-buildCollisionMap :: V2 Tile -> [Int] -> CollisionPurpose -> V2 Tile -> Any
-buildCollisionMap sz csv = \purpose (coerce -> V2 x y) ->
+buildCollisionMap :: V2 Tile -> V.Vector (V.Vector Int) -> CollisionPurpose -> V2 Tile -> Any
+buildCollisionMap sz col = \purpose (coerce -> V2 x y) ->
     if x < 0 || y < 0 || x >= sz ^. _x || y >= sz ^. _y
       then Any False
       else Any $ checkPurpose purpose $ col V.! getTile y V.! getTile x
-  where
-    col :: V.Vector (V.Vector Int)
-    col = rectangularize (coerce sz) csv
 
 checkPurpose :: CollisionPurpose -> Int -> Bool
 checkPurpose _ 0 = False
@@ -69,13 +68,16 @@ parseLayer
        , Renderable
        )
 parseLayer l = do
-  let cols
-        = buildCollisionMap (parseV2 Tile l #__cWid #__cHei)
-        $ (l ^. #intGridCsv)
+  let !sz = (parseV2 Tile l #__cWid #__cHei)
+      !col = force $ rectangularize (coerce sz) (l ^. #intGridCsv)
+      {-# NOINLINE col #-}
+      !cols = force $ buildCollisionMap sz col
+      {-# NOINLINE cols #-}
   (   cols
     , foldMap (drawTile $ l ^. #__tilesetRelPath)
        $ l ^. #autoLayerTiles
     )
+{-# NOINLINE parseLayer #-}
 
 
 
@@ -131,9 +133,17 @@ parseLevels root = either (error . mappend "couldn't parse level: " . unlines) i
 
 
     let ls = lev ^. #layerInstances
-        ll = fmap parseLayer . getLayerFromLevel ls
-
         (errs, ents) = foldMap parseEntities ls
+        make_layer
+          = force
+          . pure
+          . fromMaybe (mempty, mempty)
+          . fmap parseLayer
+          . getLayerFromLevel ls
+
+    !(c1, d1) <- make_layer Layer1
+    !(c2, d2) <- make_layer Layer2
+    !(c3, d3) <- make_layer Layer3
 
     traceM $ unlines $ fmap (T.unpack . mappend "[WARNING] level: ") errs
 
@@ -143,8 +153,16 @@ parseLevels root = either (error . mappend "couldn't parse level: " . unlines) i
           (ldtkColorToColor $ lev ^. #__bgColor)
           (Rect 0 16)
           bounds
-          (fmap (maybe mempty snd) ll)
-          (coerce $ fmap (maybe mempty fst) ll)
+          (\case
+            Layer1 -> d1
+            Layer2 -> d2
+            Layer3 -> d3
+          )
+          (coerce . \case
+            Layer1 -> c1
+            Layer2 -> c2
+            Layer3 -> c3
+          )
           ents
       )
 
