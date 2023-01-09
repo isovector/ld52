@@ -6418,27 +6418,6 @@
 					"gridTiles": [],
 					"entityInstances": [
 						{
-							"__identifier": "Text",
-							"__grid": [76,121],
-							"__pivot": [0.5,1],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#FFFFFF",
-							"iid": "f2a32c10-7820-11ed-aa43-29c999e857af",
-							"width": 8,
-							"height": 8,
-							"defUid": 127,
-							"px": [608,976],
-							"fieldInstances": [
-								{ "__identifier": "size", "__value": 6, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [] },
-								{ "__identifier": "text", "__value": "8", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["8"]
-								}] },
-								{ "__identifier": "color", "__value": "#FFFFFF", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [] }
-							]
-						},
-						{
 							"__identifier": "ToggleLayer",
 							"__grid": [216,97],
 							"__pivot": [0,0],
@@ -6484,7 +6463,7 @@
 						},
 						{
 							"__identifier": "Checkpoint",
-							"__grid": [121,106],
+							"__grid": [125,104],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -6493,7 +6472,7 @@
 							"width": 8,
 							"height": 8,
 							"defUid": 177,
-							"px": [968,848],
+							"px": [1000,832],
 							"fieldInstances": []
 						},
 						{
@@ -6580,7 +6559,7 @@
 						},
 						{
 							"__identifier": "Checkpoint",
-							"__grid": [211,133],
+							"__grid": [211,131],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -6589,7 +6568,7 @@
 							"width": 8,
 							"height": 8,
 							"defUid": 177,
-							"px": [1688,1064],
+							"px": [1688,1048],
 							"fieldInstances": []
 						},
 						{
@@ -6945,7 +6924,7 @@
 						},
 						{
 							"__identifier": "Text",
-							"__grid": [174,92],
+							"__grid": [172,92],
 							"__pivot": [0.5,1],
 							"__tags": [],
 							"__tile": null,
@@ -6954,12 +6933,12 @@
 							"width": 8,
 							"height": 8,
 							"defUid": 127,
-							"px": [1396,744],
+							"px": [1380,744],
 							"fieldInstances": [
 								{ "__identifier": "size", "__value": 6, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [] },
-								{ "__identifier": "text", "__value": "<-- coin", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
+								{ "__identifier": "text", "__value": "secret coin in here", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["<-- coin"]
+									"params": ["secret coin in here"]
 								}] },
 								{ "__identifier": "color", "__value": "#FFDD00", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [16768256] }] }
 							]
@@ -7067,7 +7046,7 @@
 							"defUid": 127,
 							"px": [900,200],
 							"fieldInstances": [
-								{ "__identifier": "size", "__value": 3, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [3] }] },
+								{ "__identifier": "size", "__value": 6, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [6] }] },
 								{ "__identifier": "text", "__value": "jump throw up there", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
 									"id": "V_String",
 									"params": ["jump throw up there"]
