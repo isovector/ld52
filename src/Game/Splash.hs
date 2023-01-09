@@ -51,6 +51,9 @@ mainMenu = loopPre Start $ proc (fi, sel) -> do
   returnA -<
     ( ( mconcat
           [ drawBackgroundColor (V4 0 0 0 255) (Camera 0)
+          , drawText 16 (V3 0 192 255) "Where's my Chicken," (V2 10 20) (Camera 0)
+          , drawText 16 (V3 0 192 255) "man?" (V2 210 38) (Camera 0)
+          , drawText 8 (V3 0 128 192) "Hunt of Bounty" (V2 110 70) (Camera 0)
           , mconcat
             $ zipWith (drawMenuItem sel) [minBound .. maxBound] [0..]
           ]

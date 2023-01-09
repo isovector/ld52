@@ -3,7 +3,7 @@ module Game.Objects.TeleportBall where
 import Types
 import FRP hiding (time)
 import Utils
-import Drawing (drawOriginRect, drawSpriteOriginRect)
+import Drawing (drawSpriteOriginRect)
 import Collision (move)
 import Game.Common (getCollisionMap, charging)
 import Data.Maybe (fromMaybe, isJust)
