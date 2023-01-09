@@ -9,6 +9,8 @@ import           Data.Text (Text)
 import qualified Data.Text as T
 import           Game.Objects.Checkpoint (checkpoint)
 import           Game.Objects.Chicken (chicken)
+import           Game.Objects.Coin (coin)
+import           Game.Objects.Death (deathZone)
 import           Game.Objects.Player (player)
 import           Game.Objects.Test
 import           Game.Objects.TextBillboard (textBillboard)
@@ -16,13 +18,13 @@ import           Game.Objects.ToggleRegion (toggleRegion)
 import qualified LDtk.Types as LDtk
 import           Level (ldtkColorToColor)
 import           Types
-import Game.Objects.Death (deathZone)
 
 
 buildEntity :: Text -> V2 WorldPos -> V2 Double -> Map Text LDtk.FieldValue -> Either Text Object
 buildEntity "Player" pos _ _ = pure $ player pos
 buildEntity "Chicken" pos _ _ = pure $ chicken pos
 buildEntity "Checkpoint" pos _ _ = pure $ checkpoint pos
+buildEntity "Coin" pos _ _ = pure $ coin pos
 buildEntity "Death" pos sz _ = pure $ deathZone pos sz
 buildEntity "ToggleLayer" pos sz props =
   toggleRegion pos

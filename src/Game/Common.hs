@@ -21,21 +21,29 @@ listenInbox ok oi = do
     Just a -> pure a
     Nothing -> noEvent
 
+playerHitRectObjCallback
+    :: (ObjectInput -> Event (ObjectId, Message))
+    -> OriginRect WorldPos
+    -> Color
+    -> V2 WorldPos
+    -> Object
+playerHitRectObjCallback msg = playerHitRectObj $ \oi ->
+  mempty
+    { oe_send_message = fmap pure $ msg oi
+    }
 
 playerHitRectObj
-    :: (ObjectInput -> Event [(ObjectId, Message)])
+    :: (ObjectInput -> ObjectEvents)
     -> OriginRect WorldPos
     -> Color
     -> V2 WorldPos
     -> Object
 playerHitRectObj msg ore col pos =
   proc oi -> do
-    let on_hit = msg oi
+    let evs = msg oi
 
     returnA -< ObjectOutput
-      { oo_events = mempty
-          { oe_send_message = on_hit
-          }
+      { oo_events = evs
       , oo_render =
           drawOriginRect col ore pos
       , oo_state = ObjectState
