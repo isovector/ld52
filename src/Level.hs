@@ -105,12 +105,13 @@ drawTile :: Maybe Text -> LDtk.Tile -> Renderable
 drawTile Nothing = \_ -> mempty
 drawTile (Just tsstr) = \t -> do
   let wt' = wt { wt_sourceRect = Just (Rectangle (P $ fmap fromIntegral $ pairToV2 $ t ^. #src) tileSize)
-               , wt_size = tileSize
                }
   drawSprite wt' (fmap fromIntegral $ pairToV2 $ t ^. #px) 0 (flipToMirrors $ t ^. #tile_flip)
   where
     ts = read @Tileset $ view basename $ T.unpack tsstr
-    wt = global_tilesets ts
+    wt = (global_tilesets ts)
+          { wt_size = tileSize
+          }
 
 flipToMirrors :: LDtk.Flip -> V2 Bool
 flipToMirrors LDtk.NoFlip = V2 False False
