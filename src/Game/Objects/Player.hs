@@ -139,10 +139,10 @@ drawPlayer sz = arr mconcat <<< fork
       -- We can fully animate the player as a function of the position!
       edir <- edgeBy diffDir 0 -< pos
       dir <- hold True -< edir
-      vel <- derivative -< pos
+      V2 vx vy <- derivative -< pos
       mkAnim MainCharacter
         -<  ( DrawSpriteDetails
-                (bool Idle Run $ norm vel >= epsilon)
+                (bool Idle Run $ abs vx >= epsilon && abs vy < epsilon)
                 0
                 (V2 (not dir) False)
             , pos

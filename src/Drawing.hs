@@ -1,7 +1,11 @@
+{-# LANGUAGE CPP               #-}
+
+#ifndef __HLINT__
+
 module Drawing where
 
 import Control.Monad (void)
-import Data.Foldable (for_)
+import Data.Foldable (for_, traverse_)
 import FRP
 import Foreign.C
 import Game.Camera (viaCamera)
@@ -11,6 +15,7 @@ import SDL.Mixer
 import Types
 import Utils (originRectToRect)
 import Geometry (rectContains)
+import Resources (frameSound)
 
 
 playSound :: Resources -> Sound -> IO ()
@@ -75,8 +80,17 @@ drawSprite wt pos theta flips =
 mkAnim :: Sprite -> SF (DrawSpriteDetails, V2 WorldPos) Renderable
 mkAnim sprite = select $ \dsd ->
   timedSequence (error "mkAnim: impossible") 0.1
-    $ fmap (\wt -> arr $ \pos -> drawSprite wt pos (dsd_rotation dsd) $ dsd_flips dsd)
+    $ fmap (\(i, wt) ->
+      proc pos -> do
+        i_changed <- edgeBy (\ oi ni -> bool Nothing (Just ()) (oi /= ni)) 0 -< i
+        returnA -< \cam -> do
+          !_ <- traverse_ (playSound global_resources) $ do
+            !s <- frameSound sprite (dsd_anim dsd) i <$ i_changed
+            maybeToEvent s
+          drawSprite wt pos (dsd_rotation dsd) (dsd_flips dsd) cam
+          )
     $ cycle
+    $ zip [0..]
     $ global_sprites sprite
     $ dsd_anim dsd
 
@@ -101,3 +115,4 @@ drawText sz color text pos@(V2 x y) cam
       rendererDrawBlendMode renderer $= BlendAlphaBlend
   | otherwise = mempty
 
+#endif

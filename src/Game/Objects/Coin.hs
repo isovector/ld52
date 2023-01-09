@@ -11,6 +11,7 @@ coin pos =
       let ev = onHitBy IsPlayer oi
        in mempty
             { oe_die = () <$ ev
+            , oe_play_sound = [CoinSound] <$ ev
             }
     )
     (OriginRect 8 4)

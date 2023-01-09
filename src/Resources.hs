@@ -29,6 +29,9 @@ frameCounts _ Idle   = 4
 frameCounts _ NoAnim = 1
 frameCounts _ Run    = 4
 
+frameSound :: Sprite -> Anim -> Int -> Maybe Sound
+frameSound _ Run 2 = Just StepSound
+frameSound _ _ _ = Nothing
 
 wrapTexture :: Texture -> IO WrappedTexture
 wrapTexture t = do
