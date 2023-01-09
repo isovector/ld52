@@ -27,11 +27,6 @@ setCenterOrigin wt =
         { wt_origin = V2 (div w 2) (div h 2)
         }
 
-focusOn :: SF ObjectOutput ObjectOutput
-focusOn = proc oo -> do
-  ev <- nowish () -< ()
-  returnA -< oo & #oo_events . #oe_focus .~ ev
-
 
 wrappedToOriginRect :: WrappedTexture -> OriginRect Double
 wrappedToOriginRect wt = fmap fromIntegral $ OriginRect
