@@ -67,6 +67,28 @@ drawSpriteStretched wt pos theta flips stretched cam
         flips
   | otherwise = mempty
 
+drawSpriteOriginRect
+    :: WrappedTexture  -- ^ Texture
+    -> OriginRect WorldPos
+    -> V2 WorldPos     -- ^ position
+    -> Double          -- ^ rotation in rads
+    -> V2 Bool         -- ^ mirroring
+    -> Renderable
+drawSpriteOriginRect wt ore pos theta flips cam
+  | let wp = viaCamera cam pos
+  , rectContains screenRect wp
+  = do
+      let renderer = e_renderer $ r_engine global_resources
+      copyEx
+        renderer
+        (getTexture wt)
+        (wt_sourceRect wt)
+        (Just $ fmap round $ originRectToRect ore $ coerce wp)
+        (CDouble theta)
+        (Just $ P $ fmap round wp)
+        flips
+  | otherwise = mempty
+
 drawSprite
     :: WrappedTexture
     -> V2 WorldPos  -- ^ pos

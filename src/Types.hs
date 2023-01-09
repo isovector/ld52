@@ -145,6 +145,9 @@ data RawFrameInfo = RawFrameInfo
 data GameTexture
     = NintendoLogo
     | ChickenTexture
+    | Parallax0
+    | Parallax1
+    | Parallax2
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 data Tileset

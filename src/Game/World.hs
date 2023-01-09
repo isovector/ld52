@@ -9,8 +9,8 @@ drawWorld layers = foldMap (drawLevel layers) . toList . w_levels
 
 drawLevel :: Set LevelLayer -> Level -> Renderable
 drawLevel layers lv = mconcat
-  [ drawBackgroundColor $ l_bgcolor lv
-  , flip foldMap layers $ \l -> l_tiles lv l
+  [ -- drawBackgroundColor $ l_bgcolor lv
+    flip foldMap layers $ \l -> l_tiles lv l
   ]
 
 tilesOf :: Rect Tile -> [V2 Tile]
