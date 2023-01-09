@@ -6,7 +6,7 @@ import Utils
 import Drawing (drawOriginRect)
 import Collision (move)
 import Game.Common (getCollisionMap, charging)
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, isJust)
 
 teleportBall
     :: ObjectId
@@ -19,30 +19,37 @@ teleportBall owner owner_ore pos0 vel0 =
     loopPre (vel0 ^* power) $ proc (oi, vel) -> do
       die <- after 1 () -< ()
 
-    -- TODO(sandy): this is a bad pattern; object constructor should take an
-    -- initial pos
       start <- nowish () -< ()
       let pos = os_pos $ oi_state oi
           dt = fi_dt $ oi_frameInfo oi
 
-      let vel' = vel + grav ^* dt
+      let vel' = vel
       -- let pos' = pos + coerce (vel ^* dt)
       let ore = mkCenterdOriginRect 4
       let gs = fi_global $ oi_frameInfo oi
 
-          pos' = fromMaybe pos $ move (getCollisionMap gs) (coerce ore) pos (vel ^* dt)
+          mpos' = move (getCollisionMap gs) (coerce ore) pos (vel ^* dt)
+          pos' = fromMaybe pos mpos'
+
+          vel'' = maybe vel' (coerce . subtract pos) (coerce mpos') ^* (1 / dt)
+                + grav ^* dt
+
+      let end = mergeEvents
+            [ die
+            , bool (Event ()) noEvent $ isJust mpos'
+            ]
 
       -- find the last place we could place the character
       youpos'ev <- arr maybeToEvent -<
           move (getCollisionMap gs) (coerce owner_ore) pos (vel ^* dt)
       youpos' <- hold pos0 -< youpos'ev
 
-      returnA -< (, vel') $ ObjectOutput
+      returnA -< (, vel'') $ ObjectOutput
         { oo_events = mempty
-            { oe_die = die
-            , oe_send_message = [(owner, TeleportTo youpos')] <$ die
-            , oe_play_sound = [WarpSound] <$ die
+            { oe_die = end
+            , oe_send_message = [(owner, TeleportTo youpos')] <$ end
             , oe_focus = () <$ start
+            , oe_play_sound = [WarpSound] <$ end
             }
         , oo_render = drawOriginRect (V4 0 255 255 255) ore pos'
         , oo_state = (noObjectState pos')

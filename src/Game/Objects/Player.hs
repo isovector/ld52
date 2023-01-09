@@ -91,8 +91,8 @@ player pos0
                     & #oe_spawn <>~
                         ([teleportBall
                               me
-                              (coerce ore) pos
-                            $ V2 (bool negate id dir 300) (-150)] <$ action
+                              (coerce ore) (pos - (sz & _x .~ 0))
+                            $ V2 (bool negate id dir 300) (-300)] <$ action
                         )
                     & #oe_focus .~ mconcat
                         [ () <$ am_teleporting
