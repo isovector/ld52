@@ -87,7 +87,7 @@ atScreenPos f _ = f $ Camera 0
 
 drawText :: Double -> V3 Word8 -> String -> V2 WorldPos -> Renderable
 drawText sz color text pos@(V2 x y) cam
-  | rectContains screenRect pos
+  | rectContains screenRect $ viaCamera cam pos
   = do
       let renderer = e_renderer $ r_engine global_resources
       for_ (zip text [0..]) $ \(c, i) -> do
