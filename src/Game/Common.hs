@@ -6,6 +6,7 @@ import           Drawing
 import           FRP
 import           Types
 import Data.Maybe (mapMaybe, listToMaybe)
+import Utils (noObjectState)
 
 onHitBy :: ObjectTag -> ObjectInput -> Event ObjectId
 onHitBy otag oi = do
@@ -46,10 +47,8 @@ playerHitRectObj msg ore col pos =
       { oo_events = evs
       , oo_render =
           drawOriginRect col ore pos
-      , oo_state = ObjectState
-          { os_pos = pos
-          , os_collision = Just $ coerce ore
-          , os_tags = mempty
+      , oo_state = (noObjectState pos)
+          { os_collision = Just $ coerce ore
           }
       }
 

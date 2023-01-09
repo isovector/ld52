@@ -5,6 +5,7 @@ import qualified Data.Set as S
 import           Drawing (drawOriginRect)
 import           FRP
 import           Types
+import Utils (noObjectState)
 
 
 toggleRegion :: V2 WorldPos -> V2 Double -> LevelLayer -> Bool -> Object
@@ -23,11 +24,10 @@ toggleRegion pos sz lls toggle =
           }
       , oo_render = flip (maybe mempty) collision $ \ore ->
           drawOriginRect (V4 255 255 0 32) (coerce ore) pos
-      , oo_state = ObjectState
-          { os_pos = pos
-          , os_collision = collision
-          , os_tags = mempty
-          }
+      , oo_state =
+          (noObjectState pos)
+            { os_collision = collision
+            }
       }
 
 updateLayers :: Bool -> LevelLayer -> Set LevelLayer -> Set LevelLayer

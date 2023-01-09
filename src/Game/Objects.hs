@@ -13,7 +13,7 @@ import           Data.Maybe (maybeToList)
 import           Data.Monoid
 import           Drawing (playSound)
 import           FRP
-import           Game.Camera (camera)
+import           Game.Camera (camera, getCameraFocus)
 import           Geometry (intersects)
 import           Types
 import           Utils (originRectToRect)
@@ -27,7 +27,7 @@ renderObjects
 renderObjects rs cam0 objs0 = proc fi -> do
   objs <- router objs0 -< fi
   let focuson = M.lookup (objm_camera_focus objs) $ objm_map objs
-  focus <- camera cam0 -< (fi, maybe 0 (os_pos . oo_state) focuson)
+  focus <- camera cam0 -< (fi, maybe 0 (getCameraFocus . oo_state) focuson)
   let dat = toList $ objm_map objs
   returnA -<
     ( focus
@@ -126,6 +126,7 @@ noObjectState = ObjectState
   { os_pos = 0
   , os_collision = Nothing
   , os_tags = mempty
+  , os_camera_offset = 0
   }
 
 

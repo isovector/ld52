@@ -53,5 +53,5 @@ originRectToRect ore pos =
     $ orect_size ore
 
 noObjectState :: V2 WorldPos -> ObjectState
-noObjectState pos = ObjectState pos Nothing mempty
+noObjectState pos = ObjectState pos Nothing mempty 0
 

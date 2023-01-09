@@ -82,6 +82,8 @@ player pos0
         edir <- edgeBy diffDir 0 -< pos
         dir <- hold True -< edir
 
+        let V2 _ updowndir = fmap fromIntegral $ c_dir $ fi_controls $ oi_frameInfo oi
+
         drawn <- drawPlayer ore -< pos''
 
         returnA -<
@@ -94,6 +96,8 @@ player pos0
               , oo_state =
                   oi_state oi
                     & #os_pos .~ pos''
+                    & #os_camera_offset .~ V2 (bool negate id dir 120 * max 0.3 (1 - abs updowndir))
+                                              (70 * updowndir)
                     & #os_collision .~ Just (coerce ore)
                     & #os_tags %~ bool id (S.insert $ HasPowerup PowerupDoubleJump) now_jump
                     & #os_tags %~ S.insert IsPlayer
