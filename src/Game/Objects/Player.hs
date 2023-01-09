@@ -135,14 +135,14 @@ playerPhysVelocity = proc fi -> do
 
 drawPlayer :: OriginRect WorldPos -> SF (V2 WorldPos) Renderable
 drawPlayer sz = arr mconcat <<< fork
-  [ arr $ \pos -> mconcat
-      [ drawOriginRect (V4 255 255 0 16) sz pos
-      , drawFilledRect (V4 255 0 0 255)
-          $ flip Rectangle 1
-          $ P
-          $ pos
-      ]
-  , proc pos -> do
+  -- [ arr $ \pos -> mconcat
+  --     [ drawOriginRect (V4 255 255 0 16) sz pos
+  --     , drawFilledRect (V4 255 0 0 255)
+  --         $ flip Rectangle 1
+  --         $ P
+  --         $ pos
+  --     ]
+  [ proc pos -> do
       -- We can fully animate the player as a function of the position!
       edir <- edgeBy diffDir 0 -< pos
       dir <- hold True -< edir
