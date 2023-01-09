@@ -46,6 +46,16 @@ ghc-options:
 - -Wincomplete-uni-patterns
 - -Wpartial-fields
 - -Wredundant-constraints
+- -O2
+- -static
+- -threaded
+
+cc-options:
+- -static
+
+ld-options:
+- -static
+- -pthread
 
 default-extensions:
 - Arrows
