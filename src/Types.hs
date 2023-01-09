@@ -41,7 +41,7 @@ import FRP (SF, Event)
 import Foreign.C (CInt)
 import GHC.Generics
 import SDL hiding (trace, Event)
-import SDL.Mixer (Chunk)
+import SDL.Mixer (Chunk, Music)
 import Data.Hashable (Hashable)
 
 
@@ -111,6 +111,7 @@ data Resources = Resources
   , r_tilesets :: Tileset -> WrappedTexture
   , r_textures :: GameTexture -> WrappedTexture
   , r_sounds   :: Sound -> Chunk
+  , r_songs    :: Song -> Music
   , r_worlds   :: WorldName -> World
   , r_sprites  :: Sprite -> Anim -> [WrappedTexture]
   , r_glyphs   :: Char -> Texture
@@ -166,7 +167,19 @@ data WorldName = TestWorld | HelpWorld
 
 ------------------------------------------------------------------------------
 -- | Audio used by the game.
-data Sound = NintendoSound | CheckpointSound | CoinSound | DieSound | JumpSound | StepSound | ThudSound | WarpSound
+data Sound
+    = NintendoSound
+    | CheckpointSound
+    | CoinSound
+    | DieSound
+    | JumpSound
+    | StepSound
+    | ThudSound
+    | WarpSound
+  deriving (Eq, Ord, Show, Read, Enum, Bounded)
+
+data Song
+  = WarmDuckShuffle
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 data LevelLayer
