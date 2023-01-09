@@ -13,9 +13,6 @@ drawLevel layers lv = mconcat
   , flip foldMap layers $ \l -> l_tiles lv l
   ]
 
-tileToWorld :: V2 Tile -> V2 Int
-tileToWorld = (* tileSize) . coerce
-
 tilesOf :: Rect Tile -> [V2 Tile]
 tilesOf (Rect (V2 x y) (V2 w h)) = do
   dx <- [0 .. w - 1]

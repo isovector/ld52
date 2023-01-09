@@ -43,6 +43,9 @@ wrappedToOriginRect wt = fmap fromIntegral $ OriginRect
 mkCenterdOriginRect :: Fractional a => V2 a -> OriginRect a
 mkCenterdOriginRect sz = OriginRect sz (sz / 2)
 
+mkGroundOriginRect :: Fractional a => V2 a -> OriginRect a
+mkGroundOriginRect sz@(V2 x y) = OriginRect sz $ V2 (x / 2) y
+
 
 originRectToRect :: Num a => OriginRect a -> V2 a -> Rectangle a
 originRectToRect ore pos =

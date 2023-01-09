@@ -11,6 +11,7 @@ import           Game.Objects.Checkpoint (checkpoint)
 import           Game.Objects.Chicken (chicken)
 import           Game.Objects.Coin (coin)
 import           Game.Objects.Death (deathZone)
+import           Game.Objects.Door (door)
 import           Game.Objects.Player (player)
 import           Game.Objects.Test
 import           Game.Objects.TextBillboard (textBillboard)
@@ -18,12 +19,16 @@ import           Game.Objects.ToggleRegion (toggleRegion)
 import qualified LDtk.Types as LDtk
 import           Level (ldtkColorToColor)
 import           Types
+import Utils (tileToPos)
 
 
 buildEntity :: Text -> V2 WorldPos -> V2 Double -> Map Text LDtk.FieldValue -> Either Text Object
 buildEntity "Player" pos _ _ = pure $ player pos
 buildEntity "Chicken" pos _ _ = pure $ chicken pos
 buildEntity "Checkpoint" pos _ _ = pure $ checkpoint pos
+buildEntity "Door" pos sz props =
+  door pos sz
+    <$> asPos "Door" "out" props
 buildEntity "Coin" pos _ _ = pure $ coin pos
 buildEntity "Death" pos sz _ = pure $ deathZone pos sz
 buildEntity "ToggleLayer" pos sz props =
@@ -61,6 +66,15 @@ as ty pris obj field m
       , field
       , " was not found"
       ]
+
+asPos :: Text -> Text -> Map Text LDtk.FieldValue -> Either Text (V2 WorldPos)
+asPos = fmap (fmap (fmap gridToWorld)) . as "Text" #_PointValue
+
+gridToWorld :: LDtk.GridPoint -> V2 WorldPos
+-- TODO(sandy): EXTREME HACK
+-- the editor gives us this coordinate in CURRENT GRID SIZE
+-- which is 8 lol (half of the tile size)
+gridToWorld (LDtk.GridPoint cx cy) = (/ 2) $ tileToPos $ coerce $ V2 cx cy
 
 asText :: Text -> Text -> Map Text LDtk.FieldValue -> Either Text Text
 asText = as "Text" #_StringValue

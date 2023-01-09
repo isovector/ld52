@@ -43,12 +43,20 @@ player pos0
                   $ listenInbox (preview #_Die)
                   $ oi_events oi
 
+            doorout :: Maybe (V2 WorldPos)
+            doorout = eventToMaybe
+                    $ listenInbox (preview #_TeleportOpportunity)
+                    $ oi_events oi
+
         let me = oi_self oi
         action <- edge -< c_z $ fi_controls $ oi_frameInfo oi
 
         let can_double_jump = can_double_jump0 || now_jump
         res <- actor ore playerPhysVelocity (drawPlayer ore) pos0 -< (can_double_jump, oi)
+
+        let (V2 _ press_up) = fmap (== -1) $ c_dir $ fi_controls $ oi_frameInfo oi
         let pos = bool id (const cp_pos) dying
+                $ bool id (maybe id const doorout) press_up
                 $ do_teleport
                 $ res ^. #oo_state . #os_pos
 

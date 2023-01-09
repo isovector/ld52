@@ -125,4 +125,8 @@ inject f sf =
     )
     (const sf)
 
+eventToMaybe :: Event a -> Maybe a
+eventToMaybe NoEvent = Nothing
+eventToMaybe (Event a) = Just a
+
 #endif
