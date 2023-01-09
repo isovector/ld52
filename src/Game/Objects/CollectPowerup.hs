@@ -18,7 +18,7 @@ collectPowerup pos pt =
             }
     )
     (OriginRect 8 4)
-    (V4 255 255 0 255)
+    (V4 0 0 255 255)
     pos
   >>> arr (#oo_state . #os_tags <>~ S.singleton (IsPowerup pt))
 
