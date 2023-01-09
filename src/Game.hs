@@ -25,13 +25,13 @@ initialObjs gs
   $ l_defaultObjs $ gs_currentLevel gs
 
 
-game :: SF RawFrameInfo (Camera, Renderable)
-game =
+game :: WorldName -> SF RawFrameInfo (Camera, Renderable)
+game w =
   proc rfi -> do
     (cam, objs, to_draw) <-
       renderObjects global_resources (tileToPos $ V2 19 50)
         -- BUG(sandy): this should be a signal!!!
-        (initialObjs $ initialGlobalState global_resources)
+        (initialObjs $ initialGlobalState w global_resources)
           -< rfi
     let gs = objm_globalState objs
         levelsz = fmap (fromIntegral . getPixel)
@@ -45,7 +45,8 @@ game =
     returnA -<
       ( cam
       , mconcat
-          [ drawParallax levelsz Parallax0 3
+          [ drawBackgroundColor (V4 46 90 137 255)
+          , drawParallax levelsz Parallax0 3
           , drawParallax levelsz Parallax1 4
           , drawParallax levelsz Parallax2 5
           , bg
@@ -64,7 +65,6 @@ game =
                 . hasChicken
               ) player
           , ui_box 17
-          , drawText 6 (V3 255 0 255) "hello world" 20
           ]
         )
   where
@@ -79,9 +79,9 @@ hasChicken :: ObjectOutput -> Bool
 hasChicken
     = S.member (HasPowerup PowerupDoubleJump) . os_tags . oo_state
 
-initialGlobalState :: Resources -> GlobalState
-initialGlobalState rs
-  = GlobalState (w_levels (r_worlds rs TestWorld) M.! "AutoLayer")
+initialGlobalState :: WorldName -> Resources -> GlobalState
+initialGlobalState w rs
+  = GlobalState (w_levels (r_worlds rs w) M.! "AutoLayer")
   $ S.fromList [Layer3]
 
 #endif

@@ -51,7 +51,7 @@ main = do
         { e_renderer = renderer
         , e_window = window
         }
-  writeIORef veryUnsafeEngineIORef engine
+  !() <- writeIORef veryUnsafeEngineIORef engine
   !rs <- pure global_resources
 
   tS <- getSystemTime

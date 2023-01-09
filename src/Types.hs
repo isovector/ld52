@@ -202,6 +202,7 @@ data Controls = Controls
   , c_reset :: Bool
   , c_dir :: V2 Int
   }
+  deriving (Eq)
 
 defaultControls :: Controls
 defaultControls = Controls
