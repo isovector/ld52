@@ -11,7 +11,7 @@ import           Drawing
 import           FRP
 import           Game.Objects (renderObjects, addObject)
 import           Game.World (drawLevel)
-import           Globals (global_textures)
+import           Globals (global_textures, global_resources)
 import           SDL
 import           Types
 import           Utils (setCenterOrigin, mkCenterdOriginRect)
@@ -24,21 +24,29 @@ initialObjs gs
   $ l_defaultObjs $ gs_currentLevel gs
 
 
-game :: Resources -> SF RawFrameInfo (Camera, Renderable)
-game rs =
+game :: SF RawFrameInfo (Camera, Renderable)
+game =
   proc rfi -> do
     (cam, objs, to_draw) <-
-      renderObjects rs (V2 0 0)
+      renderObjects global_resources (V2 0 0)
         -- BUG(sandy): this should be a signal!!!
-        (initialObjs $ initialGlobalState rs)
+        (initialObjs $ initialGlobalState global_resources)
           -< rfi
     let gs = objm_globalState objs
+        levelsz = fmap (fromIntegral . getPixel)
+                $ r_size
+                $ l_bounds
+                $ gs_currentLevel gs
     let player = find (S.member IsPlayer . os_tags . oo_state) $ objm_map objs
+
     bg <- arr $ uncurry drawLevel -< (gs_layerset gs, gs_currentLevel gs)
     returnA -<
       ( cam
       , mconcat
-          [ bg
+          [ drawParallax levelsz Parallax0 3
+          , drawParallax levelsz Parallax1 4
+          , drawParallax levelsz Parallax2 5
+          , bg
           , to_draw
           , ui_box (-17)
           , maybe mempty

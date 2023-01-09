@@ -3,7 +3,6 @@ module Game.Objects.Player where
 
 import           Collision (epsilon)
 import           Control.Lens ((*~), preview, (<>~))
-import           Data.Functor ((<&>))
 import           Data.Maybe (mapMaybe)
 import           Data.Monoid
 import qualified Data.Set as S

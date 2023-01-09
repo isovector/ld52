@@ -9,7 +9,7 @@ import Data.Foldable (for_, traverse_)
 import FRP
 import Foreign.C
 import Game.Camera (viaCamera)
-import Globals (global_resources, global_sprites, global_glyphs)
+import Globals (global_resources, global_sprites, global_glyphs, global_textures)
 import SDL
 import SDL.Mixer
 import Types
@@ -67,6 +67,28 @@ drawSpriteStretched wt pos theta flips stretched cam
         flips
   | otherwise = mempty
 
+drawSpriteOriginRect
+    :: WrappedTexture  -- ^ Texture
+    -> OriginRect WorldPos
+    -> V2 WorldPos     -- ^ position
+    -> Double          -- ^ rotation in rads
+    -> V2 Bool         -- ^ mirroring
+    -> Renderable
+drawSpriteOriginRect wt ore pos theta flips cam
+  | let wp = viaCamera cam pos
+  , rectContains screenRect wp
+  = do
+      let renderer = e_renderer $ r_engine global_resources
+      copyEx
+        renderer
+        (getTexture wt)
+        (wt_sourceRect wt)
+        (Just $ fmap round $ originRectToRect ore $ coerce wp)
+        (CDouble theta)
+        (Just $ P $ fmap round wp)
+        flips
+  | otherwise = mempty
+
 drawSprite
     :: WrappedTexture
     -> V2 WorldPos  -- ^ pos
@@ -114,5 +136,14 @@ drawText sz color text pos@(V2 x y) cam
           $ V2 sz sz
       rendererDrawBlendMode renderer $= BlendAlphaBlend
   | otherwise = mempty
+
+drawParallax :: V2 WorldPos -> GameTexture -> Double -> Renderable
+drawParallax sz gt scale c@(Camera cam) =
+  flip atScreenPos c
+    $ drawSpriteOriginRect (global_textures gt) (coerce bg_ore) (logicalSize / 2) 0
+    $ pure False
+  where
+    perc = coerce $ -cam / sz
+    bg_ore = OriginRect (logicalSize ^* scale) ((logicalSize ^* scale) * perc)
 
 #endif

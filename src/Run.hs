@@ -14,6 +14,7 @@ import SDL.Mixer hiding (quit)
 import System.Exit
 import Types
 import Globals (veryUnsafeEngineIORef, global_resources)
+import Game.Splash (mainMenu, runIntro)
 
 
 screenSize :: Num a => V2 a
@@ -61,7 +62,8 @@ main = do
     (pure $ RawFrameInfo defaultControls 0.016)
     (input window tRef)
     (output rs)
-    (game rs)
+    -- (game rs)
+    runIntro
   quit
 
 

@@ -11,6 +11,7 @@ import FRP.Yampa hiding ((*^))
 import Data.Bifunctor
 import Data.Tuple (swap)
 import Data.Foldable (traverse_)
+import Data.Bool (bool)
 
 #ifndef __HLINT__
 
@@ -128,5 +129,9 @@ inject f sf =
 eventToMaybe :: Event a -> Maybe a
 eventToMaybe NoEvent = Nothing
 eventToMaybe (Event a) = Just a
+
+onChange :: Eq a => SF a (Event a)
+onChange = proc a ->
+  edgeBy (\old new -> bool Nothing new $ old /= new) Nothing -< Just a
 
 #endif

@@ -98,6 +98,9 @@ instance IsResource GameTexture WrappedTexture where
   resourceExt    = "png"
   resourceName NintendoLogo = "nintendo"
   resourceName ChickenTexture = "chicken"
+  resourceName Parallax0 = "parallax0"
+  resourceName Parallax1 = "parallax1"
+  resourceName Parallax2 = "parallax2"
 
 instance IsResource Sound Chunk where
   load _ _ = Mixer.load
