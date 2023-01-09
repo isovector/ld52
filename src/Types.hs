@@ -160,7 +160,7 @@ data WorldName = TestWorld | HelpWorld
 
 ------------------------------------------------------------------------------
 -- | Audio used by the game.
-data Sound = NintendoSound
+data Sound = NintendoSound | CoinSound | DieSound | JumpSound | StepSound | ThudSound | WarpSound
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 data LevelLayer

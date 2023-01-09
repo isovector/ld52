@@ -100,6 +100,12 @@ instance IsResource Sound Chunk where
   resourceFolder = "sounds"
   resourceExt    = "wav"
   resourceName NintendoSound = "ding"
+  resourceName CoinSound = "coin"
+  resourceName DieSound = "die"
+  resourceName JumpSound = "jump"
+  resourceName StepSound = "step"
+  resourceName ThudSound = "thud"
+  resourceName WarpSound = "warp"
 
 instance IsResource WorldName World where
   load _ _ = loadWorld
