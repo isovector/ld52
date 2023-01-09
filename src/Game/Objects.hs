@@ -98,7 +98,7 @@ routeHits (RawFrameInfo c dt) outlast new = do
             ]
         , oi_frameInfo = fi
         , oi_state
-            = maybe (trace ("creating obj " <> show oid) noObjectState) id
+            = maybe noObjectState id
             $ fmap oo_state
             $ M.lookup oid
             $ objm_map outlast
