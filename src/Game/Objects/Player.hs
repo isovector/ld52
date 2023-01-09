@@ -92,7 +92,7 @@ player pos0
                         ([teleportBall
                               me
                               (coerce ore) (pos - (sz & _x .~ 0))
-                            $ V2 (bool negate id dir 300) (-300)] <$ action
+                            $ V2 (bool negate id dir 200) (-200)] <$ action
                         )
                     & #oe_focus .~ mconcat
                         [ () <$ am_teleporting
