@@ -155,7 +155,7 @@ data Tileset
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 
-data WorldName = TestWorld
+data WorldName = TestWorld | HelpWorld
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 ------------------------------------------------------------------------------

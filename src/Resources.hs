@@ -106,6 +106,7 @@ instance IsResource WorldName World where
   resourceFolder = "levels"
   resourceExt    = "ldtk"
   resourceName TestWorld = "test"
+  resourceName HelpWorld = "help"
 
 
 loadResources :: Engine -> IO Resources
