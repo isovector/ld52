@@ -72,6 +72,6 @@ hasChicken
 initialGlobalState :: Resources -> GlobalState
 initialGlobalState rs
   = GlobalState (w_levels (r_worlds rs TestWorld) M.! "AutoLayer")
-  $ S.fromList [Layer1, Layer3]
+  $ S.fromList [Layer3]
 
 #endif
