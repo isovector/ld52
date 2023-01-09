@@ -12,8 +12,6 @@ actor
     -> SF (Bool, Double, V2 Double, V2 WorldPos, GlobalState) (V2 WorldPos)
 actor ore = loopPre 0 $
   proc ((can_double, dt, vel'0, pos, gs), vel) -> do
-    -- TODO(sandy): bad pattern; fixme
-
     let lev = gs_currentLevel gs
         layers = gs_layerset gs
 

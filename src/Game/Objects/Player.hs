@@ -54,13 +54,24 @@ player pos0
                     $ listenInbox (preview #_TeleportOpportunity)
                     $ oi_events oi
 
+            tramp :: Maybe Double
+            tramp = eventToMaybe
+                    $ listenInbox (preview #_OnTrampoline)
+                    $ oi_events oi
+
         let me = oi_self oi
         action <- edge -< c_z $ fi_controls $ oi_frameInfo oi
 
         let can_double_jump = can_double_jump0 || now_jump
             dt = fi_dt $ oi_frameInfo oi
         vel'0 <- playerPhysVelocity -< oi_frameInfo oi
-        pos' <- actor ore -< (can_double_jump, dt, vel'0, pos, fi_global $ oi_frameInfo oi)
+        pos' <- actor ore -<
+          ( can_double_jump
+          , dt
+          , vel'0 & _y %~ maybe id const tramp
+          , pos
+          , fi_global $ oi_frameInfo oi
+          )
 
         let (V2 _ press_up) = fmap (== -1) $ c_dir $ fi_controls $ oi_frameInfo oi
         let pos'' = bool id (const cp_pos) dying
