@@ -10,21 +10,25 @@ import qualified Data.Text as T
 import           Game.Objects.Checkpoint (checkpoint)
 import           Game.Objects.Chicken (chicken)
 import           Game.Objects.Coin (coin)
+import           Game.Objects.CollectPowerup (collectPowerup)
 import           Game.Objects.Death (deathZone)
 import           Game.Objects.Door (door)
 import           Game.Objects.Player (player)
 import           Game.Objects.Test
 import           Game.Objects.TextBillboard (textBillboard)
 import           Game.Objects.ToggleRegion (toggleRegion)
+import           Game.Objects.Trampoline (trampoline)
 import qualified LDtk.Types as LDtk
 import           Level (ldtkColorToColor)
 import           Types
-import Utils (tileToPos)
-import Game.Objects.Trampoline (trampoline)
+import           Utils (tileToPos)
 
 
 buildEntity :: Text -> V2 WorldPos -> V2 Double -> Map Text LDtk.FieldValue -> Either Text Object
 buildEntity "Player" pos _ _ = pure $ player pos
+buildEntity "PowerUp" pos _ props =
+  collectPowerup pos
+    <$> asEnum "PowerUp" "power" props
 buildEntity "Trampoline" pos sz props =
   trampoline pos sz
     <$> asDouble "Trampoline" "strength" props

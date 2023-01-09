@@ -30,6 +30,7 @@ frameCounts _ NoAnim = 1
 frameCounts _ Run    = 4
 
 frameSound :: Sprite -> Anim -> Int -> Maybe Sound
+frameSound _ Run 0 = Just StepSound
 frameSound _ Run 2 = Just StepSound
 frameSound _ _ _ = Nothing
 
