@@ -286,6 +286,7 @@ data ObjectState = ObjectState
   { os_pos :: V2 WorldPos
   , os_collision :: Maybe (OriginRect Double)
   , os_tags :: Set ObjectTag
+  , os_camera_offset :: V2 Double
   }
   deriving stock (Eq, Ord, Show, Generic)
 

@@ -3,6 +3,7 @@ module Game.Objects.Test where
 import Drawing
 import FRP
 import Types
+import Utils (noObjectState)
 
 shrapnel :: Int -> V2 WorldPos -> Double -> Object
 shrapnel _n pos0 theta = arr oi_frameInfo >>> loopPre pos0
@@ -20,7 +21,7 @@ shrapnel _n pos0 theta = arr oi_frameInfo >>> loopPre pos0
               = drawFilledRect (V4 255 0 0 255)
               $ flip Rectangle 3
               $ P pos'
-          , oo_state = ObjectState pos' Nothing mempty
+          , oo_state = noObjectState pos'
           }
       , pos'
       )
@@ -43,7 +44,7 @@ grenade pos life =
             }
             )
             (drawFilledRect (V4 255 0 0 255) $ flip Rectangle 8 $ P pos)
-            (ObjectState pos Nothing mempty)
+            (noObjectState pos)
 
     ) 0.5
     $ do
@@ -53,5 +54,5 @@ grenade pos life =
         $ ObjectOutput
             mempty
             (drawFilledRect col $ flip Rectangle 8 $ P pos)
-            (ObjectState pos Nothing mempty)
+            (noObjectState pos)
 

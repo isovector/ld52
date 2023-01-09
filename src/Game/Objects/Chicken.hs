@@ -5,7 +5,7 @@ import           Drawing (drawSprite)
 import           FRP
 import           Globals (global_textures)
 import           Types
-import           Utils (mkCenterdOriginRect)
+import           Utils (mkCenterdOriginRect, noObjectState)
 
 chicken :: V2 WorldPos -> Object
 chicken pos =
@@ -20,11 +20,11 @@ chicken pos =
             }
       , oo_render =
           drawSprite (global_textures ChickenTexture) pos 0 (pure False)
-      , oo_state = ObjectState
-          { os_tags = S.singleton $ IsPowerup PowerupDoubleJump
-          , os_collision = Just $ mkCenterdOriginRect 40
-          , os_pos = pos
-          }
+      , oo_state =
+          (noObjectState pos)
+            { os_tags = S.singleton $ IsPowerup PowerupDoubleJump
+            , os_collision = Just $ mkCenterdOriginRect 40
+            }
       }
 
 
