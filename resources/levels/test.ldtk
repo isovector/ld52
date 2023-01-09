@@ -5646,7 +5646,7 @@
 						},
 						{
 							"__identifier": "Player",
-							"__grid": [111,74],
+							"__grid": [16,103],
 							"__pivot": [0.5,1],
 							"__tags": [],
 							"__tile": null,
@@ -5655,7 +5655,7 @@
 							"width": 8,
 							"height": 16,
 							"defUid": 121,
-							"px": [892,600],
+							"px": [132,832],
 							"fieldInstances": []
 						},
 						{
@@ -5986,6 +5986,20 @@
 							"defUid": 195,
 							"px": [1560,432],
 							"fieldInstances": [{ "__identifier": "strength", "__value": -400, "__type": "Float", "__tile": null, "defUid": 196, "realEditorValues": [] }]
+						},
+						{
+							"__identifier": "Coin",
+							"__grid": [204,70],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#FEAE34",
+							"iid": "c92641c0-7820-11ed-9973-4590017ca42d",
+							"width": 8,
+							"height": 8,
+							"defUid": 184,
+							"px": [1636,564],
+							"fieldInstances": []
 						}
 					]
 				},
