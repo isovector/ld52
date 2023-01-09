@@ -37,6 +37,7 @@ dependencies:
 - vector
 - aeson
 - deepseq
+- hashable
 
 ghc-options:
 - -Wall

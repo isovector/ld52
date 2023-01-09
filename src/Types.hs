@@ -42,6 +42,7 @@ import Foreign.C (CInt)
 import GHC.Generics
 import SDL hiding (trace, Event)
 import SDL.Mixer (Chunk)
+import Data.Hashable (Hashable)
 
 
 ------------------------------------------------------------------------------
@@ -71,7 +72,7 @@ newtype ScreenPos = ScreenPos
 newtype WorldPos = WorldPos
   { getWorldPos :: Double
   }
-  deriving newtype (Eq, Ord, Show, Read, Enum, Num, Fractional, Floating, Real, RealFrac)
+  deriving newtype (Eq, Ord, Show, Read, Enum, Num, Fractional, Floating, Real, RealFrac, Hashable)
 
 data World = World
   { w_levels :: Map Text Level
