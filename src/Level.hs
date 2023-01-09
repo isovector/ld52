@@ -90,7 +90,7 @@ parseEntities l = partitionEithers $ do
   e <- l ^. #entityInstances
   pure $
     buildEntity
-      (e ^. #__identifier)
+      (traceFX "spawning: " id $ e ^. #__identifier)
       (fmap (WorldPos . fromIntegral) $ pairToV2 $ e ^. #px)
       (parseV2 fromIntegral e #width #height)
       (buildMap $ e ^. #fieldInstances)
