@@ -184,12 +184,14 @@ data WrappedTexture = WrappedTexture
 data Controls = Controls
   { c_space :: Bool
   , c_z :: Bool
+  , c_reset :: Bool
   , c_dir :: V2 Int
   }
 
 defaultControls :: Controls
 defaultControls = Controls
   { c_space = False
+  , c_reset = False
   , c_z = False
   , c_dir = V2 0 0
   }
