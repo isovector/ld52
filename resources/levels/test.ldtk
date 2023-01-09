@@ -10,8 +10,8 @@
 	},
 	"iid": "a22d35f0-7820-11ed-b6fd-213e885f30da",
 	"jsonVersion": "1.2.3",
-	"appBuildId": 464726,
-	"nextUid": 173,
+	"appBuildId": 464782,
+	"nextUid": 177,
 	"identifierStyle": "Capitalize",
 	"worldLayout": "LinearHorizontal",
 	"worldGridWidth": 128,
@@ -1261,6 +1261,98 @@
 					"tilesetUid": null
 				}
 			]
+		},
+		{
+			"identifier": "ToggleLayer",
+			"uid": 173,
+			"tags": [],
+			"width": 16,
+			"height": 16,
+			"resizableX": true,
+			"resizableY": true,
+			"keepAspectRatio": false,
+			"tileOpacity": 1,
+			"fillOpacity": 1,
+			"lineOpacity": 1,
+			"hollow": true,
+			"color": "#FEE761",
+			"renderMode": "Rectangle",
+			"showName": true,
+			"tilesetId": null,
+			"tileRenderMode": "FitInside",
+			"tileRect": null,
+			"nineSliceBorders": [],
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0,
+			"pivotY": 0,
+			"fieldDefs": [
+				{
+					"identifier": "layer",
+					"doc": null,
+					"__type": "LocalEnum.Layer",
+					"uid": 175,
+					"type": "F_Enum(174)",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "ValueOnly",
+					"editorDisplayPos": "Center",
+					"editorLinkStyle": "StraightArrow",
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": true,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "toggle",
+					"doc": null,
+					"__type": "Bool",
+					"uid": 176,
+					"type": "F_Bool",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "ValueOnly",
+					"editorDisplayPos": "Center",
+					"editorLinkStyle": "StraightArrow",
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefTags": [],
+					"tilesetUid": null
+				}
+			]
 		}
 	], "tilesets": [
 		{
@@ -1329,7 +1421,11 @@
 				"averageColors": "61226323633465346356685428760000000000000000000000001c863c861c86000000000000000000000000000000000000000000000000000000009c75fc97fd97fc976b760000432336544223000000000000000000000000000000006b65fb75fb65fb75fc86fb753a541b982232222513362335000000000000000000000000aa54f954f733f533f733e7433b64232254222b97a335a2245744743358447433574400002533c844e633f424c423643300002b65bc86dc763b547224222232320243323302430000000015565434d4563544133600008733fa54f74366331232123211229232f2337232000000000db82534c35644341b9800001645a434832303220000000012320243000024330000000000002976e45562230000000012328234454412222122a233e334d23241222433112233225422b534f323e32263222222f022f122f122f122f122f122f122f222f244f244f222f122f122f122f122f222f122f122f122f122f122f122f122f122f122f122f122f12200000000000000000000000000000000"
 			}
 		}
-	], "enums": [], "externalEnums": [], "levelFields": [] },
+	], "enums": [{ "identifier": "Layer", "uid": 174, "values": [
+		{ "id": "Layer1", "tileId": null, "color": 12470831, "__tileSrcRect": null },
+		{ "id": "Layer2", "tileId": null, "color": 14120515, "__tileSrcRect": null },
+		{ "id": "Layer3", "tileId": null, "color": 15389866, "__tileSrcRect": null }
+	], "iconTilesetUid": null, "externalRelPath": null, "externalFileChecksum": null, "tags": [] }], "externalEnums": [], "levelFields": [] },
 	"levels": [
 		{
 			"identifier": "AutoLayer",
