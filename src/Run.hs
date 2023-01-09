@@ -15,6 +15,7 @@ import System.Exit
 import Types
 import Globals (veryUnsafeEngineIORef, global_resources)
 import Game.Splash (mainMenu, runIntro)
+import System.Mem (performGC)
 
 
 screenSize :: Num a => V2 a
@@ -69,6 +70,7 @@ main = do
 
 input :: Window -> IORef Double -> Bool -> IO (Double, Maybe RawFrameInfo)
 input win tRef _ = do
+  performGC
   pumpEvents
   es <- pollEvents
   when (any (isQuit . eventPayload) es) $ do
