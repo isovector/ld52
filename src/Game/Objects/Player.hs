@@ -16,7 +16,6 @@ import qualified SDL.Vect as SDL
 import           Types
 import           Utils
 
-
 player :: V2 WorldPos -> Object
 player pos0
   = ( loopPre False $ proc (oi, can_double_jump0) -> do

@@ -103,6 +103,7 @@ instance IsResource Sound Chunk where
   resourceFolder = "sounds"
   resourceExt    = "wav"
   resourceName NintendoSound = "ding"
+  resourceName CheckpointSound = "checkpoint"
   resourceName CoinSound = "coin"
   resourceName DieSound = "die"
   resourceName JumpSound = "jump"

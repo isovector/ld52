@@ -41,6 +41,7 @@ teleportBall owner owner_ore pos0 vel0 =
         { oo_events = mempty
             { oe_die = die
             , oe_send_message = [(owner, TeleportTo youpos')] <$ die
+            , oe_play_sound = [WarpSound] <$ die
             , oe_focus = () <$ start
             }
         , oo_render = drawOriginRect (V4 0 255 255 255) ore pos'
