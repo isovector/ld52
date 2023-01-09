@@ -42,7 +42,7 @@ buildEntity "ToggleLayer" pos sz props =
     <*> asBool "Toggle" "toggle" props
 buildEntity "Text" pos _ props =
   textBillboard
-    <$> traceShowId (asDouble "Text" "size" props)
+    <$> asDouble "Text" "size" props
     <*> asColor "Text" "color" props
     <*> asText "Text" "text" props
     <*> pure pos
