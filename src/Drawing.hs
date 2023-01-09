@@ -20,8 +20,9 @@ import Resources (frameSound)
 
 playSound :: Resources -> Sound -> IO ()
 playSound r s = do
-  halt 0
-  void $ playOn 0 Once $ r_sounds r s
+  let channel = fromIntegral $ fromEnum s
+  halt channel
+  void $ playOn channel Once $ r_sounds r s
 
 
 drawOriginRect :: Color -> OriginRect WorldPos -> V2 WorldPos -> Renderable
