@@ -9,17 +9,23 @@ import qualified Data.Set as S
 import           Drawing
 import           FRP
 import           FRP.Yampa ((*^))
+import           Game.Common (listenInbox)
 import           Game.Objects.Actor (actor)
 import           Game.Objects.TeleportBall (teleportBall)
 import qualified SDL.Vect as SDL
 import           Types
 import           Utils
-import Game.Common (listenInbox)
 
 
 player :: V2 WorldPos -> Object
 player pos0
   = ( loopPre False $ proc (oi, can_double_jump0) -> do
+        -- TODO(sandy): this is a bad pattern; object constructor should take an
+        -- initial pos
+        start <- nowish () -< ()
+        let pos = event (os_pos $ oi_state oi) (const pos0) start
+
+
         let now_jump
               = event False ( any $ any (== PowerupDoubleJump)
                                   . mapMaybe (preview #_IsPowerup)
@@ -52,27 +58,39 @@ player pos0
         action <- edge -< c_z $ fi_controls $ oi_frameInfo oi
 
         let can_double_jump = can_double_jump0 || now_jump
-        res <- actor ore playerPhysVelocity (drawPlayer ore) pos0 -< (can_double_jump, oi)
+            dt = fi_dt $ oi_frameInfo oi
+        vel'0 <- playerPhysVelocity -< oi_frameInfo oi
+        pos' <- actor ore -< (can_double_jump, dt, vel'0, pos, fi_global $ oi_frameInfo oi)
 
         let (V2 _ press_up) = fmap (== -1) $ c_dir $ fi_controls $ oi_frameInfo oi
-        let pos = bool id (const cp_pos) dying
+        let pos'' = bool id (const cp_pos) dying
                 $ bool id (maybe id const doorout) press_up
                 $ do_teleport
-                $ res ^. #oo_state . #os_pos
+                $ pos'
 
         edir <- edgeBy diffDir 0 -< pos
         dir <- hold True -< edir
 
+        drawn <- drawPlayer ore -< pos''
+
         returnA -<
-          ( res & #oo_state . #os_tags
-                    %~ bool id (S.insert $ HasPowerup PowerupDoubleJump) now_jump
-                & #oo_state . #os_pos .~ pos
-                & #oo_state . #os_tags %~ S.insert IsPlayer
-                & #oo_events . #oe_spawn <>~ ([teleportBall me pos $ V2 (bool negate id dir 200) (-100)] <$ action)
+          (
+          ObjectOutput
+              { oo_events =
+                  mempty
+                    & #oe_spawn <>~
+                        ([teleportBall me pos $ V2 (bool negate id dir 200) (-100)] <$ action)
+              , oo_state =
+                  oi_state oi
+                    & #os_pos .~ pos''
+                    & #os_collision .~ Just (coerce ore)
+                    & #os_tags %~ bool id (S.insert $ HasPowerup PowerupDoubleJump) now_jump
+                    & #os_tags %~ S.insert IsPlayer
+              , oo_render = drawn
+              }
           , can_double_jump
           )
     )
-  -- >>> actor ore playerPhysVelocity (drawPlayer ore) pos0
   >>> focusOn
   where
     ore = OriginRect sz $ sz & _x *~ 0.5
@@ -93,16 +111,16 @@ playerPhysVelocity = proc fi -> do
   returnA -< vel'
 
 
-drawPlayer :: OriginRect WorldPos -> SF (ObjectInput, V2 WorldPos) Renderable
+drawPlayer :: OriginRect WorldPos -> SF (V2 WorldPos) Renderable
 drawPlayer sz = arr mconcat <<< fork
-  [ arr $ \(_, pos) -> mconcat
+  [ arr $ \pos -> mconcat
       [ drawOriginRect (V4 255 255 0 16) sz pos
       , drawFilledRect (V4 255 0 0 255)
           $ flip Rectangle 1
           $ P
           $ pos
       ]
-  , proc (_, pos) -> do
+  , proc pos -> do
       -- We can fully animate the player as a function of the position!
       edir <- edgeBy diffDir 0 -< pos
       dir <- hold True -< edir

@@ -9,24 +9,15 @@ import Utils
 
 actor
     :: OriginRect WorldPos
-    -> SF (FrameInfo) (V2 Double)
-    -> SF (ObjectInput, V2 WorldPos) Renderable
-    -> V2 WorldPos
-    -> SF (Bool, ObjectInput) ObjectOutput
-actor ore input render pos0 = loopPre 0 $
-  proc ((can_double, oi@(ObjectInput _ _ fi os)), vel) -> do
+    -> SF (Bool, Double, V2 Double, V2 WorldPos, GlobalState) (V2 WorldPos)
+actor ore = loopPre 0 $
+  proc ((can_double, dt, vel'0, pos, gs), vel) -> do
     -- TODO(sandy): bad pattern; fixme
-    start <- nowish () -< ()
-    let pos = event (os_pos $ oi_state oi) (const pos0) start
 
-    let dt = fi_dt fi
-    let lev = gs_currentLevel $ fi_global fi
-        layers = gs_layerset $ fi_global fi
+    let lev = gs_currentLevel gs
+        layers = gs_layerset gs
 
         collision purpose = (getAny . foldMap ((fmap Any .) . l_hitmap lev) layers purpose . posToTile)
-
-    vel'0 <- input -< fi
-
     let onGround = touchingGround (collision CollisionCheckGround) ore pos
     let vel' = updateVel (can_double || onGround) vel vel'0
     let dpos = dt *^ vel'
@@ -39,18 +30,7 @@ actor ore input render pos0 = loopPre 0 $
               <*> pos'
               <*> vel'
 
-    img <- render -< (oi, pos')
-
-    returnA -<
-      ( ObjectOutput
-        { oo_events = mempty
-        , oo_render = img
-        , oo_state =
-            os & #os_pos .~ pos'
-               & #os_collision .~ coerce (Just ore)
-        }
-      , ( vel'')
-      )
+    returnA -< (pos', vel'')
 
 
 touchingGround :: (V2 WorldPos -> Bool) -> OriginRect WorldPos -> V2 WorldPos -> Bool
@@ -64,7 +44,7 @@ touchingGround toHit ore pos =
 
 
 updateVelAir :: V2 Double -> V2 Double -> V2 Double
-updateVelAir vel dvel@(V2 dvx _) =
+updateVelAir vel dvel =
     freeVel & _x %~ clampAbs maxXSpeed
   where
     grav = V2 0 10
@@ -76,7 +56,8 @@ updateVelGround vel dvel@(V2 dvx _) =
     V2 (maxXSpeed * signum dvx) air_y
   where
     maxXSpeed = 100
-    (V2 _ air_y) = vel + dvel
+    grav = V2 0 10
+    (V2 _ air_y) = vel + dvel + grav
 
 
 updateVel :: Bool -> V2 Double -> V2 Double -> V2 Double
