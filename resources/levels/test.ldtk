@@ -11,7 +11,7 @@
 	"iid": "a22d35f0-7820-11ed-b6fd-213e885f30da",
 	"jsonVersion": "1.2.3",
 	"appBuildId": 464726,
-	"nextUid": 212,
+	"nextUid": 213,
 	"identifierStyle": "Capitalize",
 	"worldLayout": "LinearHorizontal",
 	"worldGridWidth": 128,
@@ -62,7 +62,8 @@
 				{ "value": 2, "identifier": "platforms", "color": "#F6757A" },
 				{ "value": 3, "identifier": "trapdoors", "color": "#2F5CBE" },
 				{ "value": 4, "identifier": "killblocks", "color": "#2FBE66" },
-				{ "value": 5, "identifier": "killblock_up", "color": "#2FBE43" }
+				{ "value": 5, "identifier": "killblock_side", "color": "#2FBE43" },
+				{ "value": 6, "identifier": "killblock_corner", "color": "#89BE2F" }
 			],
 			"autoRuleGroups": [
 				{ "uid": 202, "name": "killblocks", "active": true, "isOptional": false, "rules": [
@@ -73,7 +74,7 @@
 						"tileIds": [13],
 						"chance": 1,
 						"breakOnMatch": true,
-						"pattern": [0,0,0,0,5,5,0,5,0],
+						"pattern": [0,0,0,0,6,5,0,5,0],
 						"flipX": true,
 						"flipY": true,
 						"xModulo": 1,
@@ -87,6 +88,30 @@
 						"outOfBoundsValue": null,
 						"perlinActive": false,
 						"perlinSeed": 8018307,
+						"perlinScale": 0.2,
+						"perlinOctaves": 2
+					},
+					{
+						"uid": 212,
+						"active": true,
+						"size": 3,
+						"tileIds": [13],
+						"chance": 1,
+						"breakOnMatch": true,
+						"pattern": [0,0,0,0,6,6,0,0,0],
+						"flipX": true,
+						"flipY": false,
+						"xModulo": 1,
+						"yModulo": 1,
+						"xOffset": 0,
+						"yOffset": 0,
+						"checker": "None",
+						"tileMode": "Single",
+						"pivotX": 0,
+						"pivotY": 0,
+						"outOfBoundsValue": null,
+						"perlinActive": false,
+						"perlinSeed": 4406201,
 						"perlinScale": 0.2,
 						"perlinOctaves": 2
 					},
@@ -2155,7 +2180,7 @@
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,0,
-						0,4,4,4,4,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,1,5,0,0,0,0,
+						0,4,4,4,4,1,1,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,
 						0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,
@@ -2196,7 +2221,7 @@
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,
 						1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,5,
-						5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,4,4,4,4,0,5,1,
+						6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,4,4,4,4,4,4,4,0,5,1,
 						5,0,0,0,1,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -2206,7 +2231,7 @@
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 						1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,2,2,2,2,1,1,1,
 						1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,5,5,5,0,0,1,1,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,6,5,6,0,0,1,1,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,
 						1,1,1,1,1,1,1,0,0,0,4,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,
@@ -2241,7 +2266,7 @@
 						1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,5,0,0,4,0,0,4,0,0,0,0,0,0,0,0,2,1,0,0,0,0,0,0,0,0,0,0,0,5,0,
+						0,0,0,0,0,5,0,0,5,0,0,4,0,0,0,0,0,0,0,0,2,1,0,0,0,0,0,0,0,0,0,0,0,5,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -2260,11 +2285,11 @@
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,
 						0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,
-						0,0,5,5,1,1,5,5,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,
+						0,0,6,6,1,1,0,5,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,0,0,0,0,4,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,6,6,0,4,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,
@@ -2283,7 +2308,7 @@
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,1,
 						1,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,
-						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,5,0,0,0,0,1,1,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0,0,2,1,1,1,1,1,1,0,
@@ -2672,8 +2697,6 @@
 						{ "px": [592,464], "src": [0,128], "f": 2, "t": 144, "d": [138,4677] },
 						{ "px": [640,464], "src": [64,96], "f": 2, "t": 112, "d": [138,4680] },
 						{ "px": [656,464], "src": [0,128], "f": 2, "t": 144, "d": [138,4681] },
-						{ "px": [1264,464], "src": [48,128], "f": 0, "t": 147, "d": [138,4719] },
-						{ "px": [1280,464], "src": [80,96], "f": 0, "t": 113, "d": [138,4720] },
 						{ "px": [1296,464], "src": [48,128], "f": 0, "t": 147, "d": [138,4721] },
 						{ "px": [1344,464], "src": [48,128], "f": 0, "t": 147, "d": [138,4724] },
 						{ "px": [1376,464], "src": [64,96], "f": 0, "t": 112, "d": [138,4726] },
@@ -2705,8 +2728,6 @@
 						{ "px": [1440,528], "src": [48,128], "f": 0, "t": 147, "d": [138,5370] },
 						{ "px": [1456,528], "src": [96,96], "f": 0, "t": 114, "d": [138,5371] },
 						{ "px": [1488,528], "src": [160,128], "f": 0, "t": 154, "d": [138,5373] },
-						{ "px": [1504,528], "src": [0,128], "f": 0, "t": 144, "d": [138,5374] },
-						{ "px": [1536,528], "src": [96,96], "f": 0, "t": 114, "d": [138,5376] },
 						{ "px": [1552,528], "src": [64,96], "f": 0, "t": 112, "d": [138,5377] },
 						{ "px": [1568,528], "src": [64,96], "f": 0, "t": 112, "d": [138,5378] },
 						{ "px": [1904,528], "src": [64,96], "f": 0, "t": 112, "d": [138,5399] },
@@ -6173,6 +6194,8 @@
 						{ "px": [688,80], "src": [96,80], "f": 0, "t": 96, "d": [172,843] },
 						{ "px": [896,80], "src": [96,80], "f": 3, "t": 96, "d": [172,856] },
 						{ "px": [1408,80], "src": [96,80], "f": 3, "t": 96, "d": [172,888] },
+						{ "px": [1648,80], "src": [96,80], "f": 2, "t": 96, "d": [172,903] },
+						{ "px": [1680,80], "src": [96,80], "f": 3, "t": 96, "d": [172,905] },
 						{ "px": [864,96], "src": [96,80], "f": 3, "t": 96, "d": [172,1014] },
 						{ "px": [672,112], "src": [96,80], "f": 0, "t": 96, "d": [172,1162] },
 						{ "px": [848,112], "src": [96,80], "f": 3, "t": 96, "d": [172,1173] },
@@ -6273,9 +6296,11 @@
 						{ "px": [704,448], "src": [96,80], "f": 3, "t": 96, "d": [172,4524] },
 						{ "px": [960,448], "src": [96,80], "f": 2, "t": 96, "d": [172,4540] },
 						{ "px": [1104,448], "src": [96,80], "f": 1, "t": 96, "d": [172,4549] },
+						{ "px": [1216,448], "src": [96,80], "f": 1, "t": 96, "d": [172,4556] },
 						{ "px": [1584,448], "src": [96,80], "f": 2, "t": 96, "d": [172,4579] },
 						{ "px": [496,464], "src": [96,80], "f": 3, "t": 96, "d": [172,4671] },
 						{ "px": [976,464], "src": [96,80], "f": 2, "t": 96, "d": [172,4701] },
+						{ "px": [1232,464], "src": [96,80], "f": 1, "t": 96, "d": [172,4717] },
 						{ "px": [1616,464], "src": [96,80], "f": 1, "t": 96, "d": [172,4741] },
 						{ "px": [432,480], "src": [96,80], "f": 2, "t": 96, "d": [172,4827] },
 						{ "px": [1072,480], "src": [96,80], "f": 2, "t": 96, "d": [172,4867] },
@@ -6531,7 +6556,6 @@
 						{ "px": [1632,336], "src": [224,16], "f": 0, "t": 32, "d": [203,3462] },
 						{ "px": [1648,336], "src": [224,16], "f": 0, "t": 32, "d": [203,3463] },
 						{ "px": [1664,336], "src": [224,16], "f": 0, "t": 32, "d": [203,3464] },
-						{ "px": [848,384], "src": [224,16], "f": 0, "t": 32, "d": [203,3893] },
 						{ "px": [896,384], "src": [224,16], "f": 0, "t": 32, "d": [203,3896] },
 						{ "px": [800,400], "src": [224,16], "f": 0, "t": 32, "d": [203,4050] },
 						{ "px": [848,400], "src": [224,16], "f": 0, "t": 32, "d": [203,4053] },
@@ -6567,22 +6591,22 @@
 						{ "px": [1680,224], "src": [0,96], "f": 1, "t": 108, "d": [208,2345] },
 						{ "px": [1648,240], "src": [0,96], "f": 0, "t": 108, "d": [208,2503] },
 						{ "px": [1680,240], "src": [0,96], "f": 1, "t": 108, "d": [208,2505] },
-						{ "px": [1648,80], "src": [224,0], "f": 2, "t": 14, "d": [211,903] },
-						{ "px": [1680,80], "src": [224,0], "f": 2, "t": 14, "d": [211,905] },
 						{ "px": [1664,256], "src": [224,0], "f": 2, "t": 14, "d": [211,2664] },
-						{ "px": [1152,448], "src": [224,0], "f": 0, "t": 14, "d": [211,4552] },
-						{ "px": [1168,448], "src": [224,0], "f": 0, "t": 14, "d": [211,4553] },
-						{ "px": [1216,448], "src": [224,0], "f": 0, "t": 14, "d": [211,4556] },
-						{ "px": [1232,464], "src": [224,0], "f": 0, "t": 14, "d": [211,4717] },
+						{ "px": [1504,528], "src": [224,0], "f": 0, "t": 14, "d": [211,5374] },
+						{ "px": [1536,528], "src": [224,0], "f": 0, "t": 14, "d": [211,5376] },
 						{ "px": [1120,240], "src": [0,96], "f": 1, "t": 108, "d": [207,2470] },
 						{ "px": [1104,224], "src": [224,0], "f": 0, "t": 14, "d": [205,2309] },
 						{ "px": [800,384], "src": [224,0], "f": 0, "t": 14, "d": [205,3890] },
+						{ "px": [848,384], "src": [224,0], "f": 0, "t": 14, "d": [205,3893] },
 						{ "px": [960,400], "src": [224,0], "f": 0, "t": 14, "d": [205,4060] },
 						{ "px": [1312,448], "src": [224,0], "f": 0, "t": 14, "d": [205,4562] },
+						{ "px": [1152,448], "src": [208,0], "f": 0, "t": 13, "d": [212,4552] },
+						{ "px": [1168,448], "src": [208,0], "f": 1, "t": 13, "d": [212,4553] },
+						{ "px": [1264,464], "src": [208,0], "f": 0, "t": 13, "d": [212,4719] },
+						{ "px": [1280,464], "src": [208,0], "f": 1, "t": 13, "d": [212,4720] },
 						{ "px": [1120,224], "src": [208,0], "f": 1, "t": 13, "d": [206,2310] },
 						{ "px": [1648,256], "src": [208,0], "f": 2, "t": 13, "d": [206,2663] },
-						{ "px": [1680,256], "src": [208,0], "f": 3, "t": 13, "d": [206,2665] },
-						{ "px": [1232,448], "src": [208,0], "f": 1, "t": 13, "d": [206,4557] }
+						{ "px": [1680,256], "src": [208,0], "f": 3, "t": 13, "d": [206,2665] }
 					],
 					"seed": 4980790,
 					"overrideTilesetUid": null,
@@ -6724,7 +6748,7 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [218,141],
+							"__grid": [218,140],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -6733,7 +6757,7 @@
 							"width": 48,
 							"height": 16,
 							"defUid": 178,
-							"px": [1744,1128],
+							"px": [1744,1120],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -6769,7 +6793,7 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [100,50],
+							"__grid": [100,49],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -6778,7 +6802,7 @@
 							"width": 16,
 							"height": 24,
 							"defUid": 178,
-							"px": [800,400],
+							"px": [800,392],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -6786,7 +6810,7 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [106,50],
+							"__grid": [106,49],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -6795,7 +6819,7 @@
 							"width": 16,
 							"height": 24,
 							"defUid": 178,
-							"px": [848,400],
+							"px": [848,392],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -6803,7 +6827,7 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [112,49],
+							"__grid": [112,48],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -6812,7 +6836,7 @@
 							"width": 16,
 							"height": 32,
 							"defUid": 178,
-							"px": [896,392],
+							"px": [896,384],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -6843,7 +6867,7 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [110,35],
+							"__grid": [110,34],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -6852,7 +6876,7 @@
 							"width": 16,
 							"height": 32,
 							"defUid": 178,
-							"px": [880,280],
+							"px": [880,272],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -6874,7 +6898,7 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [145,58],
+							"__grid": [145,57],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -6883,7 +6907,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 178,
-							"px": [1160,464],
+							"px": [1160,456],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -6891,7 +6915,7 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [159,60],
+							"__grid": [159,59],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -6900,7 +6924,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 178,
-							"px": [1272,480],
+							"px": [1272,472],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -6908,7 +6932,7 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [164,58],
+							"__grid": [164,57],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -6917,7 +6941,7 @@
 							"width": 16,
 							"height": 32,
 							"defUid": 178,
-							"px": [1312,464],
+							"px": [1312,456],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -6939,24 +6963,7 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [153,58],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "991d5f20-7820-11ed-89df-97a4883bec18",
-							"width": 16,
-							"height": 16,
-							"defUid": 178,
-							"px": [1224,464],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [117,52],
+							"__grid": [117,51],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -6965,7 +6972,7 @@
 							"width": 40,
 							"height": 24,
 							"defUid": 178,
-							"px": [936,416],
+							"px": [936,408],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -6996,7 +7003,7 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [188,68],
+							"__grid": [188,67],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -7005,7 +7012,7 @@
 							"width": 16,
 							"height": 24,
 							"defUid": 178,
-							"px": [1504,544],
+							"px": [1504,536],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -7013,7 +7020,7 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [192,68],
+							"__grid": [192,67],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -7022,7 +7029,7 @@
 							"width": 16,
 							"height": 24,
 							"defUid": 178,
-							"px": [1536,544],
+							"px": [1536,536],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -7072,7 +7079,7 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [48,121],
+							"__grid": [48,120],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -7081,7 +7088,7 @@
 							"width": 64,
 							"height": 16,
 							"defUid": 178,
-							"px": [384,968],
+							"px": [384,960],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -7089,7 +7096,7 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [88,119],
+							"__grid": [88,118],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -7098,7 +7105,7 @@
 							"width": 16,
 							"height": 16,
 							"defUid": 178,
-							"px": [704,952],
+							"px": [704,944],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -7214,7 +7221,7 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [130,17],
+							"__grid": [130,16],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -7223,7 +7230,7 @@
 							"width": 16,
 							"height": 80,
 							"defUid": 178,
-							"px": [1040,136],
+							"px": [1040,128],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -7231,7 +7238,7 @@
 						},
 						{
 							"__identifier": "Text",
-							"__grid": [112,24],
+							"__grid": [110,24],
 							"__pivot": [0.5,1],
 							"__tags": [],
 							"__tile": null,
@@ -7240,19 +7247,19 @@
 							"width": 8,
 							"height": 8,
 							"defUid": 127,
-							"px": [900,200],
+							"px": [884,200],
 							"fieldInstances": [
-								{ "__identifier": "size", "__value": 6, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [6] }] },
-								{ "__identifier": "text", "__value": "jump throw up there", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
+								{ "__identifier": "size", "__value": 5, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [5] }] },
+								{ "__identifier": "text", "__value": "jump + throw", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
 									"id": "V_String",
-									"params": ["jump throw up there"]
+									"params": ["jump + throw"]
 								}] },
 								{ "__identifier": "color", "__value": "#412FD2", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [4272082] }] }
 							]
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [144,11],
+							"__grid": [144,10],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -7261,7 +7268,7 @@
 							"width": 32,
 							"height": 32,
 							"defUid": 178,
-							"px": [1152,88],
+							"px": [1152,80],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -7269,7 +7276,7 @@
 						},
 						{
 							"__identifier": "Player",
-							"__grid": [16,116],
+							"__grid": [103,43],
 							"__pivot": [0.5,1],
 							"__tags": [],
 							"__tile": null,
@@ -7278,12 +7285,12 @@
 							"width": 8,
 							"height": 16,
 							"defUid": 121,
-							"px": [132,936],
+							"px": [828,352],
 							"fieldInstances": []
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [152,11],
+							"__grid": [152,10],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -7292,7 +7299,7 @@
 							"width": 64,
 							"height": 32,
 							"defUid": 178,
-							"px": [1216,88],
+							"px": [1216,80],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -7314,7 +7321,7 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [138,30],
+							"__grid": [138,29],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -7323,7 +7330,7 @@
 							"width": 24,
 							"height": 24,
 							"defUid": 178,
-							"px": [1104,240],
+							"px": [1104,232],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -7345,7 +7352,7 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [188,29],
+							"__grid": [188,28],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -7354,7 +7361,7 @@
 							"width": 128,
 							"height": 16,
 							"defUid": 178,
-							"px": [1504,232],
+							"px": [1504,224],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -7362,16 +7369,16 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [207,11],
+							"__grid": [207,12],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
 							"__smartColor": "#7B0A15",
 							"iid": "540d1030-7820-11ed-9973-1fab93ffda65",
 							"width": 32,
-							"height": 184,
+							"height": 168,
 							"defUid": 178,
-							"px": [1656,88],
+							"px": [1656,96],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -7379,7 +7386,7 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [202,21],
+							"__grid": [202,20],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -7388,7 +7395,7 @@
 							"width": 16,
 							"height": 72,
 							"defUid": 178,
-							"px": [1616,168],
+							"px": [1616,160],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -7396,7 +7403,7 @@
 						},
 						{
 							"__identifier": "Death",
-							"__grid": [194,43],
+							"__grid": [194,42],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -7405,7 +7412,7 @@
 							"width": 144,
 							"height": 16,
 							"defUid": 178,
-							"px": [1552,344],
+							"px": [1552,336],
 							"fieldInstances": [
 								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
 								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
@@ -7610,6 +7617,23 @@
 							"defUid": 177,
 							"px": [120,784],
 							"fieldInstances": []
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [180,118],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "1db9e930-7820-11ed-9973-93bd5415a7d2",
+							"width": 32,
+							"height": 16,
+							"defUid": 178,
+							"px": [1440,944],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
 						}
 					]
 				},
