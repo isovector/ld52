@@ -17,7 +17,7 @@ import Globals (veryUnsafeEngineIORef, global_resources)
 
 
 screenSize :: Num a => V2 a
-screenSize = V2 640 480
+screenSize = V2 800 600
 
 
 main :: IO ()

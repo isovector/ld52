@@ -30,8 +30,8 @@ cornersX _ Zero pos = pure pos
 cornersX ore Positive pos = makeLine (orBotLeft pos ore) (orBotRight pos ore)
 
 
-cornersY :: (RealFrac a, Floating a) => OriginRect a -> DeltaDir -> V2 a -> [V2 a]
-cornersY ore Negative pos = makeLine (orTopLeft pos ore) (orBotLeft pos ore)
+cornersY :: (RealFrac a, Floating a, Show a) => OriginRect a -> DeltaDir -> V2 a -> [V2 a]
+cornersY ore Negative pos = makeLine (traceShowId $ orTopLeft pos ore) (orBotLeft pos ore)
 cornersY _ Zero pos = pure pos
 cornersY ore Positive pos = makeLine (orTopRight pos ore) (orBotRight pos ore)
 

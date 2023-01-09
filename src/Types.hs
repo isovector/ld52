@@ -313,7 +313,7 @@ data OriginRect aff = OriginRect
 newtype Camera = Camera (V2 WorldPos)
 
 logicalSize :: Num a => V2 a
-logicalSize = V2 320 240
+logicalSize = V2 200 200
 
 screenRect :: (Fractional a) => Rectangle a
 screenRect = Rectangle (P $ -logicalSize / 2) (logicalSize * 2)
