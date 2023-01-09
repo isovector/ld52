@@ -336,6 +336,9 @@ data OriginRect aff = OriginRect
 
 newtype Camera = Camera (V2 WorldPos)
 
+instance Semigroup Camera where
+  (Camera v2) <> (Camera v2') = Camera $ v2 + v2'
+
 logicalSize :: Num a => V2 a
 logicalSize = V2 320 240
 
