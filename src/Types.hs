@@ -350,6 +350,7 @@ data Message
   = TeleportTo (V2 WorldPos)
   | TeleportOpportunity (V2 WorldPos)
   | SetCheckpoint (V2 WorldPos)
+  | OnTrampoline Double
   | Die
   deriving stock (Eq, Ord, Show, Read, Generic)
 

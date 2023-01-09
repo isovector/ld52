@@ -20,10 +20,14 @@ import qualified LDtk.Types as LDtk
 import           Level (ldtkColorToColor)
 import           Types
 import Utils (tileToPos)
+import Game.Objects.Trampoline (trampoline)
 
 
 buildEntity :: Text -> V2 WorldPos -> V2 Double -> Map Text LDtk.FieldValue -> Either Text Object
 buildEntity "Player" pos _ _ = pure $ player pos
+buildEntity "Trampoline" pos sz props =
+  trampoline pos sz
+    <$> asDouble "Trampoline" "strength" props
 buildEntity "Chicken" pos _ _ = pure $ chicken pos
 buildEntity "Checkpoint" pos _ _ = pure $ checkpoint pos
 buildEntity "Door" pos sz props =
