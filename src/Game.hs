@@ -33,19 +33,19 @@ game rs =
         (initialObjs $ initialGlobalState rs)
           -< rfi
     let gs = objm_globalState objs
+        levelsz = fmap (fromIntegral . getPixel)
+                $ r_size
+                $ l_bounds
+                $ gs_currentLevel gs
     let player = find (S.member IsPlayer . os_tags . oo_state) $ objm_map objs
-        bg_ore = OriginRect logicalSize 0
-        parallax p
-          = atScreenPos
-          $ drawSpriteOriginRect (global_textures p) bg_ore 0 0
-          $ pure False
+
     bg <- arr $ uncurry drawLevel -< (gs_layerset gs, gs_currentLevel gs)
     returnA -<
       ( cam
       , mconcat
-          [ parallax Parallax0
-          , parallax Parallax1
-          , parallax Parallax2
+          [ drawParallax levelsz Parallax0 3
+          , drawParallax levelsz Parallax1 4
+          , drawParallax levelsz Parallax2 5
           , bg
           , to_draw
           , ui_box (-17)

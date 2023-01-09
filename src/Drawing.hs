@@ -9,7 +9,7 @@ import Data.Foldable (for_, traverse_)
 import FRP
 import Foreign.C
 import Game.Camera (viaCamera)
-import Globals (global_resources, global_sprites, global_glyphs)
+import Globals (global_resources, global_sprites, global_glyphs, global_textures)
 import SDL
 import SDL.Mixer
 import Types
@@ -136,5 +136,14 @@ drawText sz color text pos@(V2 x y) cam
           $ V2 sz sz
       rendererDrawBlendMode renderer $= BlendAlphaBlend
   | otherwise = mempty
+
+drawParallax :: V2 WorldPos -> GameTexture -> Double -> Renderable
+drawParallax sz gt scale c@(Camera cam) =
+  flip atScreenPos c
+    $ drawSpriteOriginRect (global_textures gt) (coerce bg_ore) (logicalSize / 2) 0
+    $ pure False
+  where
+    perc = coerce $ -cam / sz
+    bg_ore = OriginRect (logicalSize ^* scale) ((logicalSize ^* scale) * perc)
 
 #endif

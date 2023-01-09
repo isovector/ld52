@@ -1,10 +1,8 @@
 module Game.Objects.Actor where
 
 import Collision
-import Data.Monoid
 import FRP
 import Types
-import Utils
 import Game.Common (getCollisionMap)
 import Data.Maybe (fromMaybe)
 
