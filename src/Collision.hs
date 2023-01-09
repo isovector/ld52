@@ -41,17 +41,26 @@ move
     -> OriginRect Double
     -> V2 WorldPos
     -> V2 Double
-    -> V2 WorldPos
-move f sz pos (dpos) = do
+    -> Maybe (V2 WorldPos)
+move f sz pos dpos = do
   let (V2 xd yd) = fmap deltaDir dpos
       subdivs :: Int
       subdivs = ceiling $ norm dpos
-  head
+  sufficientlyDifferent pos
+    $ head
     $ drop subdivs
     $ iterate ( moveX (f CollisionWall) sz xd
               . moveY (f (bool CollisionCeiling CollisionGround $ yd == Positive)) sz yd
                . (+ coerce dpos / fromIntegral subdivs))
     $ pos
+
+
+sufficientlyDifferent :: V2 WorldPos -> V2 WorldPos -> Maybe (V2 WorldPos)
+sufficientlyDifferent pos pos' =
+  if qd pos pos' <= epsilon * 5
+     then Nothing
+     else Just pos'
+
 
 deltaDir :: RealFrac a => a -> DeltaDir
 deltaDir n =

@@ -33,15 +33,13 @@ player pos0
                                   . os_tags
                                   . snd
                             ) $ oie_hit $ oi_events oi
-        let do_teleport :: V2 WorldPos -> V2 WorldPos
-            do_teleport
-              = event id ( appEndo
-                         . foldMap ( foldMap (Endo . const)
-                                   . preview #_TeleportTo
-                                   )
-                         )
-              $ oie_receive
+        let am_teleporting
+              = fmap (foldMap (foldMap (Endo . const) . preview #_TeleportTo))
+              . oie_receive
               $ oi_events oi
+
+            do_teleport :: V2 WorldPos -> V2 WorldPos
+            do_teleport = event id appEndo am_teleporting
 
         cp_pos <- hold pos0 -< listenInbox (preview #_SetCheckpoint) $ oi_events oi
         let dying :: Bool
@@ -92,7 +90,15 @@ player pos0
               { oo_events =
                   mempty
                     & #oe_spawn <>~
-                        ([teleportBall me pos $ V2 (bool negate id dir 200) (-100)] <$ action)
+                        ([teleportBall
+                              me
+                              (coerce ore) pos
+                            $ V2 (bool negate id dir 300) (-150)] <$ action
+                        )
+                    & #oe_focus .~ mconcat
+                        [ () <$ am_teleporting
+                        , start
+                        ]
               , oo_state =
                   oi_state oi
                     & #os_pos .~ pos''
@@ -106,7 +112,6 @@ player pos0
           , can_double_jump
           )
     )
-  >>> focusOn
   where
     ore = OriginRect sz $ sz & _x *~ 0.5
 
