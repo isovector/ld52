@@ -1,8 +1,8 @@
 module Utils where
 
-import Types
 import FRP
 import Geometry (orTopLeft)
+import Types
 
 nowish :: a -> SF x (Types.Event a)
 nowish a = after 0.016 a
@@ -51,3 +51,4 @@ originRectToRect ore pos =
 
 noObjectState :: V2 WorldPos -> ObjectState
 noObjectState pos = ObjectState pos Nothing mempty
+

@@ -348,6 +348,8 @@ data DrawSpriteDetails = DrawSpriteDetails
 
 data Message
   = TeleportTo (V2 WorldPos)
+  | SetCheckpoint (V2 WorldPos)
+  | Die
   deriving stock (Eq, Ord, Show, Read, Generic)
 
 traceF :: Show b => (a -> b) -> a -> a

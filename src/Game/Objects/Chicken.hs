@@ -5,7 +5,7 @@ import           Drawing (drawSprite)
 import           FRP
 import           Globals (global_textures)
 import           Types
-import Utils (mkCenterdOriginRect)
+import           Utils (mkCenterdOriginRect)
 
 chicken :: V2 WorldPos -> Object
 chicken pos =

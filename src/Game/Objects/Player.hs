@@ -14,6 +14,7 @@ import           Game.Objects.TeleportBall (teleportBall)
 import qualified SDL.Vect as SDL
 import           Types
 import           Utils
+import Game.Common (listenInbox)
 
 
 player :: V2 WorldPos -> Object
@@ -36,12 +37,20 @@ player pos0
               $ oie_receive
               $ oi_events oi
 
+        cp_pos <- hold pos0 -< listenInbox (preview #_SetCheckpoint) $ oi_events oi
+        let dying :: Bool
+            dying = event False (const True)
+                  $ listenInbox (preview #_Die)
+                  $ oi_events oi
+
         let me = oi_self oi
         action <- edge -< c_z $ fi_controls $ oi_frameInfo oi
 
         let can_double_jump = can_double_jump0 || now_jump
         res <- actor ore playerPhysVelocity (drawPlayer ore) pos0 -< (can_double_jump, oi)
-        let pos = do_teleport $ res ^. #oo_state . #os_pos
+        let pos = bool id (const cp_pos) dying
+                $ do_teleport
+                $ res ^. #oo_state . #os_pos
 
         edir <- edgeBy diffDir 0 -< pos
         dir <- hold True -< edir
