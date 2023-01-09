@@ -1829,8 +1829,8 @@
 			"maxCount": 0,
 			"limitScope": "PerLevel",
 			"limitBehavior": "MoveLastOne",
-			"pivotX": 0.5,
-			"pivotY": 0.5,
+			"pivotX": 0,
+			"pivotY": 0,
 			"fieldDefs": [
 				{
 					"identifier": "strength",
@@ -5625,7 +5625,7 @@
 						},
 						{
 							"__identifier": "Player",
-							"__grid": [180,46],
+							"__grid": [132,40],
 							"__pivot": [0.5,1],
 							"__tags": [],
 							"__tile": null,
@@ -5634,7 +5634,7 @@
 							"width": 8,
 							"height": 16,
 							"defUid": 121,
-							"px": [1444,376],
+							"px": [1060,328],
 							"fieldInstances": []
 						},
 						{
@@ -5837,6 +5837,20 @@
 							"defUid": 184,
 							"px": [1580,436],
 							"fieldInstances": []
+						},
+						{
+							"__identifier": "Trampoline",
+							"__grid": [139,45],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#196E1D",
+							"iid": "2ab79b90-7820-11ed-89df-b35248fdf845",
+							"width": 24,
+							"height": 8,
+							"defUid": 195,
+							"px": [1116,364],
+							"fieldInstances": [{ "__identifier": "strength", "__value": -400, "__type": "Float", "__tile": null, "defUid": 196, "realEditorValues": [] }]
 						}
 					]
 				},
