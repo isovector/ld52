@@ -1,11 +1,10 @@
 module Game.Objects.Actor where
 
-import Types
-import FRP
 import Collision
-import Utils
-import Data.Bool (bool)
 import Data.Monoid
+import FRP
+import Types
+import Utils
 
 
 actor

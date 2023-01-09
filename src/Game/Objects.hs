@@ -7,7 +7,6 @@ module Game.Objects
 
 import           Control.Lens (at, (<>~), non)
 import           Control.Lens.Lens
-import           Data.Bool (bool)
 import           Data.Map (Map)
 import qualified Data.Map as M
 import           Data.Maybe (maybeToList)

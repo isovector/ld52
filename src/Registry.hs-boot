@@ -8,6 +8,6 @@ import qualified LDtk.Types as LDtk
 import Types
 
 
-buildEntity :: Text -> V2 WorldPos -> Map Text LDtk.FieldValue -> Either Text Object
+buildEntity :: Text -> V2 WorldPos -> V2 Double -> Map Text LDtk.FieldValue -> Either Text Object
 
 

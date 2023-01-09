@@ -23,12 +23,16 @@ module Types
   , _y
   , distance
   , toList
+  , bool
   ) where
 
 import Control.Lens ((&), (^.), (.~), (%~), view, set, over)
+import Data.Bool (bool)
 import Data.Coerce
+import Data.Foldable (toList)
 import Data.Generics.Labels ()
 import Data.Map (Map)
+import Data.Monoid (Endo(Endo), appEndo)
 import Data.Set (Set)
 import Data.Text (Text)
 import Data.Word
@@ -38,8 +42,6 @@ import Foreign.C (CInt)
 import GHC.Generics
 import SDL hiding (trace, Event)
 import SDL.Mixer (Chunk)
-import Data.Foldable (toList)
-import Data.Monoid (Endo(Endo), appEndo)
 
 
 ------------------------------------------------------------------------------

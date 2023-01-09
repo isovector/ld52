@@ -4,7 +4,6 @@
 module Game where
 
 import           Control.Lens ((+~))
-import           Data.Bool (bool)
 import           Data.Foldable (find)
 import qualified Data.Map as M
 import qualified Data.Set as S

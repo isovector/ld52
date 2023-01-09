@@ -3,18 +3,17 @@ module Game.Objects.Player where
 
 import           Collision (epsilon)
 import           Control.Lens ((*~), preview, (<>~))
-import           Data.Bool (bool)
 import           Data.Maybe (mapMaybe)
+import           Data.Monoid
 import qualified Data.Set as S
 import           Drawing
 import           FRP
 import           FRP.Yampa ((*^))
 import           Game.Objects.Actor (actor)
+import           Game.Objects.TeleportBall (teleportBall)
 import qualified SDL.Vect as SDL
 import           Types
 import           Utils
-import Game.Objects.TeleportBall (teleportBall)
-import Data.Monoid
 
 
 player :: V2 WorldPos -> Object
