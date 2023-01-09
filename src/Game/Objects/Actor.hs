@@ -54,23 +54,40 @@ actor ore input render pos0 = loopPre 0 $
 
 
 touchingGround :: (V2 WorldPos -> Bool) -> OriginRect WorldPos -> V2 WorldPos -> Bool
-touchingGround toHit ore pos = let touchDist = V2 0 1
-  in or $ fmap toHit (cornersX ore Positive (pos + touchDist))
+touchingGround toHit ore pos =
+    or
+      $ fmap toHit
+      $ cornersX ore Positive
+      $ pos + touchDist
+  where
+  touchDist = V2 0 1
+
+
+updateVelAir :: V2 Double -> V2 Double -> V2 Double
+updateVelAir vel dvel@(V2 dvx _) =
+    freeVel & _x %~ clampAbs maxXSpeed
+  where
+    grav = V2 0 10
+    maxXSpeed = 100
+    freeVel = vel + (dvel & _y %~ max 0) + grav
+
+updateVelGround :: V2 Double -> V2 Double -> V2 Double
+updateVelGround vel dvel@(V2 dvx _) =
+    V2 (maxXSpeed * signum dvx) air_y
+  where
+    maxXSpeed = 100
+    (V2 _ air_y) = vel + dvel
+
 
 updateVel :: Bool -> V2 Double -> V2 Double -> V2 Double
-updateVel onGround vel dvel = let
-  grav = V2 0 10
-  dir = signum $ vel
-  dir' = signum $ dvel
-  maxXSpeed = 100
-  walkVel = maxXSpeed *^ dir'
-  freeVel = vel + clampJump onGround dvel + grav
-  freeXV = freeVel ^. _x :: Double
-  maxXV = maxXSpeed * (dir ^. _x) :: Double
-  cappedXV = case compare (abs freeXV) maxXSpeed of {LT -> freeXV; _ -> maxXV}
-  cappedFreeVel = freeVel & _x .~ cappedXV
-  groundVel = V2 1 0 * walkVel + V2 0 1 * freeVel
-  in if onGround then groundVel else cappedFreeVel
+updateVel True = updateVelGround
+updateVel False = updateVelAir
+
+clampAbs :: (Num a, Ord a) => a -> a -> a
+clampAbs maxv val =
+  if abs val <= maxv
+     then val
+     else maxv * signum val
 
 clampJump :: Bool -> V2 Double -> V2 Double
 clampJump True = id
