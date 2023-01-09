@@ -15,6 +15,7 @@ import           Game.Objects.TeleportBall (teleportBall)
 import qualified SDL.Vect as SDL
 import           Types
 import           Utils
+import Game.Objects.Particle (gore)
 
 player :: V2 WorldPos -> Object
 player pos0 = proc oi -> do
@@ -98,7 +99,7 @@ player pos0 = proc oi -> do
                         me
                         (coerce ore) (pos - (sz & _x .~ 0))
                       $ V2 (bool negate id dir 200) (-200)] <$ throw_ball
-                  )
+                  ) <> (bool noEvent (Event $ gore pos) dying)
               & #oe_focus .~ mconcat
                   [ () <$ am_teleporting
                   , start

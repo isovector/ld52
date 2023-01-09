@@ -45,7 +45,7 @@ move
 move f sz pos dpos = do
   let (V2 xd yd) = fmap deltaDir dpos
       subdivs :: Int
-      subdivs = ceiling $ norm dpos
+      subdivs = min 10 $ max 1 $ ceiling (norm dpos)
   sufficientlyDifferent pos
     $ head
     $ drop subdivs
