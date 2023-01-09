@@ -51,20 +51,32 @@ game w =
           , drawParallax levelsz Parallax2 5
           , bg
           , to_draw
-          , ui_box (-17)
+          , ui_box (17)
           , maybe mempty
               ( bool mempty
                   ( atScreenPos $
                       drawSpriteStretched
                         (setCenterOrigin $ global_textures ChickenTexture)
-                        (ui_box_pos (-17))
+                        (ui_box_pos (17))
                         0
                         (pure False)
                         0.3
                   )
-                . hasChicken
+                . hasPowerup PowerupDoubleJump
               ) player
-          , ui_box 17
+          , maybe mempty
+              ( bool mempty
+                  ( atScreenPos $
+                      drawSpriteStretched
+                        (setCenterOrigin $ global_textures TeleTexture)
+                        (ui_box_pos (-17))
+                        0
+                        (pure False)
+                        0.2
+                  )
+                . hasPowerup PowerupWarpBall
+              ) player
+          , ui_box (-17)
           ]
         )
   where
@@ -75,9 +87,9 @@ game w =
     ui_box dx = atScreenPos $
       drawOriginRect (V4 255 255 255 16) (mkCenterdOriginRect 20) $ ui_box_pos dx
 
-hasChicken :: ObjectOutput -> Bool
-hasChicken
-    = S.member (HasPowerup PowerupDoubleJump) . os_tags . oo_state
+hasPowerup :: PowerupType -> ObjectOutput -> Bool
+hasPowerup pu
+    = S.member (HasPowerup pu) . os_tags . oo_state
 
 initialGlobalState :: WorldName -> Resources -> GlobalState
 initialGlobalState w rs
