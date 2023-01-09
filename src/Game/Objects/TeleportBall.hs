@@ -8,6 +8,7 @@ import Collision (move)
 import Game.Common (getCollisionMap, charging)
 import Data.Maybe (fromMaybe, isJust)
 import Globals (global_textures)
+import FRP (time)
 
 teleportBall
     :: ObjectId
@@ -26,7 +27,7 @@ teleportBall owner owner_ore pos0 vel0@(V2 vx _) =
 
       let vel' = vel
       -- let pos' = pos + coerce (vel ^* dt)
-      let ore = mkCenterdOriginRect 4
+      let ore = mkCenterdOriginRect 8
       let gs = fi_global $ oi_frameInfo oi
 
           mpos' = move (getCollisionMap gs) (coerce ore) pos (vel ^* dt)
@@ -45,6 +46,8 @@ teleportBall owner owner_ore pos0 vel0@(V2 vx _) =
           move (getCollisionMap gs) (coerce owner_ore) pos (vel ^* dt)
       youpos' <- hold pos0 -< youpos'ev
 
+      t <- time -< ()
+
       returnA -< (, vel'') $ ObjectOutput
         { oo_events = mempty
             { oe_die = end
@@ -52,7 +55,7 @@ teleportBall owner owner_ore pos0 vel0@(V2 vx _) =
             , oe_focus = () <$ start
             , oe_play_sound = [WarpSound] <$ end
             }
-        , oo_render = drawOriginRect (V4 0 255 255 255) ore pos'
+        , oo_render = drawSpriteOriginRect (global_textures TeleTexture) ore pos' (t * 360) (pure False)
         , oo_state = (noObjectState pos')
           { os_camera_offset = vel' ^* (dt * 10)
             }

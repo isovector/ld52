@@ -150,6 +150,7 @@ data GameTexture
     | Parallax1
     | Parallax2
     | ChargeTexture
+    | TeleTexture
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 data Tileset
