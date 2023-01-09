@@ -82,7 +82,7 @@ mkAnim sprite = select $ \dsd ->
   timedSequence (error "mkAnim: impossible") 0.1
     $ fmap (\(i, wt) ->
       proc pos -> do
-        i_changed <- edgeBy (\ oi ni -> bool Nothing (Just ()) (oi /= ni)) 0 -< i
+        i_changed <- edgeBy (\oi ni -> bool Nothing (Just ()) (oi /= ni)) 999 -< i
         returnA -< \cam -> do
           !_ <- traverse_ (playSound global_resources) $ do
             !s <- frameSound sprite (dsd_anim dsd) i <$ i_changed

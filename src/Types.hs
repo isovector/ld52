@@ -206,8 +206,10 @@ type ObjSF = SF ObjectInput ObjectOutput
 
 type Object = ObjSF
 
-data PowerupType = PowerupDoubleJump
-  deriving (Eq, Ord, Show, Enum, Bounded, Generic)
+data PowerupType
+    = PowerupDoubleJump
+    | PowerupWarpBall
+  deriving (Eq, Ord, Show, Enum, Bounded, Generic, Read)
 
 data ObjectTag
     = IsPlayer
