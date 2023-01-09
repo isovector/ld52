@@ -11,7 +11,7 @@ import           Drawing
 import           FRP
 import           Game.Objects (renderObjects, addObject)
 import           Game.World (drawLevel)
-import           Globals (global_textures)
+import           Globals (global_textures, global_resources)
 import           SDL
 import           Types
 import           Utils (setCenterOrigin, mkCenterdOriginRect)
@@ -24,13 +24,13 @@ initialObjs gs
   $ l_defaultObjs $ gs_currentLevel gs
 
 
-game :: Resources -> SF RawFrameInfo (Camera, Renderable)
-game rs =
+game :: SF RawFrameInfo (Camera, Renderable)
+game =
   proc rfi -> do
     (cam, objs, to_draw) <-
-      renderObjects rs (V2 0 0)
+      renderObjects global_resources (V2 0 0)
         -- BUG(sandy): this should be a signal!!!
-        (initialObjs $ initialGlobalState rs)
+        (initialObjs $ initialGlobalState global_resources)
           -< rfi
     let gs = objm_globalState objs
         levelsz = fmap (fromIntegral . getPixel)
