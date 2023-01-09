@@ -6,7 +6,8 @@ import           Drawing
 import           FRP
 import           Types
 import Data.Maybe (mapMaybe, listToMaybe)
-import Utils (noObjectState)
+import Utils (noObjectState, posToTile)
+import Data.Monoid
 
 onHitBy :: ObjectTag -> ObjectInput -> Event ObjectId
 onHitBy otag oi = do
@@ -51,4 +52,13 @@ playerHitRectObj msg ore col pos =
           { os_collision = Just $ coerce ore
           }
       }
+
+getCollisionMap :: GlobalState -> CollisionPurpose -> V2 WorldPos -> Bool
+getCollisionMap gs = do
+  let lev = gs_currentLevel gs
+      layers = gs_layerset gs
+
+  \purpose -> getAny
+            . foldMap ((fmap Any .) . l_hitmap lev) layers purpose
+            . posToTile
 

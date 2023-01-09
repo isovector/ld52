@@ -5,6 +5,8 @@ import Data.Monoid
 import FRP
 import Types
 import Utils
+import Game.Common (getCollisionMap)
+import Data.Maybe (fromMaybe)
 
 
 actor
@@ -12,15 +14,13 @@ actor
     -> SF (Bool, Double, V2 Double, V2 WorldPos, GlobalState) (V2 WorldPos)
 actor ore = loopPre 0 $
   proc ((can_double, dt, vel'0, pos, gs), vel) -> do
-    let lev = gs_currentLevel gs
-        layers = gs_layerset gs
+    let collision = getCollisionMap gs
 
-        collision purpose = (getAny . foldMap ((fmap Any .) . l_hitmap lev) layers purpose . posToTile)
     let onGround = touchingGround (collision CollisionCheckGround) ore pos
     let vel' = updateVel (can_double || onGround) vel vel'0
     let dpos = dt *^ vel'
     let desiredPos = pos + coerce dpos
-    let pos' = move collision (coerce ore) pos $ dpos
+    let pos' = fromMaybe pos $ move collision (coerce ore) pos $ dpos
 
     let vel''
           = (\want have res -> bool 0 res $ abs(want - have) <= epsilon )

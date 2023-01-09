@@ -90,7 +90,11 @@ player pos0
               { oo_events =
                   mempty
                     & #oe_spawn <>~
-                        ([teleportBall me pos $ V2 (bool negate id dir 300) (-150)] <$ action)
+                        ([teleportBall
+                              me
+                              (coerce ore) pos
+                            $ V2 (bool negate id dir 300) (-150)] <$ action
+                        )
                     & #oe_focus .~ mconcat
                         [ () <$ am_teleporting
                         , start
