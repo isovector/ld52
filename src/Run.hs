@@ -62,8 +62,8 @@ main = do
     (pure $ RawFrameInfo defaultControls 0.016)
     (input window tRef)
     (output rs)
-    game
-    -- runIntro
+    -- game
+    runIntro
   quit
 
 
@@ -72,6 +72,7 @@ input win tRef _ = do
   pumpEvents
   es <- pollEvents
   when (any (isQuit . eventPayload) es) $ do
+    haltMusic
     destroyWindow win
     exitSuccess
   seconds <- readIORef tRef
