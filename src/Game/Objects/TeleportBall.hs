@@ -5,7 +5,7 @@ import FRP hiding (time)
 import Utils
 import Drawing (drawOriginRect)
 import Collision (move)
-import Game.Common (getCollisionMap)
+import Game.Common (getCollisionMap, charging)
 import Data.Maybe (fromMaybe)
 
 teleportBall
@@ -52,21 +52,16 @@ teleportBall owner owner_ore pos0 vel0 =
 
 charge :: V2 WorldPos -> SF ObjectInput (ObjectOutput, Event Double)
 charge pos0 = proc oi -> do
-  maxed <- after 0.5 1 -< ()
-  time <- sscan (+) 0 -< fi_dt $ oi_frameInfo oi
-  released <- edge -< not $ c_z $ fi_controls $ oi_frameInfo oi
-
-  let done = mergeEvents
-              [ maxed
-              , time <$ released
-              ]
+  (progress, done)
+    <- charging 0.5 (arr $ not . c_z . fi_controls . oi_frameInfo)
+    -< oi
 
   returnA -< (, done) $ ObjectOutput
     { oo_events = mempty
     , oo_render =
         drawOriginRect
           (V4 255 0 0 255)
-          (coerce $ OriginRect (V2 (time * 100) 10) 0)
+          (coerce $ OriginRect (V2 (progress * 50) 10) 0)
           pos0
     , oo_state = noObjectState pos0
     }
