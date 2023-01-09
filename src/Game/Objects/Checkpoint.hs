@@ -15,5 +15,5 @@ checkpoint pos =
             }
     )
     (OriginRect 8 0)
-    (V4 0 255 255 64)
+    (V4 100 0 100 255)
     pos
