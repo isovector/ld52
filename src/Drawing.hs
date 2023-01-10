@@ -107,17 +107,20 @@ mkAnim :: Sprite -> SF (DrawSpriteDetails, V2 WorldPos) Renderable
 mkAnim sprite = proc (dsd, pos) -> do
   let anim = dsd_anim dsd
   global_tick <- round . (/ 0.1) <$> localTime -< ()
-  newanim <- onChange -< dsd_anim dsd
-  anim_start <- hold 0 -< global_tick <$ newanim
+  new_anim <- onChange -< dsd_anim dsd
+  anim_start <- hold 0 -< global_tick <$ new_anim
 
   let anim_frame = (global_tick - anim_start) `mod` frameCounts sprite anim
+  new_frame <- onChange -< anim_frame
 
-  returnA -<
+  returnA -< \cam -> do
+    for_ new_frame $ traverse_ (playSound global_resources) . frameSound sprite anim
     drawSprite
       (global_sprites sprite anim !! anim_frame)
       pos
       (dsd_rotation dsd)
       (dsd_flips dsd)
+      cam
 
 
 atScreenPos :: Renderable -> Renderable
