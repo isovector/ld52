@@ -89,8 +89,6 @@ parseLayer l = do
       tilemap = buildTileMap wt $ l ^. #autoLayerTiles
   (   cols
     , drawTileMap tilemap
-    -- foldMap (drawTile $ l ^. #__tilesetRelPath)
-    --    $ l ^. #autoLayerTiles
     )
 {-# NOINLINE parseLayer #-}
 
@@ -119,8 +117,9 @@ drawTileMap tm cam =
 getTilesOnScreen :: Camera -> [V2 Tile]
 getTilesOnScreen (Camera (negate -> posToTile -> cam)) = do
   let (V2 sx sy) = posToTile logicalSize
-  x <- [0..sx]
-  y <- [0..sy]
+  -- Add a little bonus so we don't have weird culling on the edges
+  x <- [-2 .. sx + 2]
+  y <- [-2 .. sy + 2]
   pure $ cam + V2 x y
 
 
@@ -130,20 +129,12 @@ buildTileMap wt ts = M.fromListWith (<>) $ do
   let pos = fmap fromIntegral $ pairToV2 $ t ^. #px
       wt' = wt { wt_sourceRect = Just (Rectangle (P $ fmap fromIntegral $ pairToV2 $ t ^. #src) tileSize)
                }
-  pure $ (posToTile pos, ) $ drawSprite wt' pos  0 (flipToMirrors $ t ^. #tile_flip)
+  pure
+    $ (posToTile pos, )
+    $ drawSprite wt' pos  0
+    $ flipToMirrors
+    $ t ^. #tile_flip
 
-
-drawTile :: Maybe Text -> LDtk.Tile -> Renderable
-drawTile Nothing = \_ -> mempty
-drawTile (Just tsstr) = \t -> do
-  let wt' = wt { wt_sourceRect = Just (Rectangle (P $ fmap fromIntegral $ pairToV2 $ t ^. #src) tileSize)
-               }
-  drawSprite wt' (fmap fromIntegral $ pairToV2 $ t ^. #px) 0 (flipToMirrors $ t ^. #tile_flip)
-  where
-    ts = read @Tileset $ view basename $ T.unpack tsstr
-    wt = (global_tilesets ts)
-          { wt_size = tileSize
-          }
 
 flipToMirrors :: LDtk.Flip -> V2 Bool
 flipToMirrors LDtk.NoFlip = V2 False False
