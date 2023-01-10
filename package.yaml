@@ -38,6 +38,7 @@ dependencies:
 - aeson
 - deepseq
 - hashable
+- ghc-debug-stub
 
 ghc-options:
 - -Wall
@@ -46,6 +47,9 @@ ghc-options:
 - -Wincomplete-uni-patterns
 - -Wpartial-fields
 - -Wredundant-constraints
+- -O0
+- -finfo-table-map
+- -fdistinct-constructor-tables
 
 default-extensions:
 - Arrows

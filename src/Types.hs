@@ -1,7 +1,7 @@
-{-# LANGUAGE StrictData #-}
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE StrictData     #-}
 
 {-# OPTIONS_GHC -Wno-orphans #-}
-{-# OPTIONS_GHC -funbox-strict-fields #-}
 
 module Types
   ( module Types
@@ -43,6 +43,7 @@ import GHC.Generics
 import SDL hiding (trace, Event)
 import SDL.Mixer (Chunk, Music)
 import Data.Hashable (Hashable)
+import Control.DeepSeq (NFData, rnf)
 
 
 ------------------------------------------------------------------------------
@@ -52,31 +53,42 @@ data Rect a = Rect
   , r_size :: V2 a
   }
   deriving stock (Eq, Ord, Show, Read, Functor)
-
+  deriving stock Generic
+  deriving anyclass NFData
 
 newtype Tile = Tile
   { getTile :: Int
   }
   deriving newtype (Eq, Ord, Show, Read, Enum, Bounded, Num)
+  deriving stock Generic
+  deriving anyclass NFData
 
 newtype Pixel = Pixel
   { getPixel :: Int
   }
   deriving newtype (Eq, Ord, Show, Read, Enum, Bounded, Num)
+  deriving stock Generic
+  deriving anyclass NFData
 
 newtype ScreenPos = ScreenPos
   { getScreenPos :: Double
   }
   deriving newtype (Eq, Ord, Show, Read, Enum, Num, Fractional, Floating, Real, RealFrac)
+  deriving stock Generic
+  deriving anyclass NFData
 
 newtype WorldPos = WorldPos
   { getWorldPos :: Double
   }
   deriving newtype (Eq, Ord, Show, Read, Enum, Num, Fractional, Floating, Real, RealFrac, Hashable)
+  deriving stock Generic
+  deriving anyclass NFData
 
 data World = World
   { w_levels :: Map Text Level
   }
+  deriving Generic
+  deriving anyclass NFData
 
 data CollisionPurpose
   = CollisionWall
@@ -84,6 +96,7 @@ data CollisionPurpose
   | CollisionCeiling
   | CollisionCheckGround
   deriving (Eq, Ord, Show, Enum, Bounded, Read, Generic)
+  deriving anyclass NFData
 
 data Level = Level
   { l_bgcolor :: Color
@@ -94,6 +107,7 @@ data Level = Level
   , l_defaultObjs :: [Object]
   }
   deriving stock Generic
+  deriving anyclass NFData
 
 
 
@@ -103,6 +117,8 @@ data Engine = Engine
   { e_renderer :: Renderer
   , e_window :: Window
   }
+  deriving stock Generic
+  deriving anyclass NFData
 
 ------------------------------------------------------------------------------
 -- | Things we need to keep track of, like sprites and music and stuff.
@@ -116,6 +132,8 @@ data Resources = Resources
   , r_sprites  :: Sprite -> Anim -> [WrappedTexture]
   , r_glyphs   :: Char -> Texture
   }
+  deriving stock Generic
+  deriving anyclass NFData
 
 
 ------------------------------------------------------------------------------
@@ -133,6 +151,7 @@ data FrameInfo = FrameInfo
   , fi_global :: ~GlobalState
   }
   deriving stock Generic
+  deriving anyclass NFData
 
 -- TODO(sandy): stupid duplicate
 data RawFrameInfo = RawFrameInfo
@@ -140,6 +159,7 @@ data RawFrameInfo = RawFrameInfo
   , rfi_dt :: Double
   }
   deriving stock Generic
+  deriving anyclass NFData
 
 
 ------------------------------------------------------------------------------
@@ -153,6 +173,8 @@ data GameTexture
     | ChargeTexture
     | TeleTexture
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
+  deriving stock Generic
+  deriving anyclass NFData
 
 data Tileset
   -- NOTE: It's important that the tileset names line up with their png names,
@@ -160,10 +182,14 @@ data Tileset
   = Cavernas_by_Adam_Saltsman
   | Stringstar_Fields
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
+  deriving stock Generic
+  deriving anyclass NFData
 
 
 data WorldName = TestWorld | HelpWorld
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
+  deriving stock Generic
+  deriving anyclass NFData
 
 ------------------------------------------------------------------------------
 -- | Audio used by the game.
@@ -176,15 +202,18 @@ data Sound
     | StepSound
     | ThudSound
     | WarpSound
-  deriving (Eq, Ord, Show, Read, Enum, Bounded)
+  deriving (Eq, Ord, Show, Read, Enum, Bounded, Generic)
+  deriving anyclass NFData
 
 data Song
   = WarmDuckShuffle
-  deriving (Eq, Ord, Show, Read, Enum, Bounded)
+  deriving (Eq, Ord, Show, Read, Enum, Bounded, Generic)
+  deriving anyclass NFData
 
 data LevelLayer
   = Layer1 | Layer2 | Layer3
-  deriving (Eq, Ord, Show, Read, Enum, Bounded)
+  deriving (Eq, Ord, Show, Read, Enum, Bounded, Generic)
+  deriving anyclass NFData
 
 data WrappedTexture = WrappedTexture
   { getTexture    :: Texture
@@ -193,6 +222,17 @@ data WrappedTexture = WrappedTexture
   , wt_origin     :: V2 CInt
   }
   deriving stock Generic
+  deriving anyclass NFData
+
+deriving anyclass instance NFData Window
+deriving anyclass instance NFData Renderer
+deriving anyclass instance NFData a => NFData (Rectangle a)
+
+instance NFData Texture where
+  rnf _ = ()
+
+instance NFData (SF a b) where
+  rnf _ = ()
 
 ------------------------------------------------------------------------------
 -- | Input for the frame.
@@ -202,7 +242,8 @@ data Controls = Controls
   , c_reset :: Bool
   , c_dir :: V2 Int
   }
-  deriving (Eq)
+  deriving (Eq, Generic)
+  deriving anyclass NFData
 
 defaultControls :: Controls
 defaultControls = Controls
@@ -223,6 +264,8 @@ newtype ObjectId = ObjectId
   }
   deriving stock (Show, Read)
   deriving newtype (Eq, Ord, Enum, Bounded)
+  deriving stock Generic
+  deriving anyclass NFData
 
 type ObjSF = SF ObjectInput ObjectOutput
 
@@ -232,15 +275,18 @@ data PowerupType
     = PowerupDoubleJump
     | PowerupWarpBall
   deriving (Eq, Ord, Show, Enum, Bounded, Generic, Read)
+  deriving anyclass NFData
 
 data ObjectTag
     = IsPlayer
     | IsPowerup PowerupType
     | HasPowerup PowerupType
   deriving (Eq, Ord, Show, Generic)
+  deriving anyclass NFData
 
 data ObjectMeta = ObjectMeta
   deriving stock (Eq, Ord, Show, Generic)
+  deriving anyclass NFData
 
 noObjectMeta :: ObjectMeta
 noObjectMeta = ObjectMeta
@@ -254,12 +300,14 @@ data ObjectInput = ObjectInput
   , oi_state :: ObjectState
   }
   deriving stock Generic
+  deriving anyclass NFData
 
 data ObjectInEvents = ObjectInEvents
   { oie_hit :: Event [HitEvent]
   , oie_receive :: Event [Message]
   }
   deriving stock Generic
+  deriving anyclass NFData
 
 instance Semigroup ObjectInEvents where
   (ObjectInEvents ev ev') <> (ObjectInEvents ev2 ev3)
@@ -273,6 +321,7 @@ data GlobalState = GlobalState
   , gs_layerset :: Set LevelLayer
   }
   deriving stock Generic
+  deriving anyclass NFData
 
 data ObjectEvents = ObjectEvents
   { oe_die :: Event ()
@@ -283,6 +332,7 @@ data ObjectEvents = ObjectEvents
   , oe_omnipotence :: Event (ObjectMap ObjSF -> ObjectMap ObjSF )
   }
   deriving stock Generic
+  deriving anyclass NFData
 
 instance Semigroup ObjectEvents where
   (ObjectEvents ev ev' ev2 ev3 sm1 ev4) <> (ObjectEvents ev5 ev6 ev7 ev8 sm2 ev9)
@@ -313,6 +363,7 @@ data ObjectState = ObjectState
   , os_camera_offset :: V2 Double
   }
   deriving stock (Eq, Ord, Show, Generic)
+  deriving anyclass NFData
 
 data ObjectOutput = ObjectOutput
   { oo_events :: ObjectEvents
@@ -320,6 +371,7 @@ data ObjectOutput = ObjectOutput
   , oo_state :: ObjectState
   }
   deriving stock Generic
+  deriving anyclass NFData
 
 data ObjectMap a = ObjectMap
   { objm_camera_focus :: ObjectId
@@ -328,14 +380,18 @@ data ObjectMap a = ObjectMap
   , objm_map :: Map ObjectId a
   }
   deriving stock (Functor, Generic, Foldable)
+  deriving anyclass NFData
 
 data OriginRect aff = OriginRect
   { orect_size   :: V2 aff
   , orect_offset :: V2 aff
   }
   deriving (Eq, Ord, Show, Functor, Generic)
+  deriving anyclass NFData
 
 newtype Camera = Camera (V2 WorldPos)
+  deriving stock Generic
+  deriving anyclass NFData
 
 instance Semigroup Camera where
   (Camera v2) <> (Camera v2') = Camera $ v2 + v2'
@@ -358,6 +414,7 @@ instance (Bounded b, Enum a, Enum b) => Enum (a, b) where
 data Sprite
   = MainCharacter
   deriving stock (Eq, Ord, Show, Read, Enum, Bounded, Generic)
+  deriving anyclass NFData
 
 
 data Anim
@@ -365,6 +422,7 @@ data Anim
   | NoAnim
   | Run
   deriving stock (Eq, Ord, Show, Read, Enum, Bounded, Generic)
+  deriving anyclass NFData
 
 data DrawSpriteDetails = DrawSpriteDetails
   { dsd_anim :: Anim
@@ -372,6 +430,7 @@ data DrawSpriteDetails = DrawSpriteDetails
   , dsd_flips :: V2 Bool
   }
   deriving stock (Eq, Ord, Show, Read, Generic)
+  deriving anyclass NFData
 
 
 data Message
@@ -381,6 +440,7 @@ data Message
   | OnTrampoline Double
   | Die
   deriving stock (Eq, Ord, Show, Read, Generic)
+  deriving anyclass NFData
 
 traceF :: Show b => (a -> b) -> a -> a
 traceF f a = trace (show $ f a) a

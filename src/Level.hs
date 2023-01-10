@@ -16,6 +16,7 @@ import           Data.Monoid
 import           Data.Text (Text)
 import qualified Data.Text as T
 import           Data.Traversable
+import qualified Data.Vector.Unboxed as VU
 import qualified Data.Vector as V
 import           Drawing
 import           Globals (global_tilesets)
@@ -36,11 +37,11 @@ loadWorld fp = do
     Left e -> error e
     Right root -> pure $ World $ parseLevels root
 
-buildCollisionMap :: V2 Tile -> V.Vector (V.Vector Int) -> CollisionPurpose -> V2 Tile -> Any
-buildCollisionMap sz col = \purpose (coerce -> V2 x y) ->
+buildCollisionMap :: V2 Tile -> V.Vector (VU.Vector Int) -> CollisionPurpose -> V2 Tile -> Any
+buildCollisionMap sz col = trace "building colmap" $ \purpose (coerce -> V2 x y) ->
     if x < 0 || y < 0 || x >= sz ^. _x || y >= sz ^. _y
       then Any False
-      else Any $ checkPurpose purpose $ col V.! getTile y V.! getTile x
+      else Any $ checkPurpose purpose $ col V.! getTile y VU.! getTile x
 
 checkPurpose :: CollisionPurpose -> Int -> Bool
 checkPurpose _ 0 = False
@@ -62,11 +63,16 @@ chunksOf n xs =
   let (here, there) = splitAt n xs
    in here : chunksOf n there
 
-rectangularize :: V2 Int -> [Int] -> V.Vector (V.Vector Int)
+rectangularize :: V2 Int -> [Int] -> V.Vector (VU.Vector Int)
 rectangularize (V2 x _)
-  = V.fromList
-  . fmap V.fromList
+  = traceShowId
+  . force
+  . V.fromList
+  . traceShowId
+  . fmap VU.fromList
+  . traceShowId
   . chunksOf x
+  . force
 
 parseLayer
     :: LDtk.Layer
@@ -75,11 +81,12 @@ parseLayer
        )
 parseLayer l = do
   let !sz = (parseV2 Tile l #__cWid #__cHei)
-      !col = force $ rectangularize (coerce sz) (l ^. #intGridCsv)
+      !col = traceShowId $ force $ rectangularize (coerce sz) (l ^. #intGridCsv)
       {-# NOINLINE col #-}
       !cols = force $ buildCollisionMap sz col
       {-# NOINLINE cols #-}
-  (   cols
+  force
+    (   cols
     , foldMap (drawTile $ l ^. #__tilesetRelPath)
        $ l ^. #autoLayerTiles
     )
@@ -133,7 +140,7 @@ getLayerFromLevel ls l =
   find ((== T.pack (show l)) . view #__identifier) ls
 
 parseLevels :: LDtk.LDtkRoot -> Map Text Level
-parseLevels root = either (error . mappend "couldn't parse level: " . unlines) id $
+parseLevels root = force $ either (error . mappend "couldn't parse level: " . unlines) id $
   fmap (foldMap (uncurry M.singleton)) $ for (root ^. #levels) $ \lev -> do
     let nm = lev ^. #identifier
         bounds = Rect (parseV2 Pixel lev #worldX #worldY)
@@ -141,7 +148,7 @@ parseLevels root = either (error . mappend "couldn't parse level: " . unlines) i
 
 
     let ls = lev ^. #layerInstances
-        (errs, ents) = foldMap parseEntities ls
+        (errs, ents) = force $ foldMap parseEntities ls
         make_layer
           = force
           . pure

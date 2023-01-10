@@ -16,6 +16,7 @@ import Types
 import Globals (veryUnsafeEngineIORef, global_resources)
 import Game.Splash (mainMenu, runIntro)
 import System.Mem (performGC)
+import GHC.Debug.Stub
 
 
 screenSize :: Num a => V2 a
@@ -23,7 +24,7 @@ screenSize = V2 640 480
 
 
 main :: IO ()
-main = do
+main = withGhcDebug $ do
   initializeAll
 
   window <- createWindow "ld52" $ defaultWindow
@@ -84,8 +85,8 @@ input win tRef _ = do
 
   keys <- getKeyboardState
 
-  let dt = min 0.016 (seconds' - seconds)
-  pure (dt, Just $ RawFrameInfo (parseControls keys) dt)
+  let dt = max 0.016 (seconds' - seconds)
+  pure (traceShowId dt, Just $ RawFrameInfo (parseControls keys) dt)
 
 
 pattern Keypress :: Scancode -> EventPayload

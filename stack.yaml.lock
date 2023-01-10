@@ -22,9 +22,79 @@ packages:
   original:
     git: https://github.com/isovector/ldtk-types.git
     commit: 0be47b237f36e4a16c6fac5d384adc733ed07711
+- completed:
+    hackage: contra-tracer-0.2.0.0@sha256:7e1df39934fb0ecf4533196c819946455ec377fbc169b819be151906db244fc2,905
+    pantry-tree:
+      size: 341
+      sha256: 98f89f6f7ab367d0e70e54822fb9639c24467fc06599e3e87e9faa59486bcfe4
+  original:
+    hackage: contra-tracer-0.2.0.0@sha256:7e1df39934fb0ecf4533196c819946455ec377fbc169b819be151906db244fc2,905
+- completed:
+    hackage: ghc-debug-client-0.4.0.0@sha256:1334798e4e470ebb6efa7072a04a32b0d1ec3cc7b336c30f18165a814c087942,2859
+    pantry-tree:
+      size: 1657
+      sha256: 7b17954786e5c1442b110696c4cd6d7916194e72ec8297eb66645e2a7f859703
+  original:
+    hackage: ghc-debug-client-0.4.0.0@sha256:1334798e4e470ebb6efa7072a04a32b0d1ec3cc7b336c30f18165a814c087942,2859
+- completed:
+    hackage: ghc-debug-common-0.4.0.0@sha256:d041fdef6220a8c4845dd62c0e5cd2ae734a40d46a4e6709ccf5f98136a9f46d,1997
+    pantry-tree:
+      size: 937
+      sha256: 2bc815b9cd3dc50f6c63ba23f39528672fb817162d4291e822ef75dadca9c028
+  original:
+    hackage: ghc-debug-common-0.4.0.0@sha256:d041fdef6220a8c4845dd62c0e5cd2ae734a40d46a4e6709ccf5f98136a9f46d,1997
+- completed:
+    hackage: ghc-debug-convention-0.4.0.0@sha256:d7870030b3e290104aa87e4b7a687f09a49a7df2b5451b3c9f31b47ca6a77f35,628
+    pantry-tree:
+      size: 189
+      sha256: a729ae87460b35b057497b309d40a05037b91f31f24975f7e2f4275397e6ab26
+  original:
+    hackage: ghc-debug-convention-0.4.0.0@sha256:d7870030b3e290104aa87e4b7a687f09a49a7df2b5451b3c9f31b47ca6a77f35,628
+- completed:
+    hackage: bitwise-1.0.0.1@sha256:6ee22ada4e0b605fa433bec6a340703033e3cfe15edcf8f9feef7d446be49a54,3110
+    pantry-tree:
+      size: 760
+      sha256: edd0d34ddb2516526df8260b80d571b33dfbeba588fad5bad5fcb5897b5d26fe
+  original:
+    hackage: bitwise-1.0.0.1@sha256:6ee22ada4e0b605fa433bec6a340703033e3cfe15edcf8f9feef7d446be49a54,3110
+- completed:
+    hackage: dom-lt-0.2.3@sha256:89f17bbeb0d23f5a46fe7099b81cc9b4b5df32aadb5080fc171c874aafc802c0,1850
+    pantry-tree:
+      size: 442
+      sha256: 7daf5082515248f0d0d0b7d164d079f970318e26d39f1ffd15519bd22bbe559a
+  original:
+    hackage: dom-lt-0.2.3@sha256:89f17bbeb0d23f5a46fe7099b81cc9b4b5df32aadb5080fc171c874aafc802c0,1850
+- completed:
+    hackage: eventlog2html-0.9.2@sha256:49fcc28ea716135d0f6fbc6e056aa1e008b5cfd27745693b524821400f656b8b,3832
+    pantry-tree:
+      size: 2237
+      sha256: ca11e1d9587ab745d8acd6f10e68b52c89f1bd164beab63c5ba16810c1eb01e8
+  original:
+    hackage: eventlog2html-0.9.2@sha256:49fcc28ea716135d0f6fbc6e056aa1e008b5cfd27745693b524821400f656b8b,3832
+- completed:
+    hackage: statistics-linreg-0.3@sha256:95c6efe6c7f6b26bc6e9ada90ab2d18216371cf59a6ef2b517b4a6fd35d9a76f,2544
+    pantry-tree:
+      size: 233
+      sha256: 8d1978a6497e4fd9c66b0c5f24ea659aa9714f5b7e8b1dcfce7fb7bb8d4dee0e
+  original:
+    hackage: statistics-linreg-0.3@sha256:95c6efe6c7f6b26bc6e9ada90ab2d18216371cf59a6ef2b517b4a6fd35d9a76f,2544
+- completed:
+    hackage: trie-simple-0.4.1.1@sha256:4f00109ee3a68a6051395f18639cce2080598582504eda66bc9f82e771362702,2625
+    pantry-tree:
+      size: 1142
+      sha256: bd06fb3c55d6c7f29e68be054f236c2cd0af55bb7e6b8fc29d44050bba946c30
+  original:
+    hackage: trie-simple-0.4.1.1@sha256:4f00109ee3a68a6051395f18639cce2080598582504eda66bc9f82e771362702,2625
+- completed:
+    hackage: ghc-debug-stub-0.4.0.0@sha256:d0cf5998226a29ad119b7e413a8d24c8cf24277b975e900ee8883bb53d34ac11,1452
+    pantry-tree:
+      size: 600
+      sha256: dfa7543e027c435cc8e8c22841cb81f70078c8817790983449db8b92056bf9d1
+  original:
+    hackage: ghc-debug-stub-0.4.0.0@sha256:d0cf5998226a29ad119b7e413a8d24c8cf24277b975e900ee8883bb53d34ac11,1452
 snapshots:
 - completed:
-    size: 586296
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/18/18.yaml
-    sha256: 63539429076b7ebbab6daa7656cfb079393bf644971156dc349d7c0453694ac2
-  original: lts-18.18
+    size: 649315
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/20/6.yaml
+    sha256: 4905c93319aa94aa53da8f41d614d7bacdbfe6c63a8c6132d32e6e62f24a9af4
+  original: lts-20.6
