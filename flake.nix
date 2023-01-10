@@ -1,5 +1,5 @@
 {
-  description = "Agda mode for vim";
+  description = "Ludum Dare 52";
 
   inputs = {
     # nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
