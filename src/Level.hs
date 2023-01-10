@@ -25,6 +25,7 @@ import           System.FilePath.Lens (basename)
 import           Types
 
 import {-# SOURCE #-} Registry
+import Utils (posToTile)
 
 
 ldtkColorToColor :: LDtk.Color -> Color
@@ -79,9 +80,17 @@ parseLayer l = do
       {-# NOINLINE col #-}
       !cols = force $ buildCollisionMap sz col
       {-# NOINLINE cols #-}
+
+      ts = read @Tileset $ view basename $ T.unpack $ l ^. #__tilesetRelPath ^. _Just
+      wt = (global_tilesets ts)
+            { wt_size = tileSize
+            }
+
+      tilemap = buildTileMap wt $ l ^. #autoLayerTiles
   (   cols
-    , foldMap (drawTile $ l ^. #__tilesetRelPath)
-       $ l ^. #autoLayerTiles
+    , drawTileMap tilemap
+    -- foldMap (drawTile $ l ^. #__tilesetRelPath)
+    --    $ l ^. #autoLayerTiles
     )
 {-# NOINLINE parseLayer #-}
 
@@ -101,6 +110,27 @@ buildMap :: [LDtk.Field] -> M.Map Text LDtk.FieldValue
 buildMap =
   foldMap $ \x ->
     M.singleton (x ^. #__identifier) (x ^. #__value)
+
+
+drawTileMap :: Map (V2 Tile) Renderable -> Renderable
+drawTileMap tm cam =
+  foldMap (maybe mempty ($ cam) . flip M.lookup tm) $ getTilesOnScreen cam
+
+getTilesOnScreen :: Camera -> [V2 Tile]
+getTilesOnScreen (Camera (posToTile -> cam)) = do
+  let (V2 sx sy) = posToTile logicalSize
+  x <- [0..sx]
+  y <- [0..sy]
+  pure $ cam + V2 x y
+
+
+buildTileMap :: WrappedTexture -> [LDtk.Tile] -> Map (V2 Tile) Renderable
+buildTileMap wt ts = M.fromListWith (<>) $ do
+  t <- ts
+  let pos = fmap fromIntegral $ pairToV2 $ t ^. #px
+      wt' = wt { wt_sourceRect = Just (Rectangle (P $ fmap fromIntegral $ pairToV2 $ t ^. #src) tileSize)
+               }
+  pure $ (posToTile pos, ) $ drawSprite wt' pos  0 (flipToMirrors $ t ^. #tile_flip)
 
 
 drawTile :: Maybe Text -> LDtk.Tile -> Renderable

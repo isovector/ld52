@@ -85,7 +85,7 @@ input win tRef _ = do
   keys <- getKeyboardState
 
   let dt = max 0.016 (seconds' - seconds)
-  pure (dt, Just $ RawFrameInfo (parseControls keys) dt)
+  pure (traceShowId dt, Just $ RawFrameInfo (parseControls keys) dt)
 
 
 pattern Keypress :: Scancode -> EventPayload
