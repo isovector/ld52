@@ -109,11 +109,6 @@ runResumable s0 (Resumable sf) = swont $ loopPre s0 $
     Resumption s' o ev <- sf -< swap is
     returnA -< ((o, s' <$ ev), s')
 
-select :: (c -> SF i o) -> SF (c, i) o
-select f = proc (c, i) -> do
-  rs <- parB f -< i
-  returnA -< rs c
-
 fork :: [SF i o] -> SF i [o]
 fork = par $ \i -> fmap (i, )
 

@@ -117,7 +117,7 @@ drawTileMap tm cam =
   foldMap (maybe mempty ($ cam) . flip M.lookup tm) $ getTilesOnScreen cam
 
 getTilesOnScreen :: Camera -> [V2 Tile]
-getTilesOnScreen (Camera (posToTile -> cam)) = do
+getTilesOnScreen (Camera (negate -> posToTile -> cam)) = do
   let (V2 sx sy) = posToTile logicalSize
   x <- [0..sx]
   y <- [0..sy]

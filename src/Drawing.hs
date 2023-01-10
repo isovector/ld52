@@ -15,7 +15,7 @@ import SDL.Mixer
 import Types
 import Utils (originRectToRect)
 import Geometry (rectContains)
-import Resources (frameSound)
+import Resources (frameSound, frameCounts)
 
 
 playSound :: Resources -> Sound -> IO ()
@@ -104,21 +104,20 @@ playSong s = do
   playMusic Forever (global_songs s)
 
 mkAnim :: Sprite -> SF (DrawSpriteDetails, V2 WorldPos) Renderable
-mkAnim sprite = select $ \dsd ->
-  timedSequence (error "mkAnim: impossible") 0.1
-    $ fmap (\(i, wt) ->
-      proc pos -> do
-        i_changed <- edgeBy (\oi ni -> bool Nothing (Just ()) (oi /= ni)) 999 -< i
-        returnA -< \cam -> do
-          !_ <- traverse_ (playSound global_resources) $ do
-            !s <- frameSound sprite (dsd_anim dsd) i <$ i_changed
-            maybeToEvent s
-          drawSprite wt pos (dsd_rotation dsd) (dsd_flips dsd) cam
-          )
-    $ cycle
-    $ zip [0..]
-    $ global_sprites sprite
-    $ dsd_anim dsd
+mkAnim sprite = proc (dsd, pos) -> do
+  let anim = dsd_anim dsd
+  global_tick <- round . (/ 0.1) <$> localTime -< ()
+  newanim <- onChange -< dsd_anim dsd
+  anim_start <- hold 0 -< global_tick <$ newanim
+
+  let anim_frame = (global_tick - anim_start) `mod` frameCounts sprite anim
+
+  returnA -<
+    drawSprite
+      (global_sprites sprite anim !! anim_frame)
+      pos
+      (dsd_rotation dsd)
+      (dsd_flips dsd)
 
 
 atScreenPos :: Renderable -> Renderable
