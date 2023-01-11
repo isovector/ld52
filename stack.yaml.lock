@@ -12,6 +12,13 @@ packages:
   original:
     hackage: Yampa-0.13.7
 - completed:
+    hackage: dir-traverse-0.2.3.0@sha256:adcc128f201ff95131b15ffe41365dc99c50dc3fa3a910f021521dc734013bfa,2137
+    pantry-tree:
+      size: 389
+      sha256: b19f0562746dfd0f8f21eccab6584592f55fb781ca3e043da9132cc23d8a5b99
+  original:
+    hackage: dir-traverse-0.2.3.0
+- completed:
     name: ldtk-types
     version: 0.2.0.0
     git: https://github.com/isovector/ldtk-types.git

@@ -1,8 +1,11 @@
 import Distribution.Simple
 import Distribution.Simple.Setup
 import Distribution.AppImage
+import System.Directory.Recursive
 
-main =
+main :: IO ()
+main = do
+  res <- getFilesRecursive "./resources"
   defaultMainWithHooks
     (simpleUserHooks
       { postBuild =
@@ -11,7 +14,9 @@ main =
               { appName = "ld52-exe"
               , appDesktop = "ld52.desktop"
               , appIcons = ["./resources/textures/chicken.png"]
-              , appResources = [("./resources/textures/chicken.png", Nothing)]
+              , appResources = do
+                  r <- res
+                  pure (r, Just $ drop 2 r)
               , appDirCustomize = Nothing
               }
             ]

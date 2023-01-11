@@ -27,7 +27,7 @@ loadResource engine = do
   m <- fmap M.fromList $
     for [minBound @key .. maxBound] $ \k ->
       fmap (k, ) $ load @_ @res k engine $
-        "resources" </> resourceFolder @key @res </>
+        "/usr/share/ld52-exe/resources" </> resourceFolder @key @res </>
           resourceName k <.> resourceExt @key @res
   pure $ \k -> m M.! k
 

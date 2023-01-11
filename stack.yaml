@@ -5,6 +5,7 @@ packages:
 
 extra-deps:
 - Yampa-0.13.7
+- dir-traverse-0.2.3.0
 - git: https://github.com/isovector/ldtk-types.git
   commit: 0be47b237f36e4a16c6fac5d384adc733ed07711
 - git: https://github.com/gbrsales/cabal-appimage.git

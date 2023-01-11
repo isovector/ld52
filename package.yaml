@@ -45,6 +45,7 @@ custom-setup:
     - base >= 4.7 && < 5
     - cabal-appimage
     - Cabal >= 1.14 && < 1.25
+    - dir-traverse
 
 
 ghc-options:
