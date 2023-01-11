@@ -44,7 +44,7 @@ custom-setup:
   dependencies:
     - base >= 4.7 && < 5
     - cabal-appimage
-    - Cabal >= 1.14 && < 1.25
+    - Cabal >= 3.2 && < 4
     - dir-traverse
 
 

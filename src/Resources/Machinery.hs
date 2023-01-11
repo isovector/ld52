@@ -22,12 +22,12 @@ class (Ord key, Enum key, Bounded key)
 loadResource
     :: forall key res
      . IsResource key res
-    => Engine -> IO (key -> res)
-loadResource engine = do
+    => FilePath -> Engine -> IO (key -> res)
+loadResource rpath engine = do
   m <- fmap M.fromList $
     for [minBound @key .. maxBound] $ \k ->
       fmap (k, ) $ load @_ @res k engine $
-        "/usr/share/ld52-exe/resources" </> resourceFolder @key @res </>
+        rpath </> resourceFolder @key @res </>
           resourceName k <.> resourceExt @key @res
   pure $ \k -> m M.! k
 

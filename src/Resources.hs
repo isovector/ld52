@@ -10,6 +10,7 @@ import qualified SDL.Image as Image
 import           SDL.Mixer (Chunk)
 import qualified SDL.Mixer as Mixer
 import           SDL.Video (queryTexture)
+import           System.Environment.Blank (getEnv)
 import           System.FilePath ((</>), (<.>))
 import           Types
 import           Utils (setGroundOrigin)
@@ -133,13 +134,15 @@ instance IsResource WorldName World where
 
 loadResources :: Engine -> IO Resources
 loadResources engine = do
-  tilesets <- loadResource engine
-  textures <- loadResource engine
-  songs    <- loadResource engine
-  sounds   <- loadResource engine
-  worlds   <- loadResource engine
-  sprites  <- loadResource engine
-  glyphs   <- loadResource engine
+  rpath <- maybe "resources" (</> "usr/share/ld52-exe/resources") <$> getEnv "APPDIR"
+
+  tilesets <- loadResource rpath engine
+  textures <- loadResource rpath engine
+  songs    <- loadResource rpath engine
+  sounds   <- loadResource rpath engine
+  worlds   <- loadResource rpath engine
+  sprites  <- loadResource rpath engine
+  glyphs   <- loadResource rpath engine
 
   pure $ Resources
     { r_engine   = engine
