@@ -6,6 +6,10 @@
 - Jump: space, or x
 - Throw warpball: hold z to charge
 
+## Downloads
+
+- [Linux x86_64](https://files.jam.host/uploads/$314776/chickenman-x86_64-linux.AppImage)
+
 ## Build Instructions
 
 ld52 is a Haskell project, which means you're going to need a Haskell toolchain
