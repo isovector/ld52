@@ -5,6 +5,7 @@ license:             BSD3
 author:              "Sandy Maguire"
 maintainer:          "sandy@sandymaguire.me"
 copyright:           "Sandy Maguire"
+build-type:          Custom
 
 extra-source-files:
 - README.md
@@ -38,6 +39,13 @@ dependencies:
 - aeson
 - deepseq
 - hashable
+
+custom-setup:
+  dependencies:
+    - base >= 4.7 && < 5
+    - cabal-appimage
+    - Cabal >= 1.14 && < 1.25
+
 
 ghc-options:
 - -Wall
@@ -117,6 +125,7 @@ executables:
     - -O2
     dependencies:
     - ld52
+    - cabal-appimage
 
 tests:
   ld52-test:

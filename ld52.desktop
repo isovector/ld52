@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=ld52
+Icon=chicken
+Exec=ld52-exe
+Terminal=false
+Categories=Game

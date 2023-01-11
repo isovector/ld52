@@ -22,6 +22,17 @@ packages:
   original:
     git: https://github.com/isovector/ldtk-types.git
     commit: 0be47b237f36e4a16c6fac5d384adc733ed07711
+- completed:
+    name: cabal-appimage
+    version: 0.3.0.5
+    git: https://github.com/gbrsales/cabal-appimage.git
+    pantry-tree:
+      size: 599
+      sha256: 7e572b65331d8ace4b787869bb45d705022b5f5ca295528958e65096ad506078
+    commit: 0f0cf1d14d0e00abd089be0b63213bb505fb1499
+  original:
+    git: https://github.com/gbrsales/cabal-appimage.git
+    commit: 0f0cf1d14d0e00abd089be0b63213bb505fb1499
 snapshots:
 - completed:
     size: 586296
