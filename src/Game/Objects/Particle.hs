@@ -8,6 +8,7 @@ import Collision (move)
 import Game.Common (getCollisionMap)
 import Data.Maybe (fromMaybe)
 import Data.Hashable (hash)
+import SDL (qd, quadrance)
 
 particle
     :: V2 WorldPos
@@ -33,6 +34,12 @@ particle pos0 vel0 ore col grav life =
           vel' = maybe vel (coerce . subtract pos) (coerce mpos') ^* (1 / dt)
                 + grav ^* dt
 
+
+          pos'' =
+            case quadrance vel <= 100 of
+              True -> pos
+              False -> pos'
+
       let end = mergeEvents
             [ die
             -- , bool noEvent (Event ()) $ quadrance vel' <= 400
@@ -42,19 +49,19 @@ particle pos0 vel0 ore col grav life =
         { oo_events = mempty
             { oe_die = end
             }
-        , oo_render = drawOriginRect col (coerce ore) pos'
-        , oo_state = (noObjectState pos')
+        , oo_render = drawOriginRect col (coerce ore) pos''
+        , oo_state = (noObjectState pos'')
         }
 
 
 gore :: V2 WorldPos -> [Object]
 gore pos = do
-  let n = 64
+  let n = 128
   i <- [id @Int 0 .. n]
-  let seed = hash pos + hash i
+  let seed = hash pos * hash i
       j = fromIntegral i * (360 / fromIntegral n)
-      speed = 200 + mod (seed * 17) 250
-      dur = 8 + mod (seed * 9) 8
+      speed = 50 + mod (seed * 17) 150
+      dur = 2 + mod (seed * 9) 2
       vel = V2 (cos j) (sin j) * fromIntegral speed
   pure
     $ particle pos vel (mkCenterdOriginRect 2) (V4 128 0 0 192) (V2 0 210)

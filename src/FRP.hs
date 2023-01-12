@@ -7,7 +7,7 @@ module FRP
 
 import Control.Monad.Cont
 import Data.Monoid
-import FRP.Yampa hiding ((*^))
+import FRP.Yampa hiding ((*^), fromEvent)
 import Data.Bifunctor
 import Data.Tuple (swap)
 import Data.Foldable (traverse_)
@@ -128,5 +128,9 @@ eventToMaybe (Event a) = Just a
 onChange :: Eq a => SF a (Event a)
 onChange = proc a ->
   edgeBy (\old new -> bool Nothing new $ old /= new) Nothing -< Just a
+
+fromEvent :: a -> Event a -> a
+fromEvent a NoEvent = a
+fromEvent _ (Event a') = a'
 
 #endif
