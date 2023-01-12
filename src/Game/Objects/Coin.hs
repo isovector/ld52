@@ -2,12 +2,13 @@ module Game.Objects.Coin where
 
 import Game.Common (onHitBy, playerHitRectObj')
 import Types
+import FRP
 
 
 coin :: V2 WorldPos -> Object
 coin pos =
   playerHitRectObj'
-    (\oi ->
+    (arr $ \oi ->
       let ev = onHitBy IsPlayer oi
        in mempty
             { oe_die = () <$ ev

@@ -259,7 +259,7 @@ data ObjectInput = ObjectInput
 
 data ObjectInEvents = ObjectInEvents
   { oie_hit :: Event [HitEvent]
-  , oie_receive :: Event [Message]
+  , oie_receive :: Event [(ObjectId, Message)]
   }
   deriving stock Generic
 
@@ -283,11 +283,12 @@ data ObjectEvents = ObjectEvents
   , oe_play_sound :: Event [Sound]
   , oe_send_message :: Event [(ObjectId, Message)]
   , oe_omnipotence :: Event (ObjectMap ObjSF -> ObjectMap ObjSF )
+  , oe_broadcast_message :: Event [Message]
   }
   deriving stock Generic
 
 instance Semigroup ObjectEvents where
-  (ObjectEvents ev ev' ev2 ev3 sm1 ev4) <> (ObjectEvents ev5 ev6 ev7 ev8 sm2 ev9)
+  (ObjectEvents ev ev' ev2 ev3 sm1 ev4 bc1) <> (ObjectEvents ev5 ev6 ev7 ev8 sm2 ev9 bc2)
     = ObjectEvents
         { oe_die = ev <> ev5
         , oe_spawn = ev' <> ev6
@@ -295,6 +296,7 @@ instance Semigroup ObjectEvents where
         , oe_play_sound = ev3 <> ev8
         , oe_send_message = sm1 <> sm2
         , oe_omnipotence = fmap appEndo $ coerce ev4 <> coerce ev9
+        , oe_broadcast_message = bc1 <> bc2
         }
 
 instance Monoid ObjectEvents where
@@ -306,6 +308,7 @@ instance Monoid ObjectEvents where
         , oe_play_sound = mempty
         , oe_send_message = mempty
         , oe_omnipotence = fmap appEndo mempty
+        , oe_broadcast_message = mempty
         }
 
 data ObjectState = ObjectState
@@ -325,7 +328,7 @@ data ObjectOutput = ObjectOutput
 
 data ObjectMap a = ObjectMap
   { objm_camera_focus :: ObjectId
-  , objm_undeliveredMsgs :: Map ObjectId [Message]
+  , objm_undeliveredMsgs :: Map ObjectId [(ObjectId, Message)]
   , objm_globalState :: ~GlobalState
   , objm_map :: Map ObjectId a
   }
@@ -384,6 +387,7 @@ data Message
   | SetCheckpoint (V2 WorldPos)
   | OnTrampoline Double
   | Die
+  | CurrentCheckpoint ObjectId
   deriving stock (Eq, Ord, Show, Read, Generic)
 
 traceF :: Show b => (a -> b) -> a -> a
