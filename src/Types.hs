@@ -153,6 +153,7 @@ data GameTexture
     | ChargeTexture
     | TeleTexture
     | AuraTexture
+    | TrampolineTexture
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 data Tileset
@@ -345,7 +346,9 @@ logicalSize :: Num a => V2 a
 logicalSize = V2 320 240
 
 screenRect :: (Fractional a) => Rectangle a
-screenRect = Rectangle (P $ -tileSize) (logicalSize + tileSize * 2)
+screenRect = Rectangle (P $ -tileSize * buffer) (logicalSize + tileSize * 2 * buffer)
+  where
+    buffer = 4
 
 -- WHY DOESNT THIS EXIST
 instance (Bounded b, Enum a, Enum b) => Enum (a, b) where

@@ -26,10 +26,10 @@ listenInbox ok oi = do
 playerHitRectObjCallback
     :: (ObjectInput -> Event (ObjectId, Message))
     -> OriginRect WorldPos
-    -> Color
+    -> (V2 WorldPos -> Renderable)
     -> V2 WorldPos
     -> Object
-playerHitRectObjCallback msg = playerHitRectObj' $ \oi ->
+playerHitRectObjCallback msg = playerHitRectObj $ \oi ->
   mempty
     { oe_send_message = fmap pure $ msg oi
     }
