@@ -11,7 +11,7 @@
 	"iid": "a22d35f0-7820-11ed-b6fd-213e885f30da",
 	"jsonVersion": "1.2.3",
 	"appBuildId": 464726,
-	"nextUid": 216,
+	"nextUid": 217,
 	"identifierStyle": "Capitalize",
 	"worldLayout": "LinearHorizontal",
 	"worldGridWidth": 128,
@@ -2040,7 +2040,7 @@
 			]
 		},
 		{
-			"identifier": "Trigger",
+			"identifier": "SpawnTrigger",
 			"uid": 213,
 			"tags": [],
 			"width": 16,
@@ -2094,6 +2094,41 @@
 					"autoChainRef": true,
 					"allowOutOfLevelRef": true,
 					"allowedRefs": "Any",
+					"allowedRefTags": [],
+					"tilesetUid": null
+				},
+				{
+					"identifier": "persistent",
+					"doc": null,
+					"__type": "Bool",
+					"uid": 216,
+					"type": "F_Bool",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": {
+						"id": "V_Bool",
+						"params": [ true ]
+					},
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
 					"allowedRefTags": [],
 					"tilesetUid": null
 				}
@@ -7991,7 +8026,7 @@
 							"fieldInstances": []
 						},
 						{
-							"__identifier": "Trigger",
+							"__identifier": "SpawnTrigger",
 							"__grid": [36,117],
 							"__pivot": [0,0],
 							"__tags": [],
@@ -8002,69 +8037,72 @@
 							"height": 16,
 							"defUid": 213,
 							"px": [288,936],
-							"fieldInstances": [{ "__identifier": "refs", "__value": [
-								{
-									"entityIid": "407f02d0-7820-11ed-9f6e-03c1a69db0e7",
-									"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
-									"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
-									"worldIid": "9d7a8730-7820-11ed-9f6e-cb9dc6f701be"
-								},
-								{
-									"entityIid": "41dd0c30-7820-11ed-9f6e-f38d9ceee6e0",
-									"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
-									"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
-									"worldIid": "9d7a8730-7820-11ed-9f6e-cb9dc6f701be"
-								},
-								{
-									"entityIid": "4315b340-7820-11ed-9f6e-1314a9bf4bff",
-									"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
-									"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
-									"worldIid": "9d7a8730-7820-11ed-9f6e-cb9dc6f701be"
-								},
-								{
-									"entityIid": "44c62260-7820-11ed-9f6e-45146885832e",
-									"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
-									"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
-									"worldIid": "9d7a8730-7820-11ed-9f6e-cb9dc6f701be"
-								},
-								{
-									"entityIid": "460d6f70-7820-11ed-9f6e-8d1459b345d8",
-									"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
-									"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
-									"worldIid": "9d7a8730-7820-11ed-9f6e-cb9dc6f701be"
-								},
-								{
-									"entityIid": "46d441e0-7820-11ed-9f6e-c12b68ae548f",
-									"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
-									"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
-									"worldIid": "9d7a8730-7820-11ed-9f6e-cb9dc6f701be"
-								}
-							], "__type": "Array<EntityRef>", "__tile": null, "defUid": 214, "realEditorValues": [
-								{
-									"id": "V_String",
-									"params": ["407f02d0-7820-11ed-9f6e-03c1a69db0e7"]
-								},
-								{
-									"id": "V_String",
-									"params": ["41dd0c30-7820-11ed-9f6e-f38d9ceee6e0"]
-								},
-								{
-									"id": "V_String",
-									"params": ["4315b340-7820-11ed-9f6e-1314a9bf4bff"]
-								},
-								{
-									"id": "V_String",
-									"params": ["44c62260-7820-11ed-9f6e-45146885832e"]
-								},
-								{
-									"id": "V_String",
-									"params": ["460d6f70-7820-11ed-9f6e-8d1459b345d8"]
-								},
-								{
-									"id": "V_String",
-									"params": ["46d441e0-7820-11ed-9f6e-c12b68ae548f"]
-								}
-							] }]
+							"fieldInstances": [
+								{ "__identifier": "refs", "__value": [
+									{
+										"entityIid": "407f02d0-7820-11ed-9f6e-03c1a69db0e7",
+										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
+										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
+										"worldIid": "9d7a8730-7820-11ed-9f6e-cb9dc6f701be"
+									},
+									{
+										"entityIid": "41dd0c30-7820-11ed-9f6e-f38d9ceee6e0",
+										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
+										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
+										"worldIid": "9d7a8730-7820-11ed-9f6e-cb9dc6f701be"
+									},
+									{
+										"entityIid": "4315b340-7820-11ed-9f6e-1314a9bf4bff",
+										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
+										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
+										"worldIid": "9d7a8730-7820-11ed-9f6e-cb9dc6f701be"
+									},
+									{
+										"entityIid": "44c62260-7820-11ed-9f6e-45146885832e",
+										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
+										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
+										"worldIid": "9d7a8730-7820-11ed-9f6e-cb9dc6f701be"
+									},
+									{
+										"entityIid": "460d6f70-7820-11ed-9f6e-8d1459b345d8",
+										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
+										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
+										"worldIid": "9d7a8730-7820-11ed-9f6e-cb9dc6f701be"
+									},
+									{
+										"entityIid": "46d441e0-7820-11ed-9f6e-c12b68ae548f",
+										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
+										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
+										"worldIid": "9d7a8730-7820-11ed-9f6e-cb9dc6f701be"
+									}
+								], "__type": "Array<EntityRef>", "__tile": null, "defUid": 214, "realEditorValues": [
+									{
+										"id": "V_String",
+										"params": ["407f02d0-7820-11ed-9f6e-03c1a69db0e7"]
+									},
+									{
+										"id": "V_String",
+										"params": ["41dd0c30-7820-11ed-9f6e-f38d9ceee6e0"]
+									},
+									{
+										"id": "V_String",
+										"params": ["4315b340-7820-11ed-9f6e-1314a9bf4bff"]
+									},
+									{
+										"id": "V_String",
+										"params": ["44c62260-7820-11ed-9f6e-45146885832e"]
+									},
+									{
+										"id": "V_String",
+										"params": ["460d6f70-7820-11ed-9f6e-8d1459b345d8"]
+									},
+									{
+										"id": "V_String",
+										"params": ["46d441e0-7820-11ed-9f6e-c12b68ae548f"]
+									}
+								] },
+								{ "__identifier": "persistent", "__value": true, "__type": "Bool", "__tile": null, "defUid": 216, "realEditorValues": [] }
+							]
 						},
 						{
 							"__identifier": "Firework",
