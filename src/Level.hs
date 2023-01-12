@@ -55,8 +55,6 @@ checkPurpose CollisionCheckGround 4 = True
 checkPurpose _ 4 = False
 checkPurpose _ 5 = False
 checkPurpose _ 6 = False
-checkPurpose _ 7 = True
-checkPurpose _ 8 = False
 checkPurpose _ i = error $ "unknown tile: " <> show i
 
 chunksOf :: Int -> [a] -> [[a]]
