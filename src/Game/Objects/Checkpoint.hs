@@ -1,11 +1,11 @@
 module Game.Objects.Checkpoint where
 
-import Game.Common (onHitBy, playerHitRectObj)
+import Game.Common (onHitBy, playerHitRectObj')
 import Types
 
 checkpoint :: V2 WorldPos -> Object
 checkpoint pos =
-  playerHitRectObj
+  playerHitRectObj'
     (\oi ->
       let ev = (fmap (, SetCheckpoint pos) . onHitBy IsPlayer) oi
        in mempty

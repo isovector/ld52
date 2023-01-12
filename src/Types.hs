@@ -152,6 +152,7 @@ data GameTexture
     | Parallax2
     | ChargeTexture
     | TeleTexture
+    | AuraTexture
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 data Tileset
