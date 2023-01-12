@@ -8106,7 +8106,7 @@
 						},
 						{
 							"__identifier": "Firework",
-							"__grid": [9,106],
+							"__grid": [4,102],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -8115,12 +8115,12 @@
 							"width": 8,
 							"height": 8,
 							"defUid": 215,
-							"px": [72,848],
+							"px": [32,816],
 							"fieldInstances": []
 						},
 						{
 							"__identifier": "Firework",
-							"__grid": [11,104],
+							"__grid": [7,98],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -8129,12 +8129,12 @@
 							"width": 8,
 							"height": 8,
 							"defUid": 215,
-							"px": [88,832],
+							"px": [56,784],
 							"fieldInstances": []
 						},
 						{
 							"__identifier": "Firework",
-							"__grid": [13,102],
+							"__grid": [12,95],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -8143,12 +8143,12 @@
 							"width": 8,
 							"height": 8,
 							"defUid": 215,
-							"px": [104,816],
+							"px": [96,760],
 							"fieldInstances": []
 						},
 						{
 							"__identifier": "Firework",
-							"__grid": [18,102],
+							"__grid": [19,95],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -8157,12 +8157,12 @@
 							"width": 8,
 							"height": 8,
 							"defUid": 215,
-							"px": [144,816],
+							"px": [152,760],
 							"fieldInstances": []
 						},
 						{
 							"__identifier": "Firework",
-							"__grid": [20,104],
+							"__grid": [24,98],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -8171,12 +8171,12 @@
 							"width": 8,
 							"height": 8,
 							"defUid": 215,
-							"px": [160,832],
+							"px": [192,784],
 							"fieldInstances": []
 						},
 						{
 							"__identifier": "Firework",
-							"__grid": [22,106],
+							"__grid": [27,102],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -8185,7 +8185,7 @@
 							"width": 8,
 							"height": 8,
 							"defUid": 215,
-							"px": [176,848],
+							"px": [216,816],
 							"fieldInstances": []
 						}
 					]
