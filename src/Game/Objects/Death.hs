@@ -2,12 +2,13 @@ module Game.Objects.Death where
 
 import Game.Common (onHitBy, playerHitRectObj')
 import Types
+import FRP
 
 
 deathZone :: V2 WorldPos -> V2 Double -> Object
 deathZone pos sz =
   playerHitRectObj'
-    (\oi ->
+    (arr $ \oi ->
       let ev = (fmap (, Die) . onHitBy IsPlayer) oi
        in mempty
             { oe_play_sound = [DieSound] <$ ev

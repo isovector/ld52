@@ -13,15 +13,15 @@ import Drawing (drawSpriteOriginRect)
 collectPowerup :: V2 WorldPos -> PowerupType -> Object
 collectPowerup pos pt =
   playerHitRectObj
-    (\oi ->
+    (arr $ \oi ->
       let ev = onHitBy IsPlayer oi
-       in mempty
+       in (, ()) $ mempty
             { oe_die = () <$ ev
             , oe_play_sound = [CoinSound] <$ ev
             }
     )
     ore
-    (drawPowerup pt ore)
+    (const $ drawPowerup pt ore)
     pos
   >>> arr (#oo_state . #os_tags <>~ S.singleton (IsPowerup pt))
   where

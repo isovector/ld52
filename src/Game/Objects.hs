@@ -105,7 +105,7 @@ routeHits (RawFrameInfo c dt) outlast new = do
         }
     )
 
-recv :: ObjectId -> Map ObjectId [Message] -> ObjectInEvents
+recv :: ObjectId -> Map ObjectId [(ObjectId, Message)] -> ObjectInEvents
 recv oid
     = foldMap (\msgs -> mempty & #oie_receive <>~ foldMap (pure . pure) msgs)
     . M.lookup oid
@@ -156,13 +156,19 @@ route oid (oo_events -> ObjectEvents {..}) = mconcat $
   , Endo (#objm_camera_focus .~ oid) <$ oe_focus
   , foldMap (Endo . over #objm_map . insertObject)  <$> oe_spawn
   , Endo <$> oe_omnipotence
-  , foldMap (Endo . uncurry sendMsg) <$> oe_send_message
+  , foldMap (Endo . uncurry (sendMsg oid)) <$> oe_send_message
+  , foldMap (Endo . broadcast oid) <$> oe_broadcast_message
     -- NOTE(sandy): looks stupid but necessary to flush the pipes
   , Event (Endo id)
   ]
 
-sendMsg :: ObjectId -> Message -> ObjectMap ObjSF -> ObjectMap ObjSF
-sendMsg oid m = #objm_undeliveredMsgs . at oid . non mempty <>~ [m]
+broadcast :: ObjectId -> Message -> ObjectMap ObjSF -> ObjectMap ObjSF
+broadcast from m om =
+  om
+    & #objm_undeliveredMsgs <>~ foldMap (flip M.singleton [(from, m)]) (M.keys $ objm_map om)
+
+sendMsg :: ObjectId -> ObjectId -> Message -> ObjectMap ObjSF -> ObjectMap ObjSF
+sendMsg from oid m = #objm_undeliveredMsgs . at oid . non mempty <>~ [(from, m)]
 
 
 addObject :: a -> ObjectMap a -> ObjectMap a

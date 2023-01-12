@@ -16,7 +16,7 @@ onHitBy otag oi = do
     Just x0 -> pure $ fst x0
     Nothing -> noEvent
 
-listenInbox :: (Message -> Maybe a) -> ObjectInEvents -> Event a
+listenInbox :: ((ObjectId, Message) -> Maybe a) -> ObjectInEvents -> Event a
 listenInbox ok oi = do
   msgs <- oie_receive oi
   case listToMaybe $ mapMaybe ok msgs of
@@ -29,33 +29,37 @@ playerHitRectObjCallback
     -> (V2 WorldPos -> Renderable)
     -> V2 WorldPos
     -> Object
-playerHitRectObjCallback msg = playerHitRectObj $ \oi ->
-  mempty
-    { oe_send_message = fmap pure $ msg oi
-    }
+playerHitRectObjCallback msg ore r =
+  playerHitRectObj
+    (arr $ \oi ->
+      (, ()) $ mempty
+        { oe_send_message = fmap pure $ msg oi
+        })
+    ore
+    (const r)
 
 playerHitRectObj'
-    :: (ObjectInput -> ObjectEvents)
+    :: (SF ObjectInput ObjectEvents)
     -> OriginRect WorldPos
     -> Color
     -> V2 WorldPos
     -> Object
 playerHitRectObj' msg ore col pos =
-  playerHitRectObj msg ore (drawOriginRect col ore) pos
+  playerHitRectObj (msg >>> arr (, ())) ore (const $ drawOriginRect col ore) pos
 
 playerHitRectObj
-    :: (ObjectInput -> ObjectEvents)
+    :: (SF ObjectInput (ObjectEvents, a))
     -> OriginRect WorldPos
-    -> (V2 WorldPos -> Renderable)
+    -> (a -> V2 WorldPos -> Renderable)
     -> V2 WorldPos
     -> Object
 playerHitRectObj msg ore r pos =
   proc oi -> do
-    let evs = msg oi
+    (evs, a) <- msg -< oi
 
     returnA -< ObjectOutput
       { oo_events = evs
-      , oo_render = r $ os_pos $ oi_state oi
+      , oo_render = r a $ os_pos $ oi_state oi
       , oo_state = (noObjectState pos)
           { os_collision = Just $ coerce ore
           }

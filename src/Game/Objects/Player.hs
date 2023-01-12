@@ -31,7 +31,7 @@ player pos0 = proc oi -> do
         $ mapMaybe (preview #_IsPowerup) . toList . os_tags . snd
 
   let am_teleporting
-        = fmap (foldMap (foldMap (Endo . const) . preview #_TeleportTo))
+        = fmap (foldMap (foldMap (Endo . const) . preview #_TeleportTo . snd))
         . oie_receive
         $ oi_events oi
 
@@ -39,21 +39,23 @@ player pos0 = proc oi -> do
       do_teleport = event id appEndo am_teleporting
 
   reset <- edge -< c_reset $ fi_controls $ oi_frameInfo oi
-  cp_pos <- hold pos0 -< listenInbox (preview #_SetCheckpoint) $ oi_events oi
+  let cp_hit = listenInbox (\(from, m) -> (from, ) <$> preview #_SetCheckpoint m) $ oi_events oi
+  cp_pos <- hold pos0 -< fmap snd cp_hit
+
   let dying :: Bool
       dying = event False (const True)
             $ merge reset
-            $ listenInbox (preview #_Die)
+            $ listenInbox (preview #_Die . snd)
             $ oi_events oi
 
       doorout :: Maybe (V2 WorldPos)
       doorout = eventToMaybe
-              $ listenInbox (preview #_TeleportOpportunity)
+              $ listenInbox (preview #_TeleportOpportunity . snd)
               $ oi_events oi
 
       tramp :: Maybe Double
       tramp = eventToMaybe
-              $ listenInbox (preview #_OnTrampoline)
+              $ listenInbox (preview #_OnTrampoline . snd)
               $ oi_events oi
 
       powerups :: S.Set PowerupType
@@ -104,6 +106,7 @@ player pos0 = proc oi -> do
                   [ () <$ am_teleporting
                   , start
                   ]
+              & #oe_broadcast_message <>~ fmap (pure . CurrentCheckpoint . fst) cp_hit
         , oo_state =
             oi_state oi
               & #os_pos .~ pos''
