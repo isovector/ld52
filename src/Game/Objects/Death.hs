@@ -1,12 +1,12 @@
 module Game.Objects.Death where
 
-import Game.Common (onHitBy, playerHitRectObj)
+import Game.Common (onHitBy, playerHitRectObj')
 import Types
 
 
 deathZone :: V2 WorldPos -> V2 Double -> Object
 deathZone pos sz =
-  playerHitRectObj
+  playerHitRectObj'
     (\oi ->
       let ev = (fmap (, Die) . onHitBy IsPlayer) oi
        in mempty

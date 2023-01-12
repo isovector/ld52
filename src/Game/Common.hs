@@ -26,7 +26,7 @@ listenInbox ok oi = do
 playerHitRectObjCallback
     :: (ObjectInput -> Event (ObjectId, Message))
     -> OriginRect WorldPos
-    -> Color
+    -> (V2 WorldPos -> Renderable)
     -> V2 WorldPos
     -> Object
 playerHitRectObjCallback msg = playerHitRectObj $ \oi ->
@@ -34,20 +34,28 @@ playerHitRectObjCallback msg = playerHitRectObj $ \oi ->
     { oe_send_message = fmap pure $ msg oi
     }
 
-playerHitRectObj
+playerHitRectObj'
     :: (ObjectInput -> ObjectEvents)
     -> OriginRect WorldPos
     -> Color
     -> V2 WorldPos
     -> Object
-playerHitRectObj msg ore col pos =
+playerHitRectObj' msg ore col pos =
+  playerHitRectObj msg ore (drawOriginRect col ore) pos
+
+playerHitRectObj
+    :: (ObjectInput -> ObjectEvents)
+    -> OriginRect WorldPos
+    -> (V2 WorldPos -> Renderable)
+    -> V2 WorldPos
+    -> Object
+playerHitRectObj msg ore r pos =
   proc oi -> do
     let evs = msg oi
 
     returnA -< ObjectOutput
       { oo_events = evs
-      , oo_render =
-          drawOriginRect col ore pos
+      , oo_render = r $ os_pos $ oi_state oi
       , oo_state = (noObjectState pos)
           { os_collision = Just $ coerce ore
           }

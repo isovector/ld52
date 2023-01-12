@@ -104,6 +104,8 @@ instance IsResource GameTexture WrappedTexture where
   resourceName Parallax2 = "parallax2"
   resourceName ChargeTexture = "charge"
   resourceName TeleTexture = "teleball"
+  resourceName AuraTexture = "aura"
+  resourceName TrampolineTexture = "trampoline"
 
 instance IsResource Song Mixer.Music where
   load _ _ = Mixer.load

@@ -1,12 +1,12 @@
 module Game.Objects.Coin where
 
-import Game.Common (onHitBy, playerHitRectObj)
+import Game.Common (onHitBy, playerHitRectObj')
 import Types
 
 
 coin :: V2 WorldPos -> Object
 coin pos =
-  playerHitRectObj
+  playerHitRectObj'
     (\oi ->
       let ev = onHitBy IsPlayer oi
        in mempty
