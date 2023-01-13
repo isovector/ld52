@@ -1,6 +1,6 @@
 module Game.Objects.Checkpoint where
 
-import Game.Common (onHitBy, playerHitRectObj', listenInbox, playerHitRectObj)
+import Game.Common (onHitBy, listenInbox, playerHitRectObj)
 import Types
 import Control.Lens (preview)
 import FRP
@@ -13,12 +13,14 @@ checkpoint pos =
       let hit_cp = (fmap (, SetCheckpoint pos) . onHitBy IsPlayer) oi
           mine = listenInbox (preview #_CurrentCheckpoint . snd) $ oi_events oi
 
-      is_me <- hold False -< fmap (== oi_self oi) mine
+      is_me <- dHold False -< fmap (== oi_self oi) mine
+      newly_hit <- edge -< is_me
+
 
 
       returnA -< (, is_me)
         mempty
-          { oe_play_sound = [CheckpointSound] <$ hit_cp
+          { oe_play_sound = [CheckpointSound] <$ newly_hit
           , oe_send_message = fmap pure hit_cp
           }
     )
