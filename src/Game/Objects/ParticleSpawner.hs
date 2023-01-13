@@ -2,20 +2,15 @@ module Game.Objects.ParticleSpawner where
 
 import Types
 import Game.Objects.Particle
-import FRP
-import Utils (nowish, noObjectState)
+import Game.Common
 
 particleSpawner :: V2 WorldPos -> ParticleType -> Object
-particleSpawner pos pt = proc _ -> do
-  start <- nowish () -< ()
-  returnA -< ObjectOutput
-    { oo_events = mempty
-        { oe_die = start
-        , oe_spawn = particleType pt pos <$ start
-        }
-    , oo_render = mempty
-    , oo_state = noObjectState pos
-    }
+particleSpawner pos pt
+  = onSpawn (mconcat
+      [ standardDeathResponse
+      , spawnResponse $ particleType pt pos
+      ])
+  $ staticObject pos mempty mempty
 
 
 particleType :: ParticleType -> V2 WorldPos -> [Object]

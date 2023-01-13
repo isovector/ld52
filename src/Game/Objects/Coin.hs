@@ -9,7 +9,7 @@ coin pos
         [ standardDeathResponse
         , playSoundReponse CoinSound
         ])
-  $ staticCollisionObject pos ore
+  $ staticCollisionObject pos ore mempty
   $ drawOriginRect (V4 255 255 0 255) (coerce ore) pos
   where
     ore = OriginRect 8 4

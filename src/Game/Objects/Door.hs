@@ -1,16 +1,11 @@
 module Game.Objects.Door where
 
-import Game.Common (onHitBy, playerHitRectObjCallback)
-import Types
-import Utils (mkGroundOriginRect)
-import Drawing (drawOriginRect)
+import Game.Common
 
 
 door :: V2 WorldPos -> V2 Double ->  V2 WorldPos -> Object
-door pos (mkGroundOriginRect . coerce -> ore) out =
-  playerHitRectObjCallback
-    (fmap ((, TeleportOpportunity out)) . onHitBy IsPlayer)
-    ore
-    (drawOriginRect (V4 192 128 0 64) ore)
-    pos
+door pos (mkGroundOriginRect -> ore) out
+  = onHit (Just . fmap fst) (respondWith (TeleportOpportunity out))
+  $ staticCollisionObject pos ore mempty
+  $ drawOriginRect (V4 192 128 0 64) ore pos
 

@@ -104,6 +104,14 @@ on msg handle obj =
     evs <- handle -< ev
     returnA -< oo & #oo_events <>~ evs
 
+onSpawn :: SF (Event ()) ObjectEvents -> Object -> Object
+onSpawn sf obj =
+  proc oi -> do
+    ev <- nowish () -< ()
+    oo <- obj -< oi
+    evs <- sf -< ev
+    returnA -< oo & #oo_events <>~ evs
+
 onHit :: ([HitEvent] -> Maybe a) -> SF (Event a) ObjectEvents -> Object -> Object
 onHit ot handle obj =
   proc oi -> do
@@ -119,35 +127,54 @@ onHitByTag ot = onHit $ find $ any $ S.member ot . os_tags
 playSoundReponse :: Sound -> SF (Event a) ObjectEvents
 playSoundReponse s = arr $ \ev -> mempty & #oe_play_sound .~ ([s] <$ ev)
 
+
 standardDeathResponse :: SF (Event a) ObjectEvents
 standardDeathResponse = arr $ \ev -> mempty & #oe_die .~ (() <$ ev)
+
+
+spawnResponse :: [Object] -> SF (Event a) ObjectEvents
+spawnResponse objs = arr $ \ev -> mempty & #oe_spawn .~ (objs <$ ev)
+
 
 onDeath :: SF (Event ()) ObjectEvents -> Object -> Object
 onDeath = on $ preview #_Die
 
+
+onTimeElapsed :: Time -> SF (Event ()) ObjectEvents -> Object -> Object
+onTimeElapsed dur handle obj =
+  proc oi -> do
+    ev <- after dur () -< ()
+    oo <- obj -< oi
+    evs <- handle -< ev
+    returnA -< oo & #oo_events <>~ evs
+
+
 staticCollisionObject
     :: V2 WorldPos
     -> OriginRect Double
+    -> S.Set ObjectTag
     -> Renderable
     -> Object
-staticCollisionObject pos ore r = constant $
+staticCollisionObject pos ore tags r = constant $
   ObjectOutput
     { oo_events = mempty
     , oo_render = r
     , oo_state = (noObjectState pos)
         { os_collision = Just ore
+        , os_tags = tags
         }
     }
 
 staticObject
     :: V2 WorldPos
+    -> S.Set ObjectTag
     -> Renderable
     -> Object
-staticObject pos r = constant $
+staticObject pos tags r = constant $
   ObjectOutput
     { oo_events = mempty
     , oo_render = r
-    , oo_state = noObjectState pos
+    , oo_state = noObjectState pos & #os_tags .~ tags
     }
 
 respondWith :: Message -> SF (Event [ObjectId]) ObjectEvents

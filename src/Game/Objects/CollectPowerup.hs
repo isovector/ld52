@@ -1,28 +1,20 @@
 module Game.Objects.CollectPowerup where
 
 import qualified Data.Set as S
-import           Drawing (drawSpriteOriginRect)
-import           FRP
-import           Game.Common (onHitBy, playerHitRectObj)
+import           Game.Common
 import           Globals (global_textures)
-import           Types
-import           Utils (mkCenterdOriginRect)
 
 
 collectPowerup :: V2 WorldPos -> PowerupType -> Object
-collectPowerup pos pt =
-  playerHitRectObj
-    (arr $ \oi ->
-      let ev = onHitBy IsPlayer oi
-       in (, ()) $ mempty
-            { oe_die = () <$ ev
-            , oe_play_sound = [CoinSound] <$ ev
-            }
-    )
-    ore
-    (const $ drawPowerup pt ore)
-    pos
-  >>> arr (#oo_state . #os_tags <>~ S.singleton (IsPowerup pt))
+collectPowerup pos pt
+  = onHitByTag IsPlayer
+      ( mconcat
+          [ standardDeathResponse
+          , playSoundReponse CoinSound
+          ]
+      )
+  $ staticCollisionObject pos ore (S.singleton $ IsPowerup pt)
+  $ drawPowerup pt ore pos
   where
     ore = mkCenterdOriginRect 8
 
