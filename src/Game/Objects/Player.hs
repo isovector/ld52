@@ -131,9 +131,9 @@ player pos0 = proc oi -> do
 
 playerPhysVelocity :: SF FrameInfo (V2 Double)
 playerPhysVelocity = proc fi -> do
-  let jumpVel = V2 0 (-200)
+  let jumpVel = V2 0 (-210)
   let stepSpeed = 10
-  jumpEv <- edge -< c_space (fi_controls fi) -- TODO: Only jump when on the ground
+  jumpEv <- edge -< c_space (fi_controls fi)
   let jump = event 0 (const jumpVel) jumpEv
   let vx = V2 stepSpeed 0 * (realToFrac <$> c_dir (fi_controls fi))
   let vy = jump
@@ -165,7 +165,7 @@ drawPlayer sz = arr mconcat <<< fork
   ]
 
 
-instance VectorSpace (V2 WorldPos) WorldPos where
+instance (Floating a, Eq a) => VectorSpace (V2 a) a where
   zeroVector = 0
   (*^) = (Types.*^)
   (^+^) = (+)
