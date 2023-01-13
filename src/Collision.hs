@@ -1,6 +1,6 @@
 module Collision where
 
-import Control.Lens (Lens')
+import Control.Lens (Lens', (+~), coerced)
 import Geometry
 import SDL
 import Types
@@ -45,13 +45,17 @@ move
 move f sz pos dpos = do
   let (V2 xd yd) = fmap deltaDir dpos
       subdivs :: Int
-      subdivs = min 10 $ max 1 $ ceiling (norm dpos)
+      subdivs = min 10 $ max 1 $ ceiling (norm dpos / tileSize)
+
+      dpos' :: V2 Double
+      dpos' = dpos / fromIntegral subdivs
+
   sufficientlyDifferent pos
     $ head
     $ drop subdivs
-    $ iterate ( moveX (f CollisionWall) sz xd
-              . moveY (f (bool CollisionCeiling CollisionGround $ yd == Positive)) sz yd
-               . (+ coerce dpos / fromIntegral subdivs))
+    $ iterate ( moveX (f CollisionWall) sz xd dpos'
+              . moveY (f (bool CollisionCeiling CollisionGround $ yd == Positive)) sz yd dpos'
+               )
     $ pos
 
 
@@ -80,12 +84,16 @@ moveXY
     -> (OriginRect WorldPos -> V2 WorldPos)
     -> (OriginRect WorldPos -> V2 WorldPos)
     -> Lens' (V2 WorldPos) WorldPos
+    -> Lens' (V2 WorldPos) WorldPos
     -> (V2 WorldPos -> Bool)
     -> OriginRect Double
     -> DeltaDir
+    -> V2 Double
     -> V2 WorldPos
     -> V2 WorldPos
-moveXY cs ld rd coord f (coerce -> sz) xdir pos =
+moveXY cs ld rd coord to_zero f (coerce -> sz) xdir (coerce -> dpos) pos0 =
+  let pos = pos0 + (dpos & to_zero .~ 0) in
+
   case any f $ cs sz xdir pos of
     False -> pos
     True ->
@@ -95,10 +103,10 @@ moveXY cs ld rd coord f (coerce -> sz) xdir pos =
         Positive -> pos & coord .~ coerce ((tileToPos (posToTile $ pos + rd sz) - rd sz - epsilon) ^. coord)
 
 
-moveX :: (V2 WorldPos -> Bool) -> OriginRect Double -> DeltaDir -> V2 WorldPos -> V2 WorldPos
-moveX = moveXY cornersY orLeftDist orRightDist _x
+moveX :: (V2 WorldPos -> Bool) -> OriginRect Double -> DeltaDir -> V2 Double -> V2 WorldPos -> V2 WorldPos
+moveX = moveXY cornersY orLeftDist orRightDist _x _y
 
 
-moveY :: (V2 WorldPos -> Bool) -> OriginRect Double -> DeltaDir -> V2 WorldPos -> V2 WorldPos
-moveY = moveXY cornersX orTopDist orBotDist _y
+moveY :: (V2 WorldPos -> Bool) -> OriginRect Double -> DeltaDir -> V2 Double -> V2 WorldPos -> V2 WorldPos
+moveY = moveXY cornersX orTopDist orBotDist _y _x
 
