@@ -12,17 +12,17 @@ import Engine.Types
 import Engine.Utils (originRectToRect)
 import Foreign.C
 import Game.Camera (viaCamera)
-import Engine.Globals (global_resources, global_sprites, global_glyphs, global_textures, global_songs)
+import Engine.Globals (global_resources, global_sprites, global_glyphs, global_textures, global_songs, global_sounds)
 import Game.Resources (frameSound, frameCounts)
 import SDL
 import SDL.Mixer
 
 
-playSound :: Resources -> Sound -> IO ()
-playSound r s = do
+playSound :: Sound -> IO ()
+playSound s = do
   let channel = fromIntegral $ fromEnum s
   halt channel
-  void $ playOn channel Once $ r_sounds r s
+  void $ playOn channel Once $ global_sounds s
 
 
 drawOriginRect :: Color -> OriginRect Double -> V2 WorldPos -> Renderable
@@ -123,7 +123,7 @@ mkAnim sprite = proc (dsd, pos) -> do
   new_frame <- onChange -< anim_frame
 
   returnA -< \cam -> do
-    for_ new_frame $ traverse_ (playSound global_resources) . frameSound sprite anim
+    for_ new_frame $ traverse_ playSound . frameSound sprite anim
     drawSprite
       (global_sprites sprite anim !! anim_frame)
       pos

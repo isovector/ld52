@@ -19,13 +19,11 @@ initialObjs gs
   $ l_defaultObjs $ gs_currentLevel gs
 
 
-game :: WorldName -> SF RawFrameInfo (Camera, Renderable)
-game w =
+game :: GlobalState -> SF RawFrameInfo (Camera, Renderable)
+game gs0 =
   proc rfi -> do
     (cam, objs, to_draw) <-
-      renderObjects global_resources (tileToPos $ V2 19 50)
-        -- BUG(sandy): this should be a signal!!!
-        (initialObjs $ initialGlobalState w global_resources)
+      renderObjects gs0 (tileToPos $ V2 19 50) (initialObjs gs0)
           -< rfi
     let gs = objm_globalState objs
         levelsz = fmap (fromIntegral . getPixel)
@@ -85,10 +83,10 @@ hasPowerup :: PowerupType -> ObjectOutput -> Bool
 hasPowerup pu
     = S.member (HasPowerup pu) . os_tags . oo_state
 
-initialGlobalState :: WorldName -> Resources -> GlobalState
-initialGlobalState w rs
+initialGlobalState :: WorldName -> GlobalState
+initialGlobalState w
   = GlobalState
-      (w_levels (r_worlds rs w) M.! "AutoLayer")
+      (w_levels (global_worlds w) M.! "AutoLayer")
       (S.fromList [Layer3])
       (GameState 0 mempty)
 

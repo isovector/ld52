@@ -20,12 +20,12 @@ import           Game.Camera (camera, getCameraFocus)
 
 
 renderObjects
-    :: Resources
+    :: GlobalState
     -> V2 WorldPos
     -> ObjectMap ObjSF
     -> SF RawFrameInfo (Camera, ObjectMap ObjectOutput, Renderable)
-renderObjects rs cam0 objs0 = proc fi -> do
-  objs <- router objs0 -< fi
+renderObjects gs0 cam0 objs0 = proc fi -> do
+  objs <- router gs0 objs0 -< fi
   let focuson = M.lookup (objm_camera_focus objs) $ objm_map objs
   focus <- camera cam0 -< (fi, maybe 0 (getCameraFocus . oo_state) focuson)
   let dat = toList $ objm_map objs
@@ -33,29 +33,30 @@ renderObjects rs cam0 objs0 = proc fi -> do
     ( focus
     , objs
     , flip foldMap dat $ mconcat
-       [ renderEvents rs . oo_events
+       [ renderEvents . oo_events
        , oo_render
        ]
     )
 
-renderEvents :: Resources -> ObjectEvents -> Renderable
-renderEvents rs oe _ =
-  foldMap (foldMap $ playSound rs) $ oe_play_sound oe
+renderEvents :: ObjectEvents -> Renderable
+renderEvents oe _ =
+  foldMap (foldMap playSound) $ oe_play_sound oe
 
 
-emptyObjMap :: ObjectMap a
-emptyObjMap = ObjectMap
+emptyObjMap :: GlobalState -> ObjectMap a
+emptyObjMap gs = ObjectMap
   { objm_camera_focus = ObjectId 0  -- TODO(sandy): should be Nothing
   , objm_undeliveredMsgs = mempty
-  , objm_globalState = error "emptyObjMap: called global state too soon"
+  , objm_globalState = gs
   , objm_map = mempty
   }
 
 
-router :: ObjectMap ObjSF -> SF RawFrameInfo (ObjectMap ObjectOutput)
-router om =
-  loopPre emptyObjMap $
-    router' om >>> arr dup
+router :: GlobalState -> ObjectMap ObjSF -> SF RawFrameInfo (ObjectMap ObjectOutput)
+router gs0 om =
+  loopPre (emptyObjMap gs0) $
+    router' om
+      >>> arr dup
 
 
 

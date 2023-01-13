@@ -1,6 +1,6 @@
 module Game.Splash where
 
-import Game (game)
+import Game (game, initialGlobalState)
 import Game.Common
 
 
@@ -12,7 +12,7 @@ runIntro = runSwont (error "die") $ do
 splashScreen :: Swont RawFrameInfo (Camera, Renderable) ()
 splashScreen = do
   swont (liftIntoGame mainMenu) >>= \case
-     Start -> swont $ game TestWorld >>> arr (, noEvent)
+     Start -> swont $ game (initialGlobalState TestWorld) >>> arr (, noEvent)
      Credits -> do
       swont $ liftIntoGame credits
       splashScreen
@@ -91,7 +91,7 @@ mainMenu = loopPre Start $ proc (fi, sel) -> do
   inputs <- hold defaultControls -< maybeToEvent =<< idata
 
 
-  (cam, bggame) <- game HelpWorld -< fi & #fi_controls .~ inputs
+  (cam, bggame) <- game (initialGlobalState HelpWorld) -< fi & #fi_controls .~ inputs
 
   returnA -<
     ( ( mconcat
