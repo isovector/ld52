@@ -31,7 +31,7 @@ ldtkColorToColor (LDtk.Color r g b) = V4 r g b 255
 loadWorld :: Engine -> FilePath -> IO World
 loadWorld e fp = do
   eitherDecodeFileStrict @LDtk.LDtkRoot fp >>= \case
-    Left e -> error e
+    Left err -> error err
     Right root -> World <$> parseLevels e root
 
 buildCollisionMap :: V2 Tile -> V.Vector (V.Vector Int) -> CollisionPurpose -> V2 Tile -> Any

@@ -177,11 +177,12 @@ data ObjectEvents = ObjectEvents
   , oe_send_message :: Event [(ObjectId, Message)]
   , oe_omnipotence :: Event (ObjectMap ObjSF -> ObjectMap ObjSF )
   , oe_broadcast_message :: Event [Message]
+  , oe_game_message :: Event [GameMessage]
   }
   deriving stock Generic
 
 instance Semigroup ObjectEvents where
-  (ObjectEvents ev ev' ev2 ev3 sm1 ev4 bc1) <> (ObjectEvents ev5 ev6 ev7 ev8 sm2 ev9 bc2)
+  (ObjectEvents ev ev' ev2 ev3 sm1 ev4 bc1 gm1) <> (ObjectEvents ev5 ev6 ev7 ev8 sm2 ev9 bc2 gm2)
     = ObjectEvents
         { oe_die = ev <> ev5
         , oe_spawn = ev' <> ev6
@@ -190,6 +191,7 @@ instance Semigroup ObjectEvents where
         , oe_send_message = sm1 <> sm2
         , oe_omnipotence = fmap appEndo $ coerce ev4 <> coerce ev9
         , oe_broadcast_message = bc1 <> bc2
+        , oe_game_message = gm1 <> gm2
         }
 
 instance Monoid ObjectEvents where
@@ -202,6 +204,7 @@ instance Monoid ObjectEvents where
         , oe_send_message = mempty
         , oe_omnipotence = fmap appEndo mempty
         , oe_broadcast_message = mempty
+        , oe_game_message = mempty
         }
 
 data ObjectState = ObjectState

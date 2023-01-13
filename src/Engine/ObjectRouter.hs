@@ -17,6 +17,7 @@ import           Engine.Geometry (intersects)
 import           Engine.Types
 import           Engine.Utils (originRectToRect)
 import           Game.Camera (camera, getCameraFocus)
+import Game.GameMessageHandler (handleGameMessage)
 
 
 renderObjects
@@ -159,6 +160,8 @@ route oid (oo_events -> ObjectEvents {..}) = mconcat $
   , Endo <$> oe_omnipotence
   , foldMap (Endo . uncurry (sendMsg oid)) <$> oe_send_message
   , foldMap (Endo . broadcast oid) <$> oe_broadcast_message
+  , foldMap (Endo . over (#objm_globalState . #gs_gameState) . handleGameMessage)
+      <$> oe_game_message
     -- NOTE(sandy): looks stupid but necessary to flush the pipes
   , Event (Endo id)
   ]

@@ -5,15 +5,14 @@ module Game.Resources where
 import           Control.Monad ((<=<))
 import           Data.Traversable (for)
 import           Engine.Resources
+import           Engine.Types
+import           Engine.Utils (setGroundOrigin)
 import           SDL (Texture, textureWidth, textureHeight)
 import qualified SDL.Image as Image
 import           SDL.Mixer (Chunk)
 import qualified SDL.Mixer as Mixer
 import           SDL.Video (queryTexture)
-import           System.Environment.Blank (getEnv)
 import           System.FilePath ((</>), (<.>))
-import           Engine.Types
-import           Engine.Utils (setGroundOrigin)
 
 import {-# SOURCE #-} Engine.Importer (loadWorld)
 

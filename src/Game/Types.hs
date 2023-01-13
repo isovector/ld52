@@ -13,8 +13,8 @@ data GameState = GameState
 
 data GameMessage
   = AddCoin
-  | AddInventory
-  deriving stock (Eq, Ord, Enum, Bounded, Show, Read, Generic)
+  | AddInventory PowerupType
+  deriving stock (Eq, Ord, Show, Read, Generic)
 
 ------------------------------------------------------------------------------
 -- | Textures used by the game.
