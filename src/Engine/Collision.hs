@@ -1,10 +1,10 @@
-module Collision where
+module Engine.Collision where
 
 import Control.Lens (Lens')
-import Geometry
+import Engine.Geometry
 import SDL
 import Engine.Types
-import Utils
+import Engine.Utils
 
 data DeltaDir = Negative | Zero | Positive
   deriving (Eq, Ord, Show, Enum, Bounded)

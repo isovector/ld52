@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-orphans #-}
 {-# LANGUAGE CPP #-}
-module FRP
-  ( module FRP
+module Engine.FRP
+  ( module Engine.FRP
   , module FRP.Yampa
   ) where
 

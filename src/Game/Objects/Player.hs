@@ -1,12 +1,11 @@
 {-# OPTIONS_GHC -Wno-orphans #-}
 module Game.Objects.Player where
 
-import           Collision (epsilon)
+import           Engine.Collision (epsilon)
 import           Control.Lens ((*~))
 import           Data.Monoid
 import qualified Data.Set as S
-import           Drawing
-import           FRP
+import           Engine.Drawing
 import           FRP.Yampa ((*^))
 import           Game.Common
 import           Game.Objects.Actor (actor)

@@ -14,9 +14,9 @@ import qualified Data.Set as S
 import qualified Data.Text as T
 import           Data.Traversable
 import qualified Data.Vector as V
-import           Drawing
+import           Engine.Drawing
 import           Engine.Prelude
-import           Globals (global_tilesets)
+import           Engine.Globals (global_tilesets)
 import qualified LDtk.Types as LDtk
 import           System.FilePath.Lens (basename)
 

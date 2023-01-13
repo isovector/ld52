@@ -1,8 +1,7 @@
 module Game.Objects.Particle where
 
-import Collision (move)
+import Engine.Collision (move)
 import Data.Hashable (hash)
-import FRP hiding (time)
 import Game.Common
 
 

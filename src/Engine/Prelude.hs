@@ -11,12 +11,12 @@ import Data.Map as X (Map)
 import Data.Set as X (Set)
 import Data.Text as X (Text)
 import Data.Word as X
-import Drawing as X
-import FRP as X hiding (norm)
+import Engine.Drawing as X
+import Engine.FRP as X hiding (norm)
 import Engine.Types as X
 import SDL as X (quadrance, qd, norm, _xy, _xyz)
 import SDL.Mixer as X (Chunk, Music)
-import Utils as X
+import Engine.Utils as X
 
 
 traceF :: Show b => (a -> b) -> a -> a

@@ -1,9 +1,9 @@
 -- | Here be unutterable, atrocious, ungodly dragons
-module Globals where
+module Engine.Globals where
 
 import Data.IORef
 import Engine.Types
-import Resources (loadResources)
+import Game.Resources (loadResources)
 import SDL (Texture)
 import SDL.Mixer (Chunk, Music)
 import System.IO.Unsafe

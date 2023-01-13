@@ -1,4 +1,4 @@
-module Geometry where
+module Engine.Geometry where
 
 import SDL
 import Data.Maybe (isJust)

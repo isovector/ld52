@@ -30,7 +30,7 @@ import           Game.Objects.Unknown (unknown)
 import qualified LDtk.Types as LDtk
 import           Level (ldtkColorToColor)
 import           Engine.Types
-import           Utils (tileToPos)
+import           Engine.Utils (tileToPos)
 
 
 buildEntity

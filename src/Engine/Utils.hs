@@ -1,7 +1,7 @@
-module Utils where
+module Engine.Utils where
 
-import FRP
-import Geometry (orTopLeft)
+import Engine.FRP
+import Engine.Geometry (orTopLeft)
 import Engine.Types
 
 nowish :: a -> SF x (Engine.Types.Event a)

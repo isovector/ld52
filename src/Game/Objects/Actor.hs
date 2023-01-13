@@ -1,6 +1,6 @@
 module Game.Objects.Actor where
 
-import Collision
+import Engine.Collision
 import Game.Common
 
 

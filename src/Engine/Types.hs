@@ -41,7 +41,7 @@ import Data.Set (Set)
 import Data.Text (Text)
 import Data.Word
 import Debug.Trace (trace, traceShowId, traceM)
-import FRP (SF, Event, Time)
+import Engine.FRP (SF, Event, Time)
 import Foreign.C (CInt)
 import GHC.Generics
 import Game.Types

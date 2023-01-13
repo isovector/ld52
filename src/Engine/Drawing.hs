@@ -1,21 +1,21 @@
-{-# LANGUAGE CPP               #-}
+{-# LANGUAGE CPP #-}
 
 #ifndef __HLINT__
 
-module Drawing where
+module Engine.Drawing where
 
 import Control.Monad (void)
 import Data.Foldable (for_, traverse_)
+import Engine.FRP
+import Engine.Geometry (rectContains)
 import Engine.Types
-import FRP
+import Engine.Utils (originRectToRect)
 import Foreign.C
 import Game.Camera (viaCamera)
-import Geometry (rectContains)
-import Globals (global_resources, global_sprites, global_glyphs, global_textures, global_songs)
-import Resources (frameSound, frameCounts)
+import Engine.Globals (global_resources, global_sprites, global_glyphs, global_textures, global_songs)
+import Game.Resources (frameSound, frameCounts)
 import SDL
 import SDL.Mixer
-import Utils (originRectToRect)
 
 
 playSound :: Resources -> Sound -> IO ()

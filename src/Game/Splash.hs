@@ -1,7 +1,5 @@
 module Game.Splash where
 
-import Drawing
-import FRP
 import Game (game)
 import Game.Common
 

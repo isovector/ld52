@@ -5,10 +5,10 @@ module Game where
 
 import qualified Data.Map as M
 import qualified Data.Set as S
+import           Engine.Globals
 import           Engine.Prelude
 import           Game.Objects
-import           Globals
-import Game.World (drawLevel)
+import           Game.World (drawLevel)
 
 
 #ifndef __HLINT__

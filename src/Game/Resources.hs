@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wno-orphans #-}
 
-module Resources where
+module Game.Resources where
 
 import           Control.Monad ((<=<))
 import           Data.Traversable (for)
@@ -13,7 +13,7 @@ import           SDL.Video (queryTexture)
 import           System.Environment.Blank (getEnv)
 import           System.FilePath ((</>), (<.>))
 import           Engine.Types
-import           Utils (setGroundOrigin)
+import           Engine.Utils (setGroundOrigin)
 
 import {-# SOURCE #-} Level (loadWorld)
 

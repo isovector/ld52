@@ -1,9 +1,9 @@
 module Game.Objects.TeleportBall where
 
-import Collision (move)
+import Engine.Collision (move)
 import Data.Maybe (isJust)
 import Game.Common
-import Globals (global_textures)
+import Engine.Globals (global_textures)
 
 teleportBall
     :: ObjectId
