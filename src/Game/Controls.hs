@@ -1,4 +1,4 @@
-module Controls where
+module Game.Controls where
 
 import           Engine.Types
 import qualified SDL.Input as SDL

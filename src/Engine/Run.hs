@@ -1,17 +1,16 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE PatternSynonyms   #-}
 
-module Run where
+module Engine.Run where
 
 import Control.Concurrent (threadDelay)
 import Control.Monad
-import Controls (parseControls)
 import Data.IORef
 import Data.Time.Clock.System
-import Engine.Types
-import FRP.Yampa
-import Game.Splash (runIntro)
 import Engine.Globals (veryUnsafeEngineIORef, global_resources)
+import Engine.Prelude
+import Game.Controls (parseControls)
+import Game.Splash (runIntro)
 import SDL hiding (copy, Stereo)
 import SDL.Mixer hiding (quit)
 import System.Exit

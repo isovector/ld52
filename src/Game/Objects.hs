@@ -1,182 +1,140 @@
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
+{-# OPTIONS_GHC -Wno-deprecations #-}
 
-module Game.Objects
-  ( renderObjects
-  , addObject
-  ) where
+module Game.Objects where
 
-import           Control.Lens (at, non)
-import           Control.Lens.Lens
+import           Control.Applicative (optional)
+import           Control.Error (note)
+import           Control.Lens (Prism')
+import           Control.Monad.Error (Error)
 import           Data.Map (Map)
 import qualified Data.Map as M
-import           Data.Maybe (maybeToList)
-import           Data.Monoid
-import           Engine.Drawing (playSound)
-import           Engine.FRP
-import           Engine.Geometry (intersects)
+import           Data.Text (Text)
+import qualified Data.Text as T
+import           Data.Traversable (for)
+import           Engine.Importer (ldtkColorToColor)
 import           Engine.Types
-import           Engine.Utils (originRectToRect)
-import           Game.Camera (camera, getCameraFocus)
+import           Engine.Utils (tileToPos)
+import           Game.Objects.Checkpoint (checkpoint)
+import           Game.Objects.Chicken (chicken)
+import           Game.Objects.Coin (coin)
+import           Game.Objects.CollectPowerup (collectPowerup)
+import           Game.Objects.Death (deathZone)
+import           Game.Objects.Door (door)
+import           Game.Objects.ParticleSpawner (particleSpawner)
+import           Game.Objects.Player (player)
+import           Game.Objects.SpawnTrigger (spawnTrigger)
+import           Game.Objects.Test
+import           Game.Objects.TextBillboard (textBillboard)
+import           Game.Objects.ToggleRegion (toggleRegion)
+import           Game.Objects.Trampoline (trampoline)
+import           Game.Objects.Unknown (unknown)
+import qualified LDtk.Types as LDtk
 
 
-renderObjects
-    :: Resources
+buildEntity
+    :: Text
     -> V2 WorldPos
-    -> ObjectMap ObjSF
-    -> SF RawFrameInfo (Camera, ObjectMap ObjectOutput, Renderable)
-renderObjects rs cam0 objs0 = proc fi -> do
-  objs <- router objs0 -< fi
-  let focuson = M.lookup (objm_camera_focus objs) $ objm_map objs
-  focus <- camera cam0 -< (fi, maybe 0 (getCameraFocus . oo_state) focuson)
-  let dat = toList $ objm_map objs
-  returnA -<
-    ( focus
-    , objs
-    , flip foldMap dat $ mconcat
-       [ renderEvents rs . oo_events
-       , oo_render
-       ]
-    )
+    -> V2 Double
+    -> Map Text LDtk.FieldValue
+    -> Map Text Object
+    -> Either Text Object
+buildEntity "Player" pos _ _ _ = pure $ player pos
+buildEntity "PowerUp" pos _ props _ =
+  collectPowerup pos
+    <$> asEnum "PowerUp" "power" props
+buildEntity "Trampoline" pos sz props _ =
+  trampoline pos sz
+    <$> asDouble "Trampoline" "strength" props
+buildEntity "Chicken" pos _ _ _ = pure $ chicken pos
+buildEntity "Checkpoint" pos _ _ _ = pure $ checkpoint pos
+buildEntity "Door" pos sz props _ =
+  door pos sz
+    <$> asPos "Door" "out" props
+buildEntity "Coin" pos _ _ _ = pure $ coin pos
+buildEntity "Death" pos sz _ _ = pure $ deathZone pos sz
+buildEntity "ToggleLayer" pos sz props _ =
+  toggleRegion pos
+    <$> pure sz
+    <*> asEnum "Toggle" "layer" props
+    <*> asBool "Toggle" "toggle" props
+buildEntity "Text" pos _ props _ =
+  textBillboard
+    <$> optional (asDouble "Text" "duration" props)
+    <*> asDouble "Text" "size" props
+    <*> asColor "Text" "color" props
+    <*> asText "Text" "text" props
+    <*> pure pos
+buildEntity "Grenade" pos _ props _ = do
+  life <- asFloat "Grenade" "Lifetime" props
+  pure $ grenade pos $ realToFrac life
+buildEntity "ParticleSpawner" pos _ props _ = do
+  pt <- asEnum "ParticleSpawner" "type" props
+  pure $ particleSpawner pos pt
+buildEntity "SpawnTrigger" pos sz props refmap = do
+  persistent <- asBool "SpawnTrigger" "persistent" props
+  refs <- getRefs "SpawnTrigger" "refs" props refmap
+  pure $ spawnTrigger pos (coerce sz) persistent refs
+buildEntity nm pos sz _ _ = do
+  traceM $ "unregistered entity: " <> T.unpack nm
+  pure $ unknown nm pos sz
 
-renderEvents :: Resources -> ObjectEvents -> Renderable
-renderEvents rs oe _ =
-  foldMap (foldMap $ playSound rs) $ oe_play_sound oe
-
-
-emptyObjMap :: ObjectMap a
-emptyObjMap = ObjectMap
-  { objm_camera_focus = ObjectId 0  -- TODO(sandy): should be Nothing
-  , objm_undeliveredMsgs = mempty
-  , objm_globalState = error "emptyObjMap: called global state too soon"
-  , objm_map = mempty
-  }
-
-
-router :: ObjectMap ObjSF -> SF RawFrameInfo (ObjectMap ObjectOutput)
-router om =
-  loopPre emptyObjMap $
-    router' om >>> arr dup
-
-
-
-router' :: ObjectMap ObjSF -> SF (RawFrameInfo, ObjectMap ObjectOutput) (ObjectMap ObjectOutput)
-router' objs0 =
-  dpSwitch
-      @ObjectMap
-      @(RawFrameInfo, ObjectMap ObjectOutput)
-      @ObjectInput
-      @ObjectOutput
-      @(Endo (ObjectMap ObjSF))
-    (\(fi, outlast) -> routeHits fi outlast)
-    (objs0)
-    ((arr
-        $ foldMap (uncurry route)
-        . M.toList
-        . objm_map
-        . snd
-     )
-     >>> notYet
-    )
-    -- NOTE(sandy): this only gets called on a new event!!!
-    (\new f -> router' $ appEndo f $ new & #objm_undeliveredMsgs .~ mempty)
+instance Error Text where
 
 
-routeHits :: RawFrameInfo -> ObjectMap ObjectOutput -> ObjectMap sf -> ObjectMap (ObjectInput, sf)
-routeHits (RawFrameInfo c dt) outlast new = do
-  let fi = FrameInfo c dt $ objm_globalState new
-      hittable
-        = M.fromList
-        $ M.foldMapWithKey (\k m -> maybeToList . sequenceA . (k, ) . fmap (m, ) $ getCollisionRect $ oo_state m)
-        $ objm_map outlast
-  new
-       & #objm_map %~ M.mapWithKey
-    (\oid sf -> (, sf) $ ObjectInput
-        { oi_self = oid
-        , oi_events = mconcat
-            [ pushHits oid (fmap (first oo_state) hittable)
-            , recv oid $ objm_undeliveredMsgs new
-            ]
-        , oi_frameInfo = fi
-        , oi_state
-            = maybe noObjectState id
-            $ fmap oo_state
-            $ M.lookup oid
-            $ objm_map outlast
-        }
-    )
+as :: Text -> (Prism' LDtk.FieldValue a) -> Text -> Text -> Map Text LDtk.FieldValue -> Either Text a
+as ty pris obj field m
+  | Just (preview pris -> Just v) <- M.lookup field m = Right v
+  | Just v <- M.lookup field m = Left $ mconcat
+      [ obj
+      , "/"
+      , field
+      , " had the wrong type ("
+      , T.pack $ show v
+      , ") but wanted "
+      , ty
+      ]
+  | otherwise = Left $ mconcat
+      [ obj
+      , "/"
+      , field
+      , " was not found"
+      ]
 
-recv :: ObjectId -> Map ObjectId [(ObjectId, Message)] -> ObjectInEvents
-recv oid
-    = foldMap (\msgs -> mempty & #oie_receive <>~ foldMap (pure . pure) msgs)
-    . M.lookup oid
+getRefs :: Text -> Text -> Map Text LDtk.FieldValue -> Map Text Object -> Either Text [Object]
+getRefs obj prop props refs = do
+  z <- as "Array" #_ArrayValue obj prop props
+  iids <- for z $ note "couldn't lookup ref" . fmap (view #entityIid) . preview #_EntityRefValue
+  pure $ foldMap (pure . (refs M.!)) iids
 
+asPos :: Text -> Text -> Map Text LDtk.FieldValue -> Either Text (V2 WorldPos)
+asPos = fmap (fmap (fmap gridToWorld)) . as "Text" #_PointValue
 
-pushHits
-    :: ObjectId
-    -> Map ObjectId (ObjectState, Rectangle WorldPos)
-    -> ObjectInEvents
-pushHits oid objs
-  | Just me <- M.lookup oid objs
-  = foldMap (doHit oid $ snd me) $ M.toList objs
-  | otherwise
-  = mempty
+gridToWorld :: LDtk.GridPoint -> V2 WorldPos
+-- TODO(sandy): EXTREME HACK
+-- the editor gives us this coordinate in CURRENT GRID SIZE
+-- which is 8 lol (half of the tile size)
+gridToWorld (LDtk.GridPoint cx cy) = (/ 2) $ tileToPos $ coerce $ V2 cx cy
 
-noObjectState :: ObjectState
-noObjectState = ObjectState
-  { os_pos = 0
-  , os_collision = Nothing
-  , os_tags = mempty
-  , os_camera_offset = 0
-  }
+asText :: Text -> Text -> Map Text LDtk.FieldValue -> Either Text Text
+asText = as "Text" #_StringValue
 
+asDouble :: Text -> Text -> Map Text LDtk.FieldValue -> Either Text Double
+asDouble = fmap (fmap (fmap realToFrac)) . asFloat
 
-doHit
-    :: ObjectId
-    -> Rectangle WorldPos
-    -> (ObjectId, (ObjectState, Rectangle WorldPos))
-    -> ObjectInEvents
-doHit me rect (other, (meta, hit))
-  | me == other = mempty
-  | otherwise
-    = mempty
-      { oie_hit = fmap (pure . (other, ))
-          . maybeToEvent
-          $ bool Nothing (Just meta)
-          $ intersects rect hit
-      }
+asFloat :: Text -> Text -> Map Text LDtk.FieldValue -> Either Text Float
+asFloat = as "Float" #_FloatValue
 
+asColor :: Text -> Text -> Map Text LDtk.FieldValue -> Either Text Color
+asColor = fmap (fmap (fmap ldtkColorToColor)) . as "Color" #_ColorValue
 
-getCollisionRect :: ObjectState -> Maybe (Rectangle WorldPos)
-getCollisionRect os = flip originRectToRect (os_pos os) . coerce <$> os_collision os
+asEnum :: Read a => Text -> Text -> Map Text LDtk.FieldValue -> Either Text a
+asEnum = fmap (fmap (fmap $ read . T.unpack)) . as "Enum" #_EnumValue
 
+asBool :: Text -> Text -> Map Text LDtk.FieldValue -> Either Text Bool
+asBool = as "Int" #_BooleanValue
 
-route :: ObjectId -> ObjectOutput -> Event (Endo (ObjectMap ObjSF))
-route oid (oo_events -> ObjectEvents {..}) = mconcat $
-  [ Endo (#objm_map %~ M.delete oid) <$ oe_die
-  , Endo (#objm_camera_focus .~ oid) <$ oe_focus
-  , foldMap (Endo . over #objm_map . insertObject)  <$> oe_spawn
-  , Endo <$> oe_omnipotence
-  , foldMap (Endo . uncurry (sendMsg oid)) <$> oe_send_message
-  , foldMap (Endo . broadcast oid) <$> oe_broadcast_message
-    -- NOTE(sandy): looks stupid but necessary to flush the pipes
-  , Event (Endo id)
-  ]
-
-broadcast :: ObjectId -> Message -> ObjectMap ObjSF -> ObjectMap ObjSF
-broadcast from m om =
-  om
-    & #objm_undeliveredMsgs <>~ foldMap (flip M.singleton [(from, m)]) (M.keys $ objm_map om)
-
-sendMsg :: ObjectId -> ObjectId -> Message -> ObjectMap ObjSF -> ObjectMap ObjSF
-sendMsg from oid m = #objm_undeliveredMsgs . at oid . non mempty <>~ [(from, m)]
-
-
-addObject :: a -> ObjectMap a -> ObjectMap a
-addObject a = #objm_map %~ insertObject a
-
-
-insertObject :: a -> Map ObjectId a -> Map ObjectId a
-insertObject obj m =
-  let oid = maybe (ObjectId 0) (succ . fst) $ M.lookupMax m
-   in M.insert oid obj m
+asInt :: Text -> Text -> Map Text LDtk.FieldValue -> Either Text Integer
+asInt = as "Int" #_IntegerValue
 

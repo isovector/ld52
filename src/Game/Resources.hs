@@ -15,7 +15,7 @@ import           System.FilePath ((</>), (<.>))
 import           Engine.Types
 import           Engine.Utils (setGroundOrigin)
 
-import {-# SOURCE #-} Level (loadWorld)
+import {-# SOURCE #-} Engine.Importer (loadWorld)
 
 newtype Char' = Char' { getChar' :: Char }
   deriving (Eq, Ord, Show, Enum)

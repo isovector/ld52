@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Registry where
+module Game.Objects where
 
 import Data.Map (Map)
 import Data.Text (Text)

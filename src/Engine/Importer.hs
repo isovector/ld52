@@ -1,7 +1,6 @@
-{-# LANGUAGE OverloadedStrings                  #-}
-{-# OPTIONS_GHC -Wno-compat-unqualified-imports #-}
+{-# LANGUAGE OverloadedStrings #-}
 
-module Level where
+module Engine.Importer where
 
 import           Control.DeepSeq (force)
 import           Control.Lens hiding (Level)
@@ -20,7 +19,7 @@ import           Engine.Globals (global_tilesets)
 import qualified LDtk.Types as LDtk
 import           System.FilePath.Lens (basename)
 
-import {-# SOURCE #-} Registry
+import {-# SOURCE #-} Game.Objects
 
 
 ldtkColorToColor :: LDtk.Color -> Color

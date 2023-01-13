@@ -6,8 +6,8 @@ module Game where
 import qualified Data.Map as M
 import qualified Data.Set as S
 import           Engine.Globals
+import           Engine.ObjectRouter
 import           Engine.Prelude
-import           Game.Objects
 import           Game.World (drawLevel)
 
 
@@ -93,3 +93,4 @@ initialGlobalState w rs
       (GameState 0 mempty)
 
 #endif
+
