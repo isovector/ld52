@@ -7848,20 +7848,6 @@
 							]
 						},
 						{
-							"__identifier": "Checkpoint",
-							"__grid": [79,32],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#2CE8F5",
-							"iid": "03c36350-7820-11ed-9973-bd93d07f22fb",
-							"width": 8,
-							"height": 8,
-							"defUid": 177,
-							"px": [632,256],
-							"fieldInstances": []
-						},
-						{
 							"__identifier": "Text",
 							"__grid": [25,51],
 							"__pivot": [0.5,1],
