@@ -2,30 +2,31 @@
 
 module Registry where
 
+import           Control.Error (note)
 import           Control.Lens (Prism', preview)
 import           Data.Map (Map)
 import qualified Data.Map as M
 import           Data.Text (Text)
 import qualified Data.Text as T
+import           Data.Traversable (for)
 import           Game.Objects.Checkpoint (checkpoint)
 import           Game.Objects.Chicken (chicken)
 import           Game.Objects.Coin (coin)
 import           Game.Objects.CollectPowerup (collectPowerup)
 import           Game.Objects.Death (deathZone)
 import           Game.Objects.Door (door)
+import           Game.Objects.ParticleSpawner (particleSpawner)
 import           Game.Objects.Player (player)
 import           Game.Objects.SpawnTrigger (spawnTrigger)
 import           Game.Objects.Test
 import           Game.Objects.TextBillboard (textBillboard)
 import           Game.Objects.ToggleRegion (toggleRegion)
 import           Game.Objects.Trampoline (trampoline)
+import           Game.Objects.Unknown (unknown)
 import qualified LDtk.Types as LDtk
 import           Level (ldtkColorToColor)
 import           Types
 import           Utils (tileToPos)
-import Data.Traversable (for)
-import Control.Error (note)
-import Game.Objects.Unknown (unknown)
 
 
 buildEntity
@@ -63,6 +64,9 @@ buildEntity "Text" pos _ props _ =
 buildEntity "Grenade" pos _ props _ = do
   life <- asFloat "Grenade" "Lifetime" props
   pure $ grenade pos $ realToFrac life
+buildEntity "ParticleSpawner" pos _ props _ = do
+  pt <- asEnum "ParticleSpawner" "type" props
+  pure $ particleSpawner pos pt
 buildEntity "SpawnTrigger" pos sz props refmap = do
   persistent <- asBool "SpawnTrigger" "persistent" props
   refs <- getRefs "SpawnTrigger" "refs" props refmap

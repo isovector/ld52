@@ -390,6 +390,11 @@ data Message
   | CurrentCheckpoint ObjectId
   deriving stock (Eq, Ord, Show, Read, Generic)
 
+data ParticleType
+  = Gore
+  | Firework
+  deriving stock (Eq, Ord, Show, Read, Generic)
+
 traceF :: Show b => (a -> b) -> a -> a
 traceF f a = trace (show $ f a) a
 
