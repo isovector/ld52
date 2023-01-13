@@ -88,7 +88,7 @@ player pos0 = proc oi -> do
   edir <- edgeBy diffDir 0 -< pos
   dir <- hold True -< edir
 
-  let V2 _ updowndir = fmap fromIntegral $ c_dir $ fi_controls $ oi_frameInfo oi
+  let V2 _ updowndir = c_dir $ fi_controls $ oi_frameInfo oi
 
   drawn <- drawPlayer ore -< pos''
 
@@ -110,8 +110,13 @@ player pos0 = proc oi -> do
         , oo_state =
             oi_state oi
               & #os_pos .~ pos''
-              & #os_camera_offset .~ V2 (bool negate id dir 80 * max 0.3 (1 - abs updowndir))
-                                        (50 * updowndir)
+              & #os_camera_offset .~ V2 (bool negate id dir 80 * max 0.3 (1 - abs (fromIntegral updowndir)))
+                                        (case updowndir of
+                                           -1 -> -100
+                                           0 -> -50
+                                           1 -> 75
+                                           _ -> error "impossible: player cam"
+                                        )
               & #os_collision .~ Just (coerce ore)
               & #os_tags %~ event id (flip (foldr $ S.insert . HasPowerup)) new_powerups
               & #os_tags %~ S.insert IsPlayer
