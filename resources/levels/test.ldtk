@@ -8140,7 +8140,7 @@
 						},
 						{
 							"__identifier": "ParticleSpawner",
-							"__grid": [4,102],
+							"__grid": [27,111],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -8149,12 +8149,15 @@
 							"width": 8,
 							"height": 8,
 							"defUid": 215,
-							"px": [32,816],
-							"fieldInstances": [{ "__identifier": "type", "__value": null, "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [] }]
+							"px": [216,888],
+							"fieldInstances": [{ "__identifier": "type", "__value": "Firework", "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Firework"]
+							}] }]
 						},
 						{
 							"__identifier": "ParticleSpawner",
-							"__grid": [7,98],
+							"__grid": [29,106],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -8163,12 +8166,15 @@
 							"width": 8,
 							"height": 8,
 							"defUid": 215,
-							"px": [56,784],
-							"fieldInstances": [{ "__identifier": "type", "__value": null, "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [] }]
+							"px": [232,848],
+							"fieldInstances": [{ "__identifier": "type", "__value": "Firework", "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Firework"]
+							}] }]
 						},
 						{
 							"__identifier": "ParticleSpawner",
-							"__grid": [12,95],
+							"__grid": [35,104],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -8177,12 +8183,15 @@
 							"width": 8,
 							"height": 8,
 							"defUid": 215,
-							"px": [96,760],
-							"fieldInstances": [{ "__identifier": "type", "__value": null, "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [] }]
+							"px": [280,832],
+							"fieldInstances": [{ "__identifier": "type", "__value": "Firework", "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Firework"]
+							}] }]
 						},
 						{
 							"__identifier": "ParticleSpawner",
-							"__grid": [19,95],
+							"__grid": [40,104],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -8191,12 +8200,15 @@
 							"width": 8,
 							"height": 8,
 							"defUid": 215,
-							"px": [152,760],
-							"fieldInstances": [{ "__identifier": "type", "__value": null, "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [] }]
+							"px": [320,832],
+							"fieldInstances": [{ "__identifier": "type", "__value": "Firework", "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Firework"]
+							}] }]
 						},
 						{
 							"__identifier": "ParticleSpawner",
-							"__grid": [24,98],
+							"__grid": [46,106],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -8205,12 +8217,15 @@
 							"width": 8,
 							"height": 8,
 							"defUid": 215,
-							"px": [192,784],
-							"fieldInstances": [{ "__identifier": "type", "__value": null, "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [] }]
+							"px": [368,848],
+							"fieldInstances": [{ "__identifier": "type", "__value": "Firework", "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Firework"]
+							}] }]
 						},
 						{
 							"__identifier": "ParticleSpawner",
-							"__grid": [27,102],
+							"__grid": [48,111],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -8219,33 +8234,11 @@
 							"width": 8,
 							"height": 8,
 							"defUid": 215,
-							"px": [216,816],
-							"fieldInstances": [{ "__identifier": "type", "__value": null, "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [] }]
-						},
-						{
-							"__identifier": "SpawnTrigger",
-							"__grid": [44,117],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#EAD4AA",
-							"iid": "d8bb65d0-7820-11ed-9f6e-8dedbd51a2c5",
-							"width": 16,
-							"height": 16,
-							"defUid": 213,
-							"px": [352,936],
-							"fieldInstances": [
-								{ "__identifier": "refs", "__value": [{
-									"entityIid": "39e91140-7820-11ed-9f6e-9d30f39cb379",
-									"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
-									"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
-									"worldIid": "9d7a8730-7820-11ed-9f6e-cb9dc6f701be"
-								}], "__type": "Array<EntityRef>", "__tile": null, "defUid": 214, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["39e91140-7820-11ed-9f6e-9d30f39cb379"]
-								}] },
-								{ "__identifier": "persistent", "__value": true, "__type": "Bool", "__tile": null, "defUid": 216, "realEditorValues": [] }
-							]
+							"px": [384,888],
+							"fieldInstances": [{ "__identifier": "type", "__value": "Firework", "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Firework"]
+							}] }]
 						}
 					]
 				},
