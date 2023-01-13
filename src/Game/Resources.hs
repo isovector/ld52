@@ -4,7 +4,7 @@ module Game.Resources where
 
 import           Control.Monad ((<=<))
 import           Data.Traversable (for)
-import           Resources.Machinery
+import           Engine.Resources
 import           SDL (Texture, textureWidth, textureHeight)
 import qualified SDL.Image as Image
 import           SDL.Mixer (Chunk)

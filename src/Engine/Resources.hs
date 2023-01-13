@@ -1,7 +1,7 @@
 {-# LANGUAGE AllowAmbiguousTypes    #-}
 {-# LANGUAGE FunctionalDependencies #-}
 
-module Resources.Machinery where
+module Engine.Resources where
 
 import qualified Data.Map as M
 import           Data.Traversable (for)
