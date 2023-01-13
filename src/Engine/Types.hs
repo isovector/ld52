@@ -25,12 +25,11 @@ module Engine.Types
   , distance
   , toList
   , bool
-  , module Core.Types
+  , module Engine.CoreTypes
   , module Game.Types
   ) where
 
 import Control.Lens ((&), (^.), (.~), (%~), (+~), (-~), (<>~), view, set, over, preview, review)
-import Core.Types
 import Data.Bool (bool)
 import Data.Coerce
 import Data.Foldable (toList)
@@ -41,6 +40,7 @@ import Data.Set (Set)
 import Data.Text (Text)
 import Data.Word
 import Debug.Trace (trace, traceShowId, traceM)
+import Engine.CoreTypes
 import Engine.FRP (SF, Event, Time)
 import Foreign.C (CInt)
 import GHC.Generics

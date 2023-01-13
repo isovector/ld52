@@ -1,5 +1,5 @@
-module Core.Types
-  ( module Core.Types
+module Engine.CoreTypes
+  ( module Engine.CoreTypes
   , module SDL
   ) where
 

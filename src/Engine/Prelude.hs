@@ -3,20 +3,20 @@ module Engine.Prelude
   , module X
   ) where
 
-import Core.Types as X
-import Data.Maybe as X (mapMaybe, fromMaybe, listToMaybe)
 import Data.Foldable as X (for_, traverse_, asum, find)
 import Data.Generics.Labels ()
 import Data.Map as X (Map)
+import Data.Maybe as X (mapMaybe, fromMaybe, listToMaybe)
 import Data.Set as X (Set)
 import Data.Text as X (Text)
 import Data.Word as X
+import Engine.CoreTypes as X
 import Engine.Drawing as X
 import Engine.FRP as X hiding (norm)
 import Engine.Types as X
+import Engine.Utils as X
 import SDL as X (quadrance, qd, norm, _xy, _xyz)
 import SDL.Mixer as X (Chunk, Music)
-import Engine.Utils as X
 
 
 traceF :: Show b => (a -> b) -> a -> a

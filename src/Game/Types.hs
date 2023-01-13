@@ -1,7 +1,7 @@
 module Game.Types where
 
-import Core.Types
 import Data.Set (Set)
+import Engine.CoreTypes
 import GHC.Generics (Generic)
 
 
