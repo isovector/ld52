@@ -138,17 +138,17 @@ getTilesOnScreen (Camera (negate -> posToTile -> cam)) = do
   y <- [-2 .. sy + 2]
   pure $ cam + V2 x y
 
--- TODO(sandy): ONLY GETS ENTITIES REFERENCED IN AN ARRAY CALLED "refs"
 getReferencedEntities :: LDtk.Entity -> Set Text
-getReferencedEntities
+getReferencedEntities e
   = foldMap S.singleton
   . fmap (view #entityIid)
   . mapMaybe (preview $ #_EntityRefValue)
   . concat
   . mapMaybe (preview $ #_ArrayValue)
   . fmap (view #__value)
-  . filter ((== "refs") . view #__identifier)
-  . view #fieldInstances
+  $ if e ^. #__identifier == "SpawnTrigger"
+      then view #fieldInstances e
+      else []
 
 
 buildTileMap :: WrappedTexture -> [LDtk.Tile] -> Map (V2 Tile) Renderable
