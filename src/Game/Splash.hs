@@ -37,12 +37,12 @@ nextMenuItem n = succ n
 mainMenu :: SF RawFrameInfo (IO (), Event MenuItem)
 mainMenu = loopPre Start $ proc (fi, sel) -> do
   ((>>= maybeToEvent) -> y)
-      <- onChange -< int2Maybe $ (c_dir $ rfi_controls fi) ^. _y
+      <- onChange -< int2Maybe $ (c_dir $ controls fi) ^. _y
 
   let f = bool prevMenuItem nextMenuItem <$> y
   let sel' = event sel ($ sel) f
 
-  press <- edge -< c_z $ rfi_controls fi
+  press <- edge -< c_z $ fi_controls fi
   idata <- afterEach (snd $ deltaEncode 0.3 $ cycle
                       [ defaultControls
                           { c_dir = V2 1 0 }
@@ -91,7 +91,7 @@ mainMenu = loopPre Start $ proc (fi, sel) -> do
   inputs <- hold defaultControls -< maybeToEvent =<< idata
 
 
-  (cam, bggame) <- game HelpWorld -< fi & #rfi_controls .~ inputs
+  (cam, bggame) <- game HelpWorld -< fi & #fi_controls .~ inputs
 
   returnA -<
     ( ( mconcat
@@ -123,7 +123,7 @@ drawMenuItem sel mi ix =
 
 credits :: SF RawFrameInfo (IO (), Event ())
 credits = proc rfi -> do
-  press <- edge -< c_z $ rfi_controls rfi
+  press <- edge -< c_z $ fi_controls rfi
 
   returnA -<
     ( mconcat

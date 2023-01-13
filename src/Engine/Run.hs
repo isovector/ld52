@@ -58,7 +58,7 @@ main = do
   tRef <- newIORef seconds
 
   reactimate
-    (pure $ RawFrameInfo defaultControls 0.016)
+    (pure $ FrameInfo defaultControls 0.016 ())
     (input window tRef)
     (output rs)
     -- game
@@ -85,7 +85,7 @@ input win tRef _ = do
     threadDelay $ floor $ (0.016 - secdiff) * 1000000
 
   keys <- getKeyboardState
-  pure (dt, Just $ RawFrameInfo (parseControls keys) dt)
+  pure (dt, Just $ FrameInfo (parseControls keys) dt ())
 
 
 pattern Keypress :: Scancode -> EventPayload

@@ -109,19 +109,15 @@ type Renderable = Camera -> IO ()
 
 ------------------------------------------------------------------------------
 -- | Things that change every frame.
-data FrameInfo = FrameInfo
+data FrameInfo' a = FrameInfo
   { fi_controls :: Controls
   , fi_dt :: Double
-  , fi_global :: ~GlobalState
+  , fi_global :: ~a
   }
   deriving stock Generic
 
--- TODO(sandy): stupid duplicate
-data RawFrameInfo = RawFrameInfo
-  { rfi_controls :: Controls
-  , rfi_dt :: Double
-  }
-  deriving stock Generic
+type FrameInfo = FrameInfo' GlobalState
+type RawFrameInfo = FrameInfo' ()
 
 data WrappedTexture = WrappedTexture
   { getTexture    :: Texture
@@ -271,11 +267,8 @@ instance HasFrameInfo ObjectInput where
 class HasDeltaTime a where
   deltaTime :: a -> Time
 
-instance HasDeltaTime FrameInfo where
+instance HasDeltaTime (FrameInfo' a) where
   deltaTime = fi_dt
-
-instance HasDeltaTime RawFrameInfo where
-  deltaTime = rfi_dt
 
 instance {-# OVERLAPPABLE #-} HasFrameInfo a => HasDeltaTime a where
   deltaTime = deltaTime . frameInfo
@@ -292,11 +285,8 @@ instance {-# OVERLAPPABLE #-} HasFrameInfo a => HasGlobalState a where
 class HasControls a where
   controls :: a -> Controls
 
-instance HasControls FrameInfo where
+instance HasControls (FrameInfo' a) where
   controls = fi_controls
-
-instance HasControls RawFrameInfo where
-  controls = rfi_controls
 
 instance {-# OVERLAPPABLE #-} HasFrameInfo a => HasControls a where
   controls = controls . frameInfo

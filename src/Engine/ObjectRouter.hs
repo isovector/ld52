@@ -82,8 +82,8 @@ router' objs0 =
 
 
 routeHits :: RawFrameInfo -> ObjectMap ObjectOutput -> ObjectMap sf -> ObjectMap (ObjectInput, sf)
-routeHits (RawFrameInfo c dt) outlast new = do
-  let fi = FrameInfo c dt $ objm_globalState new
+routeHits rfi outlast new = do
+  let fi = rfi & #fi_global .~ objm_globalState new
       hittable
         = M.fromList
         $ M.foldMapWithKey (\k m -> maybeToList . sequenceA . (k, ) . fmap (m, ) $ getCollisionRect $ oo_state m)
