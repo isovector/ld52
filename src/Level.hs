@@ -11,8 +11,10 @@ import           Data.Generics.Labels ()
 import           Data.List (find)
 import           Data.Map (Map)
 import qualified Data.Map as M
-import           Data.Maybe (fromMaybe)
+import           Data.Maybe (fromMaybe, mapMaybe)
 import           Data.Monoid
+import           Data.Set (Set)
+import qualified Data.Set as S
 import           Data.Text (Text)
 import qualified Data.Text as T
 import           Data.Traversable
@@ -23,9 +25,9 @@ import qualified LDtk.Types as LDtk
 import           SDL.Vect hiding (trace)
 import           System.FilePath.Lens (basename)
 import           Types
+import           Utils (posToTile)
 
 import {-# SOURCE #-} Registry
-import Utils (posToTile)
 
 
 ldtkColorToColor :: LDtk.Color -> Color
@@ -95,14 +97,28 @@ parseLayer l = do
 
 
 parseEntities :: LDtk.Layer -> ([Text], [Object])
-parseEntities l = partitionEithers $ do
-  e <- l ^. #entityInstances
-  pure $
-    buildEntity
-      (traceFX "spawning: " id $ e ^. #__identifier)
-      (fmap (WorldPos . fromIntegral) $ pairToV2 $ e ^. #px)
-      (parseV2 fromIntegral e #width #height)
-      (buildMap $ e ^. #fieldInstances)
+parseEntities l = do
+  let es = l ^. #entityInstances
+      refset = foldMap getReferencedEntities es
+      ref_es = filter (flip S.member refset . view #iid) es
+      unref_es = filter (not . flip S.member refset . view #iid) es
+      (ref_errs, refs) = partitionEithers $ buildEntities refmap ref_es
+      refmap = M.fromList refs
+
+      (unref_errs, unrefs) = partitionEithers $ buildEntities refmap unref_es
+  (ref_errs <> unref_errs, fmap snd unrefs)
+
+buildEntities :: Map Text Object -> [LDtk.Entity] -> [Either Text (Text, Object)]
+buildEntities refmap es =  do
+    e <- es
+    let iid = e ^. #iid
+    pure $ fmap (iid, ) $
+      buildEntity
+        (traceFX "spawning: " id $ e ^. #__identifier)
+        (fmap (WorldPos . fromIntegral) $ pairToV2 $ e ^. #px)
+        (parseV2 fromIntegral e #width #height)
+        (buildMap $ e ^. #fieldInstances)
+        refmap
 
 buildMap :: [LDtk.Field] -> M.Map Text LDtk.FieldValue
 buildMap =
@@ -121,6 +137,18 @@ getTilesOnScreen (Camera (negate -> posToTile -> cam)) = do
   x <- [-2 .. sx + 2]
   y <- [-2 .. sy + 2]
   pure $ cam + V2 x y
+
+-- TODO(sandy): ONLY GETS ENTITIES REFERENCED IN AN ARRAY CALLED "refs"
+getReferencedEntities :: LDtk.Entity -> Set Text
+getReferencedEntities
+  = foldMap S.singleton
+  . fmap (view #entityIid)
+  . mapMaybe (preview $ #_EntityRefValue)
+  . concat
+  . mapMaybe (preview $ #_ArrayValue)
+  . fmap (view #__value)
+  . filter ((== "refs") . view #__identifier)
+  . view #fieldInstances
 
 
 buildTileMap :: WrappedTexture -> [LDtk.Tile] -> Map (V2 Tile) Renderable

@@ -14,6 +14,7 @@ import           Game.Objects.CollectPowerup (collectPowerup)
 import           Game.Objects.Death (deathZone)
 import           Game.Objects.Door (door)
 import           Game.Objects.Player (player)
+import           Game.Objects.SpawnTrigger (spawnTrigger)
 import           Game.Objects.Test
 import           Game.Objects.TextBillboard (textBillboard)
 import           Game.Objects.ToggleRegion (toggleRegion)
@@ -22,38 +23,53 @@ import qualified LDtk.Types as LDtk
 import           Level (ldtkColorToColor)
 import           Types
 import           Utils (tileToPos)
+import Data.Traversable (for)
+import Control.Error (note)
+import Game.Objects.Unknown (unknown)
 
 
-buildEntity :: Text -> V2 WorldPos -> V2 Double -> Map Text LDtk.FieldValue -> Either Text Object
-buildEntity "Player" pos _ _ = pure $ player pos
-buildEntity "PowerUp" pos _ props =
+buildEntity
+    :: Text
+    -> V2 WorldPos
+    -> V2 Double
+    -> Map Text LDtk.FieldValue
+    -> Map Text Object
+    -> Either Text Object
+buildEntity "Player" pos _ _ _ = pure $ player pos
+buildEntity "PowerUp" pos _ props _ =
   collectPowerup pos
     <$> asEnum "PowerUp" "power" props
-buildEntity "Trampoline" pos sz props =
+buildEntity "Trampoline" pos sz props _ =
   trampoline pos sz
     <$> asDouble "Trampoline" "strength" props
-buildEntity "Chicken" pos _ _ = pure $ chicken pos
-buildEntity "Checkpoint" pos _ _ = pure $ checkpoint pos
-buildEntity "Door" pos sz props =
+buildEntity "Chicken" pos _ _ _ = pure $ chicken pos
+buildEntity "Checkpoint" pos _ _ _ = pure $ checkpoint pos
+buildEntity "Door" pos sz props _ =
   door pos sz
     <$> asPos "Door" "out" props
-buildEntity "Coin" pos _ _ = pure $ coin pos
-buildEntity "Death" pos sz _ = pure $ deathZone pos sz
-buildEntity "ToggleLayer" pos sz props =
+buildEntity "Coin" pos _ _ _ = pure $ coin pos
+buildEntity "Death" pos sz _ _ = pure $ deathZone pos sz
+buildEntity "ToggleLayer" pos sz props _ =
   toggleRegion pos
     <$> pure sz
     <*> asEnum "Toggle" "layer" props
     <*> asBool "Toggle" "toggle" props
-buildEntity "Text" pos _ props =
+buildEntity "Text" pos _ props _ =
   textBillboard
     <$> asDouble "Text" "size" props
     <*> asColor "Text" "color" props
     <*> asText "Text" "text" props
     <*> pure pos
-buildEntity "Grenade" pos _ props = do
+buildEntity "Grenade" pos _ props _ = do
   life <- asFloat "Grenade" "Lifetime" props
   pure $ grenade pos $ realToFrac life
-buildEntity nm _ _ _  = Left $ "unregistered entity: " <> nm
+buildEntity "SpawnTrigger" pos sz props refmap = do
+  persistent <- asBool "SpawnTrigger" "persistent" props
+  refs <- getRefs "SpawnTrigger" "refs" props refmap
+  pure $ spawnTrigger pos (coerce sz) persistent refs
+buildEntity nm pos sz _ _ = do
+  traceM $ "unregistered entity: " <> T.unpack nm
+  pure $ unknown nm pos sz
 
 
 as :: Text -> (Prism' LDtk.FieldValue a) -> Text -> Text -> Map Text LDtk.FieldValue -> Either Text a
@@ -74,6 +90,12 @@ as ty pris obj field m
       , field
       , " was not found"
       ]
+
+getRefs :: Text -> Text -> Map Text LDtk.FieldValue -> Map Text Object -> Either Text [Object]
+getRefs obj prop props refs = do
+  z <- as "Array" #_ArrayValue obj prop props
+  iids <- for z $ note "couldn't lookup ref" . fmap (view #entityIid) . preview #_EntityRefValue
+  pure $ foldMap (pure . (refs M.!)) iids
 
 asPos :: Text -> Text -> Map Text LDtk.FieldValue -> Either Text (V2 WorldPos)
 asPos = fmap (fmap (fmap gridToWorld)) . as "Text" #_PointValue

@@ -5,7 +5,7 @@ import qualified Data.Set as S
 import           Drawing (drawOriginRect)
 import           FRP
 import           Types
-import Utils (noObjectState)
+import           Utils (noObjectState)
 
 
 toggleRegion :: V2 WorldPos -> V2 Double -> LevelLayer -> Bool -> Object
