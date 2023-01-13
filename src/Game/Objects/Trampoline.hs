@@ -1,14 +1,12 @@
 module Game.Objects.Trampoline where
 
-import Game.Common (onHitBy, playerHitRectObjCallback)
-import Types
-import Drawing (drawSpriteOriginRect, drawOriginRect)
-import Globals (global_textures)
 import Control.Lens ((*~))
+import Game.Common
+import Globals (global_textures)
 
 
 trampoline :: V2 WorldPos -> V2 Double -> Double -> Object
-trampoline pos (flip OriginRect 0 . coerce -> ore) str =
+trampoline pos (flip OriginRect 0 -> ore) str =
   playerHitRectObjCallback
     (fmap (, OnTrampoline str) . onHitBy IsPlayer)
     ore

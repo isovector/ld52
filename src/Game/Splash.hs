@@ -1,11 +1,9 @@
 module Game.Splash where
 
-import Types
-import FRP
 import Drawing
-import Control.Lens ((-~))
+import FRP
 import Game (game)
-import Globals (global_resources)
+import Types
 
 
 runIntro :: SF RawFrameInfo (Camera, Renderable)

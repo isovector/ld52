@@ -5,7 +5,7 @@ module Game.Objects
   , addObject
   ) where
 
-import           Control.Lens (at, (<>~), non)
+import           Control.Lens (at, non)
 import           Control.Lens.Lens
 import           Data.Map (Map)
 import qualified Data.Map as M

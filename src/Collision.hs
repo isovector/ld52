@@ -1,6 +1,6 @@
 module Collision where
 
-import Control.Lens (Lens', (+~), coerced)
+import Control.Lens (Lens')
 import Geometry
 import SDL
 import Types

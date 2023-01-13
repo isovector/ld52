@@ -25,8 +25,8 @@ playSound r s = do
   void $ playOn channel Once $ r_sounds r s
 
 
-drawOriginRect :: Color -> OriginRect WorldPos -> V2 WorldPos -> Renderable
-drawOriginRect c ore = drawFilledRect c . originRectToRect ore
+drawOriginRect :: Color -> OriginRect Double -> V2 WorldPos -> Renderable
+drawOriginRect c ore = drawFilledRect c . originRectToRect (coerce ore)
 
 
 drawFilledRect :: Color -> Rectangle WorldPos -> Renderable
@@ -70,7 +70,7 @@ drawSpriteStretched wt pos theta flips stretched cam
 
 drawSpriteOriginRect
     :: WrappedTexture  -- ^ Texture
-    -> OriginRect WorldPos
+    -> OriginRect Double
     -> V2 WorldPos     -- ^ position
     -> Double          -- ^ rotation in rads
     -> V2 Bool         -- ^ mirroring

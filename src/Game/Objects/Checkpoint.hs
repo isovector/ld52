@@ -1,10 +1,10 @@
 module Game.Objects.Checkpoint where
 
+import Drawing (drawOriginRect)
+import FRP
 import Game.Common (onHitBy, listenInbox, playerHitRectObj)
 import Types
-import Control.Lens (preview)
-import FRP
-import Drawing (drawOriginRect)
+
 
 checkpoint :: V2 WorldPos -> Object
 checkpoint pos =

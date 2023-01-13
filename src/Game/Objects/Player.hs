@@ -2,7 +2,7 @@
 module Game.Objects.Player where
 
 import           Collision (epsilon)
-import           Control.Lens ((*~), preview, (<>~))
+import           Control.Lens ((*~))
 import           Data.Maybe (mapMaybe)
 import           Data.Monoid
 import qualified Data.Set as S
@@ -11,11 +11,11 @@ import           FRP
 import           FRP.Yampa ((*^))
 import           Game.Common (listenInbox)
 import           Game.Objects.Actor (actor)
+import           Game.Objects.Particle (gore)
 import           Game.Objects.TeleportBall (teleportBall)
 import qualified SDL.Vect as SDL
 import           Types
 import           Utils
-import Game.Objects.Particle (gore)
 
 player :: V2 WorldPos -> Object
 player pos0 = proc oi -> do
@@ -90,7 +90,7 @@ player pos0 = proc oi -> do
 
   let V2 _ updowndir = c_dir $ fi_controls $ oi_frameInfo oi
 
-  drawn <- drawPlayer ore -< pos''
+  drawn <- drawPlayer -< pos''
 
   returnA -<
     ObjectOutput
@@ -142,15 +142,8 @@ playerPhysVelocity = proc fi -> do
   returnA -< vel'
 
 
-drawPlayer :: OriginRect WorldPos -> SF (V2 WorldPos) Renderable
-drawPlayer sz = arr mconcat <<< fork
-  -- [ arr $ \pos -> mconcat
-  --     [ drawOriginRect (V4 255 255 0 16) sz pos
-  --     , drawFilledRect (V4 255 0 0 255)
-  --         $ flip Rectangle 1
-  --         $ P
-  --         $ pos
-  --     ]
+drawPlayer :: SF (V2 WorldPos) Renderable
+drawPlayer = arr mconcat <<< fork
   [ proc pos -> do
       -- We can fully animate the player as a function of the position!
       edir <- edgeBy diffDir 0 -< pos

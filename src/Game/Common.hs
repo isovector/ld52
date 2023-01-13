@@ -31,7 +31,7 @@ listenInbox ok oi = do
 
 playerHitRectObjCallback
     :: (ObjectInput -> Event (ObjectId, Message))
-    -> OriginRect WorldPos
+    -> OriginRect Double
     -> (V2 WorldPos -> Renderable)
     -> V2 WorldPos
     -> Object
@@ -46,7 +46,7 @@ playerHitRectObjCallback msg ore r =
 
 playerHitRectObj'
     :: (SF ObjectInput ObjectEvents)
-    -> OriginRect WorldPos
+    -> OriginRect Double
     -> Color
     -> V2 WorldPos
     -> Object
@@ -55,7 +55,7 @@ playerHitRectObj' msg ore col pos =
 
 playerHitRectObj
     :: (SF ObjectInput (ObjectEvents, a))
-    -> OriginRect WorldPos
+    -> OriginRect Double
     -> (a -> V2 WorldPos -> Renderable)
     -> V2 WorldPos
     -> Object
@@ -96,8 +96,7 @@ charging dur while = proc oi -> do
 
   returnA -< (prog , done)
 
-
-on :: (Message -> Maybe a)-> SF (Event a) ObjectEvents -> Object -> Object
+on :: (Message -> Maybe a) -> SF (Event a) ObjectEvents -> Object -> Object
 on msg handle obj =
   proc oi -> do
     let ev = listenInbox (msg . snd) $ oi_events oi
@@ -108,7 +107,6 @@ on msg handle obj =
 onHit :: ([HitEvent] -> Maybe a) -> SF (Event a) ObjectEvents -> Object -> Object
 onHit ot handle obj =
   proc oi -> do
-    let hits = oie_hit $ oi_events oi
     let ev = (>>= maybeToEvent . ot) $ oie_hit $ oi_events oi
     oo <- obj -< oi
     evs <- handle -< ev
@@ -137,8 +135,19 @@ staticCollisionObject pos ore r = constant $
     { oo_events = mempty
     , oo_render = r
     , oo_state = (noObjectState pos)
-        { os_collision = Just $ coerce ore
+        { os_collision = Just ore
         }
+    }
+
+staticObject
+    :: V2 WorldPos
+    -> Renderable
+    -> Object
+staticObject pos r = constant $
+  ObjectOutput
+    { oo_events = mempty
+    , oo_render = r
+    , oo_state = noObjectState pos
     }
 
 respondWith :: Message -> SF (Event [ObjectId]) ObjectEvents

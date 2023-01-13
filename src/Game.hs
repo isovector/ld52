@@ -3,7 +3,6 @@
 
 module Game where
 
-import           Control.Lens ((+~))
 import           Data.Foldable (find)
 import qualified Data.Map as M
 import qualified Data.Set as S
@@ -15,7 +14,6 @@ import           Globals (global_textures, global_resources)
 import           SDL
 import           Types
 import           Utils (setCenterOrigin, mkCenterdOriginRect, tileToPos)
-import Types (Song(WarmDuckShuffle))
 
 #ifndef __HLINT__
 

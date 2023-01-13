@@ -6,7 +6,7 @@ module Registry where
 
 import           Control.Applicative (optional)
 import           Control.Error (note)
-import           Control.Lens (Prism', preview)
+import           Control.Lens (Prism')
 import           Control.Monad.Error (Error)
 import           Data.Map (Map)
 import qualified Data.Map as M

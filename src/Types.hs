@@ -2,6 +2,7 @@
 
 {-# OPTIONS_GHC -Wno-orphans #-}
 {-# OPTIONS_GHC -funbox-strict-fields #-}
+{-# LANGUAGE UndecidableInstances #-}
 
 module Types
   ( module Types
@@ -37,7 +38,7 @@ import Data.Set (Set)
 import Data.Text (Text)
 import Data.Word
 import Debug.Trace (trace, traceShowId, traceM)
-import FRP (SF, Event)
+import FRP (SF, Event, Time)
 import Foreign.C (CInt)
 import GHC.Generics
 import SDL hiding (trace, Event)
@@ -400,4 +401,45 @@ traceF f a = trace (show $ f a) a
 
 traceFX :: Show b => String -> (a -> b) -> a -> a
 traceFX herald f a = trace (mappend (herald <> ": ") . show $ f a) a
+
+------------------------------------------------------------------------------
+  --
+class HasFrameInfo a where
+  frameInfo :: a -> FrameInfo
+
+instance HasFrameInfo ObjectInput where
+  frameInfo = oi_frameInfo
+
+class HasDeltaTime a where
+  deltaTime :: a -> Time
+
+instance HasDeltaTime FrameInfo where
+  deltaTime = fi_dt
+
+instance HasDeltaTime RawFrameInfo where
+  deltaTime = rfi_dt
+
+instance {-# OVERLAPPABLE #-} HasFrameInfo a => HasDeltaTime a where
+  deltaTime = deltaTime . frameInfo
+
+class HasGlobalState a where
+  globalState :: a -> GlobalState
+
+instance HasGlobalState FrameInfo where
+  globalState = fi_global
+
+instance {-# OVERLAPPABLE #-} HasFrameInfo a => HasGlobalState a where
+  globalState = globalState . frameInfo
+
+class HasControls a where
+  controls :: a -> Controls
+
+instance HasControls FrameInfo where
+  controls = fi_controls
+
+instance HasControls RawFrameInfo where
+  controls = rfi_controls
+
+instance {-# OVERLAPPABLE #-} HasFrameInfo a => HasControls a where
+  controls = controls . frameInfo
 

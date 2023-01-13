@@ -85,7 +85,6 @@ input win tRef _ = do
   when (secdiff < 0.016) $ do
     threadDelay $ floor $ (0.016 - secdiff) * 1000000
 
-
   keys <- getKeyboardState
   pure (dt, Just $ RawFrameInfo (parseControls keys) dt)
 

@@ -5,7 +5,7 @@ import Types
 import FRP
 
 
-spawnTrigger :: V2 WorldPos -> V2 WorldPos -> Bool -> [Object]  -> Object
+spawnTrigger :: V2 WorldPos -> V2 Double -> Bool -> [Object]  -> Object
 spawnTrigger pos sz persistent spawns =
   playerHitRectObj'
     (proc oi -> do

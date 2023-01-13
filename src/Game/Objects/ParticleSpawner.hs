@@ -6,7 +6,7 @@ import FRP
 import Utils (nowish, noObjectState)
 
 particleSpawner :: V2 WorldPos -> ParticleType -> Object
-particleSpawner pos pt = proc fi -> do
+particleSpawner pos pt = proc _ -> do
   start <- nowish () -< ()
   returnA -< ObjectOutput
     { oo_events = mempty
