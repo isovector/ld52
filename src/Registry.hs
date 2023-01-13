@@ -1,9 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
+{-# OPTIONS_GHC -Wno-deprecations #-}
 
 module Registry where
 
+import           Control.Applicative (optional)
 import           Control.Error (note)
 import           Control.Lens (Prism', preview)
+import           Control.Monad.Error (Error)
 import           Data.Map (Map)
 import qualified Data.Map as M
 import           Data.Text (Text)
@@ -57,7 +61,8 @@ buildEntity "ToggleLayer" pos sz props _ =
     <*> asBool "Toggle" "toggle" props
 buildEntity "Text" pos _ props _ =
   textBillboard
-    <$> asDouble "Text" "size" props
+    <$> optional (asDouble "Text" "duration" props)
+    <*> asDouble "Text" "size" props
     <*> asColor "Text" "color" props
     <*> asText "Text" "text" props
     <*> pure pos
@@ -74,6 +79,8 @@ buildEntity "SpawnTrigger" pos sz props refmap = do
 buildEntity nm pos sz _ _ = do
   traceM $ "unregistered entity: " <> T.unpack nm
   pure $ unknown nm pos sz
+
+instance Error Text where
 
 
 as :: Text -> (Prism' LDtk.FieldValue a) -> Text -> Text -> Map Text LDtk.FieldValue -> Either Text a
