@@ -1,13 +1,19 @@
-module Game.Common where
+module Game.Common
+  ( module Types
+  , module FRP
+  , module Game.Common
+  , module Drawing
+  , module Utils
+  ) where
 
 import           Data.Foldable (find)
+import           Data.Maybe (mapMaybe, listToMaybe)
+import           Data.Monoid
 import qualified Data.Set as S
 import           Drawing
 import           FRP
 import           Types
-import Data.Maybe (mapMaybe, listToMaybe)
-import Utils (noObjectState, posToTile)
-import Data.Monoid
+import           Utils
 
 onHitBy :: ObjectTag -> ObjectInput -> Event ObjectId
 onHitBy otag oi = do
@@ -89,4 +95,53 @@ charging dur while = proc oi -> do
               ]
 
   returnA -< (prog , done)
+
+
+on :: (Message -> Maybe a)-> SF (Event a) ObjectEvents -> Object -> Object
+on msg handle obj =
+  proc oi -> do
+    let ev = listenInbox (msg . snd) $ oi_events oi
+    oo <- obj -< oi
+    evs <- handle -< ev
+    returnA -< oo & #oo_events <>~ evs
+
+onHit :: ([HitEvent] -> Maybe a) -> SF (Event a) ObjectEvents -> Object -> Object
+onHit ot handle obj =
+  proc oi -> do
+    let hits = oie_hit $ oi_events oi
+    let ev = (>>= maybeToEvent . ot) $ oie_hit $ oi_events oi
+    oo <- obj -< oi
+    evs <- handle -< ev
+    returnA -< oo & #oo_events <>~ evs
+
+onHitByTag :: ObjectTag -> SF (Event HitEvent) ObjectEvents -> Object -> Object
+onHitByTag ot = onHit $ find $ any $ S.member ot . os_tags
+
+
+playSoundReponse :: Sound -> SF (Event a) ObjectEvents
+playSoundReponse s = arr $ \ev -> mempty & #oe_play_sound .~ ([s] <$ ev)
+
+standardDeathResponse :: SF (Event a) ObjectEvents
+standardDeathResponse = arr $ \ev -> mempty & #oe_die .~ (() <$ ev)
+
+onDeath :: SF (Event ()) ObjectEvents -> Object -> Object
+onDeath = on $ preview #_Die
+
+staticCollisionObject
+    :: V2 WorldPos
+    -> OriginRect Double
+    -> Renderable
+    -> Object
+staticCollisionObject pos ore r = constant $
+  ObjectOutput
+    { oo_events = mempty
+    , oo_render = r
+    , oo_state = (noObjectState pos)
+        { os_collision = Just $ coerce ore
+        }
+    }
+
+respondWith :: Message -> SF (Event [ObjectId]) ObjectEvents
+respondWith msg = arr $ \ev ->
+  mempty & #oe_send_message .~ (fmap (fmap (, msg)) ev)
 

@@ -96,7 +96,7 @@ player pos0 = proc oi -> do
     ObjectOutput
         { oo_events =
             mempty
-              & #oe_spawn <>~
+              & #oe_spawn .~
                   ([teleportBall
                         me
                         (coerce ore) (pos - (sz & _x .~ 0))
@@ -106,7 +106,8 @@ player pos0 = proc oi -> do
                   [ () <$ am_teleporting
                   , start
                   ]
-              & #oe_broadcast_message <>~ fmap (pure . CurrentCheckpoint . fst) cp_hit
+              & #oe_broadcast_message .~ fmap (pure . CurrentCheckpoint . fst) cp_hit
+              & #oe_play_sound .~ bool noEvent (Event [DieSound]) dying
         , oo_state =
             oi_state oi
               & #os_pos .~ pos''

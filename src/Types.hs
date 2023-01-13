@@ -26,7 +26,7 @@ module Types
   , bool
   ) where
 
-import Control.Lens ((&), (^.), (.~), (%~), view, set, over)
+import Control.Lens ((&), (^.), (.~), (%~), (+~), (-~), (<>~), view, set, over, preview, review)
 import Data.Bool (bool)
 import Data.Coerce
 import Data.Foldable (toList)
