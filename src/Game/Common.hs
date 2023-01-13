@@ -135,6 +135,8 @@ standardDeathResponse = arr $ \ev -> mempty & #oe_die .~ (() <$ ev)
 spawnResponse :: [Object] -> SF (Event a) ObjectEvents
 spawnResponse objs = arr $ \ev -> mempty & #oe_spawn .~ (objs <$ ev)
 
+omnipotenceResponse :: (ObjectMap Object -> ObjectMap Object) -> SF (Event a) ObjectEvents
+omnipotenceResponse objs = arr $ \ev -> mempty & #oe_omnipotence .~ (objs <$ ev)
 
 onDeath :: SF (Event ()) ObjectEvents -> Object -> Object
 onDeath = on $ preview #_Die

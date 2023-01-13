@@ -2,17 +2,14 @@ module Game.Objects.ToggleRegion where
 
 import           Data.Set (Set)
 import qualified Data.Set as S
-import           Drawing (drawOriginRect)
-import           FRP
-import           Types
-import           Utils (noObjectState)
+import           Game.Common
 
 
 toggleRegion :: V2 WorldPos -> V2 Double -> LevelLayer -> Bool -> Object
 toggleRegion pos sz lls toggle =
   proc oi -> do
-    let curlls = gs_layerset $ fi_global $ oi_frameInfo oi
-        hit = fmap (any $ S.member IsPlayer . os_tags . snd) $ oie_hit $ oi_events oi
+    let curlls = gs_layerset $ globalState oi
+        hit = onHitBy IsPlayer oi
         enable = toggle /= S.member lls curlls
 
         collision :: Maybe (OriginRect Double)
@@ -23,13 +20,12 @@ toggleRegion pos sz lls toggle =
           { oe_omnipotence = (#objm_globalState . #gs_layerset %~ updateLayers toggle lls) <$ hit
           }
       , oo_render = flip (maybe mempty) collision $ \ore ->
-          drawOriginRect (V4 255 255 0 32) (coerce ore) pos
-      , oo_state =
-          (noObjectState pos)
-            { os_collision = collision
-            }
+          drawOriginRect (V4 255 255 0 32) ore pos
+      , oo_state = noObjectState pos & #os_collision .~ collision
       }
+
 
 updateLayers :: Bool -> LevelLayer -> Set LevelLayer -> Set LevelLayer
 updateLayers False = S.delete
 updateLayers True = S.insert
+

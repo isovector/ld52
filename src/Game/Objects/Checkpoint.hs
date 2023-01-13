@@ -1,9 +1,6 @@
 module Game.Objects.Checkpoint where
 
-import Drawing (drawOriginRect)
-import FRP
-import Game.Common (onHitBy, listenInbox, playerHitRectObj)
-import Types
+import Game.Common
 
 
 checkpoint :: V2 WorldPos -> Object
@@ -15,8 +12,6 @@ checkpoint pos =
 
       is_me <- dHold False -< fmap (== oi_self oi) mine
       newly_hit <- edge -< is_me
-
-
 
       returnA -< (, is_me)
         mempty
