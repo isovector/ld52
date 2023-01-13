@@ -1,14 +1,9 @@
 module Game.Objects.TeleportBall where
 
-import Types
-import FRP hiding (time)
-import Utils
-import Drawing (drawSpriteOriginRect)
 import Collision (move)
-import Game.Common (getCollisionMap, charging)
 import Data.Maybe (fromMaybe, isJust)
+import Game.Common
 import Globals (global_textures)
-import FRP (time)
 
 teleportBall
     :: ObjectId
@@ -55,7 +50,7 @@ teleportBall owner owner_ore pos0 vel0@(V2 vx _) =
             , oe_focus = () <$ start
             , oe_play_sound = [WarpSound] <$ end
             }
-        , oo_render = drawSpriteOriginRect (global_textures TeleTexture) ore pos' (t * 360) (pure False)
+        , oo_render = drawGameTextureOriginRect TeleTexture ore pos' (t * 360) (pure False)
         , oo_state = (noObjectState pos')
           { os_camera_offset = vel' ^* (dt * 10)
             }
@@ -70,7 +65,7 @@ charge pos0 dir = proc oi -> do
   returnA -< (, done) $ ObjectOutput
     { oo_events = mempty
     , oo_render =
-        drawSpriteOriginRect
+        drawTextureOriginRect
           (setCenterOrigin (global_textures ChargeTexture) & #wt_origin . _x .~ 0)
           (coerce $ OriginRect (V2 (progress * 30) 10) 0)
           (pos0 + bool 0 (V2 (-5) 8) (dir < 0))

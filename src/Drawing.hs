@@ -68,14 +68,23 @@ drawSpriteStretched wt pos theta flips stretched cam
         flips
   | otherwise = mempty
 
-drawSpriteOriginRect
+drawGameTextureOriginRect
+    :: GameTexture
+    -> OriginRect Double
+    -> V2 WorldPos     -- ^ position
+    -> Double          -- ^ rotation in rads
+    -> V2 Bool         -- ^ mirroring
+    -> Renderable
+drawGameTextureOriginRect = drawTextureOriginRect . global_textures
+
+drawTextureOriginRect
     :: WrappedTexture  -- ^ Texture
     -> OriginRect Double
     -> V2 WorldPos     -- ^ position
     -> Double          -- ^ rotation in rads
     -> V2 Bool         -- ^ mirroring
     -> Renderable
-drawSpriteOriginRect wt ore pos theta flips cam
+drawTextureOriginRect wt ore pos theta flips cam
   | let wp = viaCamera cam pos
   , rectContains screenRect wp
   = do
@@ -146,7 +155,7 @@ drawText sz color text pos@(V2 x y) cam
 drawParallax :: V2 WorldPos -> GameTexture -> Double -> Renderable
 drawParallax sz gt scale c@(Camera cam) =
   flip atScreenPos c
-    $ drawSpriteOriginRect (global_textures gt) (coerce bg_ore) (logicalSize / 2) 0
+    $ drawTextureOriginRect (global_textures gt) (coerce bg_ore) (logicalSize / 2) 0
     $ pure False
   where
     perc = coerce $ -cam / sz

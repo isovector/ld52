@@ -1,7 +1,6 @@
 module Game.World where
 
 import Data.Set (Set)
-import Drawing
 import Types
 
 drawWorld :: Set LevelLayer -> World -> Renderable
