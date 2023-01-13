@@ -4,10 +4,12 @@ module Engine.Importer where
 
 import           Control.DeepSeq (force)
 import           Control.Lens hiding (Level)
+import           Control.Monad.Except
 import           Data.Aeson (eitherDecodeFileStrict)
 import           Data.Either (partitionEithers)
 import           Data.Generics.Labels ()
 import qualified Data.Map as M
+import           Data.Maybe (catMaybes)
 import           Data.Monoid
 import qualified Data.Set as S
 import qualified Data.Text as T
@@ -15,9 +17,10 @@ import           Data.Traversable
 import qualified Data.Vector as V
 import           Engine.Drawing
 import           Engine.Prelude
-import           Engine.Globals (global_tilesets)
+import           Engine.Resources
+import           Game.Resources (loadWrappedTexture)
 import qualified LDtk.Types as LDtk
-import           System.FilePath.Lens (basename)
+import           System.FilePath
 
 import {-# SOURCE #-} Game.Objects
 
@@ -25,11 +28,11 @@ import {-# SOURCE #-} Game.Objects
 ldtkColorToColor :: LDtk.Color -> Color
 ldtkColorToColor (LDtk.Color r g b) = V4 r g b 255
 
-loadWorld :: FilePath -> IO World
-loadWorld fp = do
+loadWorld :: Engine -> FilePath -> IO World
+loadWorld e fp = do
   eitherDecodeFileStrict @LDtk.LDtkRoot fp >>= \case
     Left e -> error e
-    Right root -> pure $ World $ parseLevels root
+    Right root -> World <$> parseLevels e root
 
 buildCollisionMap :: V2 Tile -> V.Vector (V.Vector Int) -> CollisionPurpose -> V2 Tile -> Any
 buildCollisionMap sz col = \purpose (coerce -> V2 x y) ->
@@ -64,19 +67,19 @@ rectangularize (V2 x _)
   . chunksOf x
 
 parseLayer
-    :: LDtk.Layer
+    :: Map Text WrappedTexture
+    -> LDtk.Layer
     -> ( CollisionPurpose -> V2 Tile -> Any
        , Renderable
        )
-parseLayer l = do
+parseLayer !ts_cache l = do
   let !sz = (parseV2 Tile l #__cWid #__cHei)
       !col = force $ rectangularize (coerce sz) (l ^. #intGridCsv)
       {-# NOINLINE col #-}
       !cols = force $ buildCollisionMap sz col
       {-# NOINLINE cols #-}
 
-      ts = read @Tileset $ view basename $ T.unpack $ l ^. #__tilesetRelPath ^. _Just
-      wt = (global_tilesets ts)
+      !wt = (ts_cache M.! (l ^. #__tilesetRelPath ^. _Just))
             { wt_size = tileSize
             }
 
@@ -173,45 +176,66 @@ getLayerFromLevel :: [LDtk.Layer] -> LevelLayer -> Maybe (LDtk.Layer)
 getLayerFromLevel ls l =
   find ((== T.pack (show l)) . view #__identifier) ls
 
-parseLevels :: LDtk.LDtkRoot -> Map Text Level
-parseLevels root = either (error . mappend "couldn't parse level: " . unlines) id $
-  fmap (foldMap (uncurry M.singleton)) $ for (root ^. #levels) $ \lev -> do
-    let nm = lev ^. #identifier
-        bounds = Rect (parseV2 Pixel lev #worldX #worldY)
-               $ parseV2 Pixel lev #pxWid #pxHei
+parseLevels :: Engine -> LDtk.LDtkRoot -> IO (Map Text Level)
+parseLevels e root
+  = fmap (either (error . mappend "couldn't parse level: " . unlines) id)
+  $ runExceptT $ do
+    !ts_cache
+       <- liftIO
+        $ buildTilesetCache e
+        $ catMaybes
+        $ root ^.. #defs . #tilesets . traverse . #relPath
+
+    fmap (foldMap (uncurry M.singleton))
+      $ for (root ^. #levels) $ \lev -> do
+
+        let nm = lev ^. #identifier
+            bounds = Rect (parseV2 Pixel lev #worldX #worldY)
+                  $ parseV2 Pixel lev #pxWid #pxHei
 
 
-    let ls = lev ^. #layerInstances
-        (errs, ents) = foldMap parseEntities ls
-        make_layer
-          = force
-          . pure
-          . fromMaybe (mempty, mempty)
-          . fmap parseLayer
-          . getLayerFromLevel ls
+        let ls = lev ^. #layerInstances
+            (errs, ents) = foldMap parseEntities ls
+            make_layer
+              = except
+              . force
+              . pure
+              . fromMaybe (mempty, mempty)
+              . fmap (parseLayer ts_cache)
+              . getLayerFromLevel ls
 
-    !(c1, d1) <- make_layer Layer1
-    !(c2, d2) <- make_layer Layer2
-    !(c3, d3) <- make_layer Layer3
+        !(c1, d1) <- make_layer Layer1
+        !(c2, d2) <- make_layer Layer2
+        !(c3, d3) <- make_layer Layer3
 
-    traceM $ unlines $ fmap (T.unpack . mappend "[WARNING] level: ") errs
+        traceM $ unlines $ fmap (T.unpack . mappend "[WARNING] level: ") errs
 
-    pure
-      ( nm
-      , Level
-          (ldtkColorToColor $ lev ^. #__bgColor)
-          (Rect 0 16)
-          bounds
-          (\case
-            Layer1 -> d1
-            Layer2 -> d2
-            Layer3 -> d3
+        pure
+          ( nm
+          , Level
+              (ldtkColorToColor $ lev ^. #__bgColor)
+              (Rect 0 16)
+              bounds
+              (\case
+                Layer1 -> d1
+                Layer2 -> d2
+                Layer3 -> d3
+              )
+              (coerce . \case
+                Layer1 -> c1
+                Layer2 -> c2
+                Layer3 -> c3
+              )
+              ents
           )
-          (coerce . \case
-            Layer1 -> c1
-            Layer2 -> c2
-            Layer3 -> c3
-          )
-          ents
-      )
+
+buildTilesetCache :: Engine -> [FilePath] -> IO (Map Text WrappedTexture)
+buildTilesetCache e fps = do
+  rpath <- resourceRootPath
+  fmap M.fromList $ for fps $ \fp -> do
+    wt <- loadWrappedTexture e $ rpath </> "tilesets" </> takeFileName fp
+    pure (T.pack fp, wt)
+
+except :: Monad m => Either e a -> ExceptT e m a
+except = ExceptT . pure
 

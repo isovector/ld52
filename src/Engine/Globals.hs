@@ -16,7 +16,6 @@ global_resources :: Resources
 global_resources = unsafePerformIO $ loadResources =<< readIORef veryUnsafeEngineIORef
 {-# NOINLINE global_resources #-}
 
-global_tilesets :: Tileset -> WrappedTexture
 global_textures :: GameTexture -> WrappedTexture
 global_sounds :: Sound -> Chunk
 global_songs :: Song -> Music
@@ -25,8 +24,7 @@ global_sprites :: Sprite -> Anim -> [WrappedTexture]
 global_glyphs :: Char -> Texture
 
 Resources
-  { r_tilesets = global_tilesets
-  , r_textures = global_textures
+  { r_textures = global_textures
   , r_sounds   = global_sounds
   , r_worlds   = global_worlds
   , r_sprites  = global_sprites
@@ -35,7 +33,6 @@ Resources
   } = global_resources
 
 
-{-# NOINLINE global_tilesets #-}
 {-# NOINLINE global_textures #-}
 {-# NOINLINE global_sounds   #-}
 {-# NOINLINE global_worlds   #-}

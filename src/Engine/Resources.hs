@@ -5,8 +5,9 @@ module Engine.Resources where
 
 import qualified Data.Map as M
 import           Data.Traversable (for)
-import           System.FilePath
 import           Engine.Types (Engine)
+import           System.Environment.Blank (getEnv)
+import           System.FilePath
 
 
 class (Ord key, Enum key, Bounded key)
@@ -18,6 +19,9 @@ class (Ord key, Enum key, Bounded key)
   resourceName :: key -> String
   load :: key -> Engine -> FilePath -> IO res
 
+resourceRootPath :: IO FilePath
+resourceRootPath =
+  maybe "resources" (</> "usr/share/ld52-exe/resources") <$> getEnv "APPDIR"
 
 loadResource
     :: forall key res

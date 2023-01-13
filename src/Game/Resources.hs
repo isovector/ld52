@@ -52,7 +52,7 @@ instance IsResource (Sprite, Anim) [WrappedTexture] where
   load (cn, an) e _ = do
     for [0 .. frameCounts cn an - 1] $ \i -> do
       let fp = "resources" </> "sprites" </> charName cn </> animName an <> "_" <> show i <.> "png"
-      wt <- wrapTexture =<< Image.loadTexture (e_renderer e) fp
+      wt <- loadWrappedTexture e fp
       pure $ setGroundOrigin wt
 
 
@@ -66,14 +66,11 @@ charName :: Sprite -> FilePath
 charName MainCharacter = "mc"
 
 
-instance IsResource Tileset WrappedTexture where
-  load _
-      = (wrapTexture <=<)
-      . Image.loadTexture
-      . e_renderer
-  resourceFolder = "tilesets"
-  resourceExt    = "png"
-  resourceName = show
+loadWrappedTexture :: Engine -> FilePath -> IO WrappedTexture
+loadWrappedTexture
+  = (wrapTexture <=<)
+  . Image.loadTexture
+  . e_renderer
 
 instance IsResource Char' Texture where
   load _
@@ -91,10 +88,7 @@ pad n c s =
         False -> replicate (n - len) c <> s
 
 instance IsResource GameTexture WrappedTexture where
-  load _
-      = (wrapTexture <=<)
-      . Image.loadTexture
-      . e_renderer
+  load _ = loadWrappedTexture
   resourceFolder = "textures"
   resourceExt    = "png"
   resourceName NintendoLogo = "nintendo"
@@ -127,7 +121,7 @@ instance IsResource Sound Chunk where
   resourceName WarpSound = "warp"
 
 instance IsResource WorldName World where
-  load _ _ = loadWorld
+  load _ = loadWorld
   resourceFolder = "levels"
   resourceExt    = "ldtk"
   resourceName TestWorld = "test"
@@ -136,9 +130,8 @@ instance IsResource WorldName World where
 
 loadResources :: Engine -> IO Resources
 loadResources engine = do
-  rpath <- maybe "resources" (</> "usr/share/ld52-exe/resources") <$> getEnv "APPDIR"
+  rpath <- resourceRootPath
 
-  tilesets <- loadResource rpath engine
   textures <- loadResource rpath engine
   songs    <- loadResource rpath engine
   sounds   <- loadResource rpath engine
@@ -148,7 +141,6 @@ loadResources engine = do
 
   pure $ Resources
     { r_engine   = engine
-    , r_tilesets = tilesets
     , r_textures = textures
     , r_sounds   = sounds
     , r_songs    = songs

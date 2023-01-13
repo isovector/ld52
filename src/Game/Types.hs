@@ -30,13 +30,6 @@ data GameTexture
     | TrampolineTexture
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
-data Tileset
-  -- NOTE: It's important that the tileset names line up with their png names,
-  -- so levels can import them properly.
-  = Cavernas_by_Adam_Saltsman
-  | Stringstar_Fields
-  deriving (Eq, Ord, Show, Read, Enum, Bounded)
-
 
 data WorldName = TestWorld | HelpWorld
   deriving (Eq, Ord, Show, Read, Enum, Bounded)

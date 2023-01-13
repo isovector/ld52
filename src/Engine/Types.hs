@@ -90,7 +90,6 @@ data Engine = Engine
 -- | Things we need to keep track of, like sprites and music and stuff.
 data Resources = Resources
   { r_engine   :: Engine
-  , r_tilesets :: Tileset -> WrappedTexture
   , r_textures :: GameTexture -> WrappedTexture
   , r_sounds   :: Sound -> Chunk
   , r_songs    :: Song -> Music
