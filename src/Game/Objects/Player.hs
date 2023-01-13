@@ -3,19 +3,16 @@ module Game.Objects.Player where
 
 import           Collision (epsilon)
 import           Control.Lens ((*~))
-import           Data.Maybe (mapMaybe)
 import           Data.Monoid
 import qualified Data.Set as S
 import           Drawing
 import           FRP
 import           FRP.Yampa ((*^))
-import           Game.Common (listenInbox)
+import           Game.Common
 import           Game.Objects.Actor (actor)
 import           Game.Objects.Particle (gore)
 import           Game.Objects.TeleportBall (teleportBall)
 import qualified SDL.Vect as SDL
-import           Types
-import           Utils
 
 player :: V2 WorldPos -> Object
 player pos0 = proc oi -> do
@@ -161,7 +158,7 @@ drawPlayer = arr mconcat <<< fork
 
 instance (Floating a, Eq a) => VectorSpace (V2 a) a where
   zeroVector = 0
-  (*^) = (Types.*^)
+  (*^) = (Game.Common.*^)
   (^+^) = (+)
   dot = SDL.dot
 

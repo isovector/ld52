@@ -1,8 +1,7 @@
 module Game.Objects.Unknown where
 
-import Game.Common
-import Data.Text (Text)
 import qualified Data.Text as T
+import           Game.Common
 
 
 unknown :: Text -> V2 WorldPos -> V2 Double -> Object

@@ -1,6 +1,5 @@
 module Game.Objects.ParticleSpawner where
 
-import Types
 import Game.Objects.Particle
 import Game.Common
 

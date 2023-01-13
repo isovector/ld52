@@ -1,9 +1,6 @@
 module Game.Objects.Test where
 
-import Drawing
-import FRP
-import Types
-import Utils (noObjectState)
+import Game.Common
 
 shrapnel :: Int -> V2 WorldPos -> Double -> Object
 shrapnel _n pos0 theta = arr oi_frameInfo >>> loopPre pos0

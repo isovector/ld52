@@ -5,7 +5,7 @@ module Registry where
 import Data.Map (Map)
 import Data.Text (Text)
 import qualified LDtk.Types as LDtk
-import Types
+import Engine.Types
 
 
 buildEntity

@@ -1,7 +1,7 @@
 module Game.Objects.TeleportBall where
 
 import Collision (move)
-import Data.Maybe (fromMaybe, isJust)
+import Data.Maybe (isJust)
 import Game.Common
 import Globals (global_textures)
 

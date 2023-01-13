@@ -2,11 +2,11 @@
 module Globals where
 
 import Data.IORef
+import Engine.Types
 import Resources (loadResources)
+import SDL (Texture)
 import SDL.Mixer (Chunk, Music)
 import System.IO.Unsafe
-import Types
-import SDL (Texture)
 
 veryUnsafeEngineIORef :: IORef Engine
 veryUnsafeEngineIORef = unsafePerformIO $ newIORef $ error "no unsafe engine io ref"

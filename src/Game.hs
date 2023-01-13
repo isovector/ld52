@@ -3,17 +3,13 @@
 
 module Game where
 
-import           Data.Foldable (find)
 import qualified Data.Map as M
 import qualified Data.Set as S
-import           Drawing
-import           FRP
-import           Game.Objects (renderObjects, addObject)
-import           Game.World (drawLevel)
-import           Globals (global_textures, global_resources)
-import           SDL
-import           Types
-import           Utils (setCenterOrigin, mkCenterdOriginRect, tileToPos)
+import           Engine.Prelude
+import           Game.Objects
+import           Globals
+import Game.World (drawLevel)
+
 
 #ifndef __HLINT__
 

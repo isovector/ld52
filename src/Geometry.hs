@@ -2,7 +2,7 @@ module Geometry where
 
 import SDL
 import Data.Maybe (isJust)
-import Types
+import Engine.Types
 
 orTopLeft :: Num a => V2 a -> OriginRect a -> V2 a
 orTopLeft pos ore = pos - orect_offset ore

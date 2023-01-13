@@ -6,16 +6,16 @@ module Drawing where
 
 import Control.Monad (void)
 import Data.Foldable (for_, traverse_)
+import Engine.Types
 import FRP
 import Foreign.C
 import Game.Camera (viaCamera)
+import Geometry (rectContains)
 import Globals (global_resources, global_sprites, global_glyphs, global_textures, global_songs)
+import Resources (frameSound, frameCounts)
 import SDL
 import SDL.Mixer
-import Types
 import Utils (originRectToRect)
-import Geometry (rectContains)
-import Resources (frameSound, frameCounts)
 
 
 playSound :: Resources -> Sound -> IO ()

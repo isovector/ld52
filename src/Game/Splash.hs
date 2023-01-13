@@ -3,7 +3,7 @@ module Game.Splash where
 import Drawing
 import FRP
 import Game (game)
-import Types
+import Game.Common
 
 
 runIntro :: SF RawFrameInfo (Camera, Renderable)

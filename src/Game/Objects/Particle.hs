@@ -2,13 +2,8 @@ module Game.Objects.Particle where
 
 import Collision (move)
 import Data.Hashable (hash)
-import Data.Maybe (fromMaybe)
-import Drawing (drawOriginRect)
 import FRP hiding (time)
-import Game.Common (getCollisionMap)
-import SDL (quadrance)
-import Types
-import Utils
+import Game.Common
 
 
 particle

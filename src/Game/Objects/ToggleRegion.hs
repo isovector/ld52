@@ -1,6 +1,5 @@
 module Game.Objects.ToggleRegion where
 
-import           Data.Set (Set)
 import qualified Data.Set as S
 import           Game.Common
 

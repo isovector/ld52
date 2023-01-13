@@ -4,8 +4,9 @@ module Game.Camera
   , getCameraFocus
   ) where
 
-import Types
+import Engine.Types
 import FRP.Yampa
+
 
 getCameraFocus :: ObjectState -> V2 WorldPos
 getCameraFocus os = os_pos os + coerce (os_camera_offset os)

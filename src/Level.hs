@@ -8,24 +8,17 @@ import           Control.Lens hiding (Level)
 import           Data.Aeson (eitherDecodeFileStrict)
 import           Data.Either (partitionEithers)
 import           Data.Generics.Labels ()
-import           Data.List (find)
-import           Data.Map (Map)
 import qualified Data.Map as M
-import           Data.Maybe (fromMaybe, mapMaybe)
 import           Data.Monoid
-import           Data.Set (Set)
 import qualified Data.Set as S
-import           Data.Text (Text)
 import qualified Data.Text as T
 import           Data.Traversable
 import qualified Data.Vector as V
 import           Drawing
+import           Engine.Prelude
 import           Globals (global_tilesets)
 import qualified LDtk.Types as LDtk
-import           SDL.Vect hiding (trace)
 import           System.FilePath.Lens (basename)
-import           Types
-import           Utils (posToTile)
 
 import {-# SOURCE #-} Registry
 

@@ -1,9 +1,7 @@
 module Game.Objects.TextBillboard where
 
-import           Data.Text (Text)
 import qualified Data.Text as T
 import           Game.Common
-import           SDL (_xyz)
 
 textBillboard :: Maybe Time -> Double -> Color -> Text -> V2 WorldPos -> Object
 textBillboard mt sz col txt pos

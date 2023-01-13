@@ -6,7 +6,7 @@ module Resources.Machinery where
 import qualified Data.Map as M
 import           Data.Traversable (for)
 import           System.FilePath
-import           Types (Engine)
+import           Engine.Types (Engine)
 
 
 class (Ord key, Enum key, Bounded key)

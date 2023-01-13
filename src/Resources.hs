@@ -12,7 +12,7 @@ import qualified SDL.Mixer as Mixer
 import           SDL.Video (queryTexture)
 import           System.Environment.Blank (getEnv)
 import           System.FilePath ((</>), (<.>))
-import           Types
+import           Engine.Types
 import           Utils (setGroundOrigin)
 
 import {-# SOURCE #-} Level (loadWorld)

@@ -12,10 +12,10 @@ import qualified Data.Map as M
 import           Data.Maybe (maybeToList)
 import           Data.Monoid
 import           Drawing (playSound)
+import           Engine.Types
 import           FRP
 import           Game.Camera (camera, getCameraFocus)
 import           Geometry (intersects)
-import           Types
 import           Utils (originRectToRect)
 
 

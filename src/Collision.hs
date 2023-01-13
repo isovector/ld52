@@ -3,7 +3,7 @@ module Collision where
 import Control.Lens (Lens')
 import Geometry
 import SDL
-import Types
+import Engine.Types
 import Utils
 
 data DeltaDir = Negative | Zero | Positive

@@ -1,7 +1,7 @@
 module Game.World where
 
 import Data.Set (Set)
-import Types
+import Engine.Types
 
 drawWorld :: Set LevelLayer -> World -> Renderable
 drawWorld layers = foldMap (drawLevel layers) . toList . w_levels

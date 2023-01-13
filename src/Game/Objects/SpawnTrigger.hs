@@ -1,8 +1,6 @@
 module Game.Objects.SpawnTrigger where
 
-import Game.Common (onHitBy, playerHitRectObj')
-import Types
-import FRP
+import Game.Common
 
 
 spawnTrigger :: V2 WorldPos -> V2 Double -> Bool -> [Object]  -> Object

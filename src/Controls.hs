@@ -1,8 +1,8 @@
 module Controls where
 
-import Types
+import           Engine.Types
 import qualified SDL.Input as SDL
-import SDL.Input.Keyboard.Codes
+import           SDL.Input.Keyboard.Codes
 
 
 parseControls :: (SDL.Scancode -> Bool) -> Controls

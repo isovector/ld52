@@ -2,9 +2,9 @@ module Utils where
 
 import FRP
 import Geometry (orTopLeft)
-import Types
+import Engine.Types
 
-nowish :: a -> SF x (Types.Event a)
+nowish :: a -> SF x (Engine.Types.Event a)
 nowish a = after 0.016 a
 
 posToTile :: V2 WorldPos -> V2 Tile

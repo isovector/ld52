@@ -8,13 +8,13 @@ import Control.Monad
 import Controls (parseControls)
 import Data.IORef
 import Data.Time.Clock.System
+import Engine.Types
 import FRP.Yampa
 import Game.Splash (runIntro)
 import Globals (veryUnsafeEngineIORef, global_resources)
 import SDL hiding (copy, Stereo)
 import SDL.Mixer hiding (quit)
 import System.Exit
-import Types
 
 
 screenSize :: Num a => V2 a

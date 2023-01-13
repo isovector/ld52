@@ -29,7 +29,7 @@ import           Game.Objects.Trampoline (trampoline)
 import           Game.Objects.Unknown (unknown)
 import qualified LDtk.Types as LDtk
 import           Level (ldtkColorToColor)
-import           Types
+import           Engine.Types
 import           Utils (tileToPos)
 
 

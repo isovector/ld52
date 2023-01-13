@@ -4,8 +4,8 @@
 {-# OPTIONS_GHC -funbox-strict-fields #-}
 {-# LANGUAGE UndecidableInstances #-}
 
-module Types
-  ( module Types
+module Engine.Types
+  ( module Engine.Types
   , V2 (..)
   , V3 (..)
   , V4 (..)
@@ -259,12 +259,6 @@ data DrawSpriteDetails = DrawSpriteDetails
   }
   deriving stock (Eq, Ord, Show, Read, Generic)
 
-
-traceF :: Show b => (a -> b) -> a -> a
-traceF f a = trace (show $ f a) a
-
-traceFX :: Show b => String -> (a -> b) -> a -> a
-traceFX herald f a = trace (mappend (herald <> ": ") . show $ f a) a
 
 ------------------------------------------------------------------------------
   --

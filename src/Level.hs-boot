@@ -1,5 +1,5 @@
 module Level where
 
-import Types
+import Engine.Types
 
 loadWorld :: FilePath -> IO World
