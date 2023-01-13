@@ -25,9 +25,12 @@ module Types
   , distance
   , toList
   , bool
+  , module Core.Types
+  , module Game.Types
   ) where
 
 import Control.Lens ((&), (^.), (.~), (%~), (+~), (-~), (<>~), view, set, over, preview, review)
+import Core.Types
 import Data.Bool (bool)
 import Data.Coerce
 import Data.Foldable (toList)
@@ -41,9 +44,9 @@ import Debug.Trace (trace, traceShowId, traceM)
 import FRP (SF, Event, Time)
 import Foreign.C (CInt)
 import GHC.Generics
+import Game.Types
 import SDL hiding (trace, Event)
 import SDL.Mixer (Chunk, Music)
-import Data.Hashable (Hashable)
 
 
 ------------------------------------------------------------------------------
@@ -53,27 +56,6 @@ data Rect a = Rect
   , r_size :: V2 a
   }
   deriving stock (Eq, Ord, Show, Read, Functor)
-
-
-newtype Tile = Tile
-  { getTile :: Int
-  }
-  deriving newtype (Eq, Ord, Show, Read, Enum, Bounded, Num)
-
-newtype Pixel = Pixel
-  { getPixel :: Int
-  }
-  deriving newtype (Eq, Ord, Show, Read, Enum, Bounded, Num)
-
-newtype ScreenPos = ScreenPos
-  { getScreenPos :: Double
-  }
-  deriving newtype (Eq, Ord, Show, Read, Enum, Num, Fractional, Floating, Real, RealFrac)
-
-newtype WorldPos = WorldPos
-  { getWorldPos :: Double
-  }
-  deriving newtype (Eq, Ord, Show, Read, Enum, Num, Fractional, Floating, Real, RealFrac, Hashable)
 
 data World = World
   { w_levels :: Map Text Level
@@ -95,7 +77,6 @@ data Level = Level
   , l_defaultObjs :: [Object]
   }
   deriving stock Generic
-
 
 
 ------------------------------------------------------------------------------
@@ -142,53 +123,6 @@ data RawFrameInfo = RawFrameInfo
   }
   deriving stock Generic
 
-
-------------------------------------------------------------------------------
--- | Textures used by the game.
-data GameTexture
-    = NintendoLogo
-    | ChickenTexture
-    | Parallax0
-    | Parallax1
-    | Parallax2
-    | ChargeTexture
-    | TeleTexture
-    | AuraTexture
-    | TrampolineTexture
-  deriving (Eq, Ord, Show, Read, Enum, Bounded)
-
-data Tileset
-  -- NOTE: It's important that the tileset names line up with their png names,
-  -- so levels can import them properly.
-  = Cavernas_by_Adam_Saltsman
-  | Stringstar_Fields
-  deriving (Eq, Ord, Show, Read, Enum, Bounded)
-
-
-data WorldName = TestWorld | HelpWorld
-  deriving (Eq, Ord, Show, Read, Enum, Bounded)
-
-------------------------------------------------------------------------------
--- | Audio used by the game.
-data Sound
-    = NintendoSound
-    | CheckpointSound
-    | CoinSound
-    | DieSound
-    | JumpSound
-    | StepSound
-    | ThudSound
-    | WarpSound
-  deriving (Eq, Ord, Show, Read, Enum, Bounded)
-
-data Song
-  = WarmDuckShuffle
-  deriving (Eq, Ord, Show, Read, Enum, Bounded)
-
-data LevelLayer
-  = Layer1 | Layer2 | Layer3
-  deriving (Eq, Ord, Show, Read, Enum, Bounded)
-
 data WrappedTexture = WrappedTexture
   { getTexture    :: Texture
   , wt_sourceRect :: Maybe (Rectangle CInt)
@@ -197,50 +131,12 @@ data WrappedTexture = WrappedTexture
   }
   deriving stock Generic
 
-------------------------------------------------------------------------------
--- | Input for the frame.
-data Controls = Controls
-  { c_space :: Bool
-  , c_z :: Bool
-  , c_reset :: Bool
-  , c_dir :: V2 Int
-  }
-  deriving (Eq)
-
-defaultControls :: Controls
-defaultControls = Controls
-  { c_space = False
-  , c_reset = False
-  , c_z = False
-  , c_dir = V2 0 0
-  }
-
-tileSize :: Num a => a
-tileSize = 16
-
 
 ------------------------------------------------------------------------------
-
-newtype ObjectId = ObjectId
-  { getObjectId :: Int
-  }
-  deriving stock (Show, Read)
-  deriving newtype (Eq, Ord, Enum, Bounded)
 
 type ObjSF = SF ObjectInput ObjectOutput
 
 type Object = ObjSF
-
-data PowerupType
-    = PowerupDoubleJump
-    | PowerupWarpBall
-  deriving (Eq, Ord, Show, Enum, Bounded, Generic, Read)
-
-data ObjectTag
-    = IsPlayer
-    | IsPowerup PowerupType
-    | HasPowerup PowerupType
-  deriving (Eq, Ord, Show, Generic)
 
 data ObjectMeta = ObjectMeta
   deriving stock (Eq, Ord, Show, Generic)
@@ -274,6 +170,7 @@ instance Monoid ObjectInEvents where
 data GlobalState = GlobalState
   { gs_currentLevel :: ~Level
   , gs_layerset :: Set LevelLayer
+  , gs_gameState :: GameState
   }
   deriving stock Generic
 
@@ -346,14 +243,6 @@ newtype Camera = Camera (V2 WorldPos)
 instance Semigroup Camera where
   (Camera v2) <> (Camera v2') = Camera $ v2 + v2'
 
-logicalSize :: Num a => V2 a
-logicalSize = V2 320 240
-
-screenRect :: (Fractional a) => Rectangle a
-screenRect = Rectangle (P $ -tileSize * buffer) (logicalSize + tileSize * 2 * buffer)
-  where
-    buffer = 4
-
 -- WHY DOESNT THIS EXIST
 instance (Bounded b, Enum a, Enum b) => Enum (a, b) where
   toEnum n =
@@ -363,17 +252,6 @@ instance (Bounded b, Enum a, Enum b) => Enum (a, b) where
   fromEnum (a, b) = fromEnum a * (1 + fromEnum (maxBound @b)) + fromEnum b
 
 
-data Sprite
-  = MainCharacter
-  deriving stock (Eq, Ord, Show, Read, Enum, Bounded, Generic)
-
-
-data Anim
-  = Idle
-  | NoAnim
-  | Run
-  deriving stock (Eq, Ord, Show, Read, Enum, Bounded, Generic)
-
 data DrawSpriteDetails = DrawSpriteDetails
   { dsd_anim :: Anim
   , dsd_rotation :: Double
@@ -381,20 +259,6 @@ data DrawSpriteDetails = DrawSpriteDetails
   }
   deriving stock (Eq, Ord, Show, Read, Generic)
 
-
-data Message
-  = TeleportTo (V2 WorldPos)
-  | TeleportOpportunity (V2 WorldPos)
-  | SetCheckpoint (V2 WorldPos)
-  | OnTrampoline Double
-  | Die
-  | CurrentCheckpoint ObjectId
-  deriving stock (Eq, Ord, Show, Read, Generic)
-
-data ParticleType
-  = Gore
-  | Firework
-  deriving stock (Eq, Ord, Show, Read, Generic)
 
 traceF :: Show b => (a -> b) -> a -> a
 traceF f a = trace (show $ f a) a

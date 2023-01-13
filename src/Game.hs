@@ -91,7 +91,9 @@ hasPowerup pu
 
 initialGlobalState :: WorldName -> Resources -> GlobalState
 initialGlobalState w rs
-  = GlobalState (w_levels (r_worlds rs w) M.! "AutoLayer")
-  $ S.fromList [Layer3]
+  = GlobalState
+      (w_levels (r_worlds rs w) M.! "AutoLayer")
+      (S.fromList [Layer3])
+      (GameState 0 mempty)
 
 #endif
