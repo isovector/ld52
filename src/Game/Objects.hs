@@ -36,7 +36,7 @@ import qualified LDtk.Types as LDtk
 buildEntity
     :: Text
     -> V2 WorldPos
-    -> V2 Double
+    -> OriginRect Double
     -> Map Text LDtk.FieldValue
     -> Map Text Object
     -> Either Text Object
@@ -44,19 +44,19 @@ buildEntity "Player" pos _ _ _ = pure $ player pos
 buildEntity "PowerUp" pos _ props _ =
   collectPowerup pos
     <$> asEnum "PowerUp" "power" props
-buildEntity "Trampoline" pos sz props _ =
-  trampoline pos sz
+buildEntity "Trampoline" pos ore props _ =
+  trampoline pos ore
     <$> asDouble "Trampoline" "strength" props
 buildEntity "Chicken" pos _ _ _ = pure $ chicken pos
 buildEntity "Checkpoint" pos _ _ _ = pure $ checkpoint pos
-buildEntity "Door" pos sz props _ =
-  door pos sz
+buildEntity "Door" pos ore props _ =
+  door pos ore
     <$> asPos "Door" "out" props
 buildEntity "Coin" pos _ _ _ = pure $ coin pos
-buildEntity "Death" pos sz _ _ = pure $ deathZone pos sz
-buildEntity "ToggleLayer" pos sz props _ =
+buildEntity "Death" pos ore _ _ = pure $ deathZone pos ore
+buildEntity "ToggleLayer" pos ore props _ =
   toggleRegion pos
-    <$> pure sz
+    <$> pure ore
     <*> asEnum "Toggle" "layer" props
     <*> asBool "Toggle" "toggle" props
 buildEntity "Text" pos _ props _ =

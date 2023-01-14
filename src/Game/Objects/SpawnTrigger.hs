@@ -3,8 +3,8 @@ module Game.Objects.SpawnTrigger where
 import Game.Common
 
 
-spawnTrigger :: V2 WorldPos -> V2 Double -> Bool -> [Object]  -> Object
-spawnTrigger pos sz persistent spawns =
+spawnTrigger :: V2 WorldPos -> OriginRect Double -> Bool -> [Object]  -> Object
+spawnTrigger pos ore persistent spawns =
   playerHitRectObj'
     (proc oi -> do
       let ev = onHitBy IsPlayer oi
@@ -16,7 +16,7 @@ spawnTrigger pos sz persistent spawns =
         , oe_spawn = spawns <$ is_hit
         }
     )
-    (OriginRect sz 0)
+    ore
     (V4 255 0 0 128)
     pos
 

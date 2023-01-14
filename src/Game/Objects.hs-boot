@@ -11,7 +11,7 @@ import Engine.Types
 buildEntity
     :: Text
     -> V2 WorldPos
-    -> V2 Double
+    -> OriginRect Double
     -> Map Text LDtk.FieldValue
     -> Map Text Object
     -> Either Text Object
