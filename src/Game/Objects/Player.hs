@@ -20,12 +20,6 @@ player pos0 = proc oi -> do
   start <- nowish () -< ()
   let pos = event (os_pos $ oi_state oi) (const pos0) start
 
-
-  let new_powerups
-        = flip fmap (oie_hit (oi_events oi))
-        $ foldMap
-        $ mapMaybe (preview #_IsPowerup) . toList . os_tags . snd
-
   let am_teleporting
         = fmap (foldMap (foldMap (Endo . const) . preview #_TeleportTo . snd))
         . oie_receive
@@ -55,10 +49,7 @@ player pos0 = proc oi -> do
               $ oi_events oi
 
       powerups :: S.Set PowerupType
-      powerups
-        = flip foldMap (os_tags $ oi_state oi)
-        $ foldMap S.singleton
-        . preview #_HasPowerup
+      powerups = gs_inventory $ gameState oi
 
   let me = oi_self oi
   action <- edge -< c_z $ fi_controls $ oi_frameInfo oi
@@ -115,7 +106,6 @@ player pos0 = proc oi -> do
                                            _ -> error "impossible: player cam"
                                         )
               & #os_collision .~ Just (coerce ore)
-              & #os_tags %~ event id (flip (foldr $ S.insert . HasPowerup)) new_powerups
               & #os_tags %~ S.insert IsPlayer
         , oo_render = drawn
         }

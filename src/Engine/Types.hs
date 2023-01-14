@@ -284,6 +284,15 @@ instance HasGlobalState FrameInfo where
 instance {-# OVERLAPPABLE #-} HasFrameInfo a => HasGlobalState a where
   globalState = globalState . frameInfo
 
+class HasGameState a where
+  gameState :: a -> GameState
+
+instance HasGameState GlobalState where
+  gameState = gs_gameState
+
+instance {-# OVERLAPPABLE #-} HasGlobalState a => HasGameState a where
+  gameState = gameState . globalState
+
 class HasControls a where
   controls :: a -> Controls
 

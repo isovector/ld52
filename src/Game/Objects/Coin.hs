@@ -8,6 +8,7 @@ coin pos
       (mconcat
         [ standardDeathResponse
         , playSoundReponse CoinSound
+        , getCoinResponse
         ])
   $ staticCollisionObject pos ore mempty
   $ drawOriginRect (V4 255 255 0 255) (coerce ore) pos

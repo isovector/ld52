@@ -1,16 +1,15 @@
 module Game.Objects.Chicken where
 
-import qualified Data.Set as S
-import           Game.Common
+import Game.Common
 
 chicken :: V2 WorldPos -> Object
 chicken pos
   = onHitByTag IsPlayer (mconcat
       [ standardDeathResponse
+      , addInventoryResponse PowerupDoubleJump
       , playSoundReponse NintendoSound
-      , omnipotenceResponse $ #objm_globalState . #gs_layerset %~ S.insert Layer2
       ])
-  $ staticCollisionObject pos ore (S.singleton $ IsPowerup PowerupDoubleJump)
+  $ staticCollisionObject pos ore mempty
   $ drawGameTextureOriginRect ChickenTexture ore pos 0
   $ pure False
   where

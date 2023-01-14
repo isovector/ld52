@@ -83,8 +83,6 @@ data PowerupType
 
 data ObjectTag
     = IsPlayer
-    | IsPowerup PowerupType
-    | HasPowerup PowerupType
   deriving (Eq, Ord, Show, Generic)
 
 logicalSize :: Num a => V2 a

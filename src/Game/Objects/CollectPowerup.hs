@@ -1,7 +1,6 @@
 module Game.Objects.CollectPowerup where
 
-import qualified Data.Set as S
-import           Game.Common
+import Game.Common
 
 
 collectPowerup :: V2 WorldPos -> PowerupType -> Object
@@ -10,9 +9,10 @@ collectPowerup pos pt
       ( mconcat
           [ standardDeathResponse
           , playSoundReponse CoinSound
+          , addInventoryResponse pt
           ]
       )
-  $ staticCollisionObject pos ore (S.singleton $ IsPowerup pt)
+  $ staticCollisionObject pos ore mempty
   $ drawPowerup pt ore pos
   where
     ore = mkCenterdOriginRect 8

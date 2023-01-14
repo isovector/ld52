@@ -30,7 +30,9 @@ game gs0 =
                 $ r_size
                 $ l_bounds
                 $ gs_currentLevel gs
-    let player = find (S.member IsPlayer . os_tags . oo_state) $ objm_map objs
+
+    let powerups :: S.Set PowerupType
+        powerups = gs_inventory $ gameState gs
 
     bg <- arr $ uncurry drawLevel -< (gs_layerset gs, gs_currentLevel gs)
 
@@ -44,31 +46,32 @@ game gs0 =
           , bg
           , to_draw
           , ui_box (17)
-          , maybe mempty
-              ( bool mempty
-                  ( atScreenPos $
-                      drawSpriteStretched
-                        (setCenterOrigin $ global_textures ChickenTexture)
-                        (ui_box_pos (17))
-                        0
-                        (pure False)
-                        0.3
-                  )
-                . hasPowerup PowerupDoubleJump
-              ) player
-          , maybe mempty
-              ( bool mempty
-                  ( atScreenPos $
-                      drawSpriteStretched
-                        (setCenterOrigin $ global_textures TeleTexture)
-                        (ui_box_pos (-17))
-                        0
-                        (pure False)
-                        0.2
-                  )
-                . hasPowerup PowerupWarpBall
-              ) player
+          , bool
+              mempty
+              ( atScreenPos $
+                  drawSpriteStretched
+                    (setCenterOrigin $ global_textures ChickenTexture)
+                    (ui_box_pos (17))
+                    0
+                    (pure False)
+                    0.3
+              ) $ S.member PowerupDoubleJump powerups
+          , bool
+              mempty
+              ( atScreenPos $
+                  drawSpriteStretched
+                    (setCenterOrigin $ global_textures TeleTexture)
+                    (ui_box_pos (-17))
+                    0
+                    (pure False)
+                    0.2
+              ) $ S.member PowerupWarpBall powerups
           , ui_box (-17)
+          , atScreenPos
+              $ drawText 8
+                  (V3 255 255 0)
+                  (show $ gs_coins $ gameState gs)
+              $ V2 10 10
           ]
         )
   where
@@ -78,10 +81,6 @@ game gs0 =
         & _y .~ 20
     ui_box dx = atScreenPos $
       drawOriginRect (V4 255 255 255 16) (mkCenterdOriginRect 20) $ ui_box_pos dx
-
-hasPowerup :: PowerupType -> ObjectOutput -> Bool
-hasPowerup pu
-    = S.member (HasPowerup pu) . os_tags . oo_state
 
 initialGlobalState :: WorldName -> GlobalState
 initialGlobalState w
