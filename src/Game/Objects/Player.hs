@@ -33,13 +33,10 @@ player pos0 = proc oi -> do
   let cp_hit = listenInbox (\(from, m) -> (from, ) <$> preview #_SetCheckpoint m) $ oi_events oi
   cp_pos <- hold pos0 -< fmap snd cp_hit
 
-  let dying_sig = merge reset
+  let dying = merge reset
             $ listenInbox (preview #_Die . snd)
             $ oi_events oi
 
-
-      dying :: Bool
-      dying = event False (const True) $ dying_sig
 
       doorout :: Maybe (V2 WorldPos)
       doorout = eventToMaybe
@@ -54,7 +51,7 @@ player pos0 = proc oi -> do
       powerups :: S.Set PowerupType
       powerups = gs_inventory $ gameState oi
 
-  (!alive, !respawn, !death_evs) <- dieAndRespawnHandler -< (pos, dying_sig)
+  (alive, respawn, death_evs) <- dieAndRespawnHandler -< (pos, dying)
 
   let me = oi_self oi
   action <- edge -< c_z $ fi_controls $ oi_frameInfo oi
@@ -118,17 +115,19 @@ player pos0 = proc oi -> do
     sz :: Num a => V2 a
     sz = V2 8 16
 
+
 respawnTime :: Time
 respawnTime = 1
 
+
 dieAndRespawnHandler :: SF (V2 WorldPos, Event ()) (Bool, Event (), ObjectEvents)
 dieAndRespawnHandler = proc (pos, on_die) -> do
-  rec
-    t <- time -< ()
-    respawn_at <- hold 0 -< (t  + respawnTime) <$ on_die
+  t <- time -< ()
+  let next_alive = t + respawnTime
+  respawn_at <- hold 0 -< next_alive <$ on_die
 
-    let alive = respawn_at <= t
-    let actually_die = if respawn_at == t + respawnTime then on_die else noEvent
+  let alive = respawn_at <= t
+  let actually_die = bool noEvent on_die $ respawn_at == next_alive
 
   respawn <- edge -< respawn_at <= t
 
