@@ -1,4 +1,4 @@
-module Game.Camera
+module Engine.Camera
   ( camera
   , viaCamera
   , getCameraFocus

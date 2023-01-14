@@ -6,13 +6,13 @@ module Engine.Drawing where
 
 import Control.Monad (void)
 import Data.Foldable (for_, traverse_)
+import Engine.Camera (viaCamera)
 import Engine.FRP
 import Engine.Geometry (rectContains)
+import Engine.Globals (global_resources, global_sprites, global_glyphs, global_textures, global_songs, global_sounds)
 import Engine.Types
 import Engine.Utils (originRectToRect)
 import Foreign.C
-import Game.Camera (viaCamera)
-import Engine.Globals (global_resources, global_sprites, global_glyphs, global_textures, global_songs, global_sounds)
 import Game.Resources (frameSound, frameCounts)
 import SDL
 import SDL.Mixer

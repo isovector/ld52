@@ -11,13 +11,13 @@ import           Data.Map (Map)
 import qualified Data.Map as M
 import           Data.Maybe (maybeToList)
 import           Data.Monoid
+import           Engine.Camera (camera, getCameraFocus)
 import           Engine.Drawing (playSound)
 import           Engine.FRP
 import           Engine.Geometry (intersects)
 import           Engine.Types
 import           Engine.Utils (originRectToRect)
-import           Game.Camera (camera, getCameraFocus)
-import Game.GameMessageHandler (handleGameMessage)
+import           Game.GameMessageHandler (handleGameMessage)
 
 
 renderObjects
