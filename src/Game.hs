@@ -9,6 +9,7 @@ import           Engine.Globals
 import           Engine.ObjectRouter
 import           Engine.Prelude
 import           Game.World (drawLevel)
+import Game.Objects.CollectPowerup (powerupRenderable)
 
 
 #ifndef __HLINT__
@@ -31,8 +32,20 @@ game gs0 =
                 $ l_bounds
                 $ gs_currentLevel gs
 
-    let powerups :: S.Set PowerupType
-        powerups = gs_inventory $ gameState gs
+    let drawPowerup :: PowerupType -> V2 ScreenPos -> Renderable
+        drawPowerup pt (coerce -> pos) = atScreenPos $ mconcat $
+          [ drawOriginRect (V4 255 255 255 16) (mkCenterdOriginRect 20) pos
+          , bool
+              mempty
+              ( atScreenPos $
+                  drawSpriteStretched
+                    (setCenterOrigin $ global_textures $ powerupRenderable pt)
+                    pos
+                    0
+                    (pure False)
+                    0.2
+              ) $ S.member pt $ gs_inventory $ gameState gs
+          ]
 
     bg <- arr $ uncurry drawLevel -< (gs_layerset gs, gs_currentLevel gs)
 
@@ -45,28 +58,8 @@ game gs0 =
           , drawParallax levelsz Parallax2 5
           , bg
           , to_draw
-          , ui_box (17)
-          , bool
-              mempty
-              ( atScreenPos $
-                  drawSpriteStretched
-                    (setCenterOrigin $ global_textures ChickenTexture)
-                    (ui_box_pos (17))
-                    0
-                    (pure False)
-                    0.3
-              ) $ S.member PowerupDoubleJump powerups
-          , bool
-              mempty
-              ( atScreenPos $
-                  drawSpriteStretched
-                    (setCenterOrigin $ global_textures TeleTexture)
-                    (ui_box_pos (-17))
-                    0
-                    (pure False)
-                    0.2
-              ) $ S.member PowerupWarpBall powerups
-          , ui_box (-17)
+          , drawPowerup PowerupWarpBall $ ui_box_pos (-17)
+          , drawPowerup PowerupDoubleJump $ ui_box_pos (17)
           , atScreenPos
               $ drawText 8
                   (V3 255 255 0)
@@ -79,8 +72,6 @@ game gs0 =
       (logicalSize / 2)
         & _x +~ dx
         & _y .~ 20
-    ui_box dx = atScreenPos $
-      drawOriginRect (V4 255 255 255 16) (mkCenterdOriginRect 20) $ ui_box_pos dx
 
 initialGlobalState :: WorldName -> GlobalState
 initialGlobalState w
