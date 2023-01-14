@@ -5,7 +5,6 @@ module Engine.Importer where
 import           Control.DeepSeq (force)
 import           Control.Lens hiding (Level)
 import           Control.Monad.Except
-import           Data.Aeson (eitherDecodeFileStrict)
 import           Data.Either (partitionEithers)
 import           Data.Generics.Labels ()
 import qualified Data.Map as M
@@ -19,7 +18,7 @@ import           Engine.Drawing
 import           Engine.Prelude
 import           Engine.Resources
 import           Game.Resources (loadWrappedTexture)
-import qualified LDtk.Types as LDtk
+import qualified LDtk as LDtk
 import           System.FilePath
 
 import {-# SOURCE #-} Game.Objects
@@ -30,7 +29,7 @@ ldtkColorToColor (LDtk.Color r g b) = V4 r g b 255
 
 loadWorld :: Engine -> FilePath -> IO World
 loadWorld e fp = do
-  eitherDecodeFileStrict @LDtk.LDtkRoot fp >>= \case
+  LDtk.loadLDtk fp >>= \case
     Left err -> error err
     Right root -> World <$> parseLevels e root
 

@@ -36,7 +36,6 @@ dependencies:
 - generic-lens
 - errors
 - vector
-- aeson
 - deepseq
 - hashable
 

@@ -19,16 +19,12 @@ packages:
   original:
     hackage: dir-traverse-0.2.3.0
 - completed:
-    name: ldtk-types
-    version: 0.2.0.0
-    git: https://github.com/isovector/ldtk-types.git
+    hackage: ldtk-types-1.2.3@sha256:17e2e422042da6b6870f4559b29e81434f67373ac5eefe56e0ce65d5a28746ff,2235
     pantry-tree:
-      size: 685
-      sha256: c8151379c793eb15c77e5b5df4f2ae5558070788892f992f1863153f29d40472
-    commit: 0be47b237f36e4a16c6fac5d384adc733ed07711
+      size: 415
+      sha256: 428241f3fe5eb428c9baa590fd2a5ce6ef9cc211bce1f7597b3517d057798303
   original:
-    git: https://github.com/isovector/ldtk-types.git
-    commit: 0be47b237f36e4a16c6fac5d384adc733ed07711
+    hackage: ldtk-types-1.2.3
 - completed:
     name: cabal-appimage
     version: 0.3.0.5
