@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -Wno-orphans #-}
+
 module Game.Objects.Player where
 
 import           Engine.Collision (epsilon)
@@ -32,11 +33,13 @@ player pos0 = proc oi -> do
   let cp_hit = listenInbox (\(from, m) -> (from, ) <$> preview #_SetCheckpoint m) $ oi_events oi
   cp_pos <- hold pos0 -< fmap snd cp_hit
 
-  let dying :: Bool
-      dying = event False (const True)
-            $ merge reset
+  let dying_sig = merge reset
             $ listenInbox (preview #_Die . snd)
             $ oi_events oi
+
+
+      dying :: Bool
+      dying = event False (const True) $ dying_sig
 
       doorout :: Maybe (V2 WorldPos)
       doorout = eventToMaybe
@@ -50,6 +53,8 @@ player pos0 = proc oi -> do
 
       powerups :: S.Set PowerupType
       powerups = gs_inventory $ gameState oi
+
+  (!alive, !respawn, !death_evs) <- dieAndRespawnHandler -< (pos, dying_sig)
 
   let me = oi_self oi
   action <- edge -< c_z $ fi_controls $ oi_frameInfo oi
@@ -67,7 +72,8 @@ player pos0 = proc oi -> do
     )
 
   let (V2 _ press_up) = fmap (== -1) $ c_dir $ fi_controls $ oi_frameInfo oi
-  let pos'' = bool id (const cp_pos) dying
+  let pos'' = bool (const pos) id alive
+          $ bool id (const cp_pos) (isEvent respawn)
           $ bool id (maybe id const doorout) press_up
           $ do_teleport
           $ pos'
@@ -81,18 +87,17 @@ player pos0 = proc oi -> do
 
   returnA -<
     ObjectOutput
-        { oo_events =
+        { oo_events = (death_evs <>) $
             mempty
               & #oe_spawn .~
                   ([teleportBall me ore pos (- (sz & _x .~ 0))
                       $ V2 (bool negate id dir 200) (-200)] <$ throw_ball
-                  ) <> (bool noEvent (Event $ gore pos) dying)
+                  )
               & #oe_focus .~ mconcat
                   [ () <$ am_teleporting
                   , start
                   ]
               & #oe_broadcast_message .~ fmap (pure . CurrentCheckpoint . fst) cp_hit
-              & #oe_play_sound .~ bool noEvent (Event [DieSound]) dying
         , oo_state =
             oi_state oi
               & #os_pos .~ pos''
@@ -103,15 +108,33 @@ player pos0 = proc oi -> do
                                            1 -> 75
                                            _ -> error "impossible: player cam"
                                         )
-              & #os_collision .~ Just ore
+              & #os_collision .~ bool Nothing (Just ore) alive
               & #os_tags %~ S.insert IsPlayer
-        , oo_render = drawn
+        , oo_render = ifA alive drawn
         }
   where
     ore = OriginRect sz $ sz & _x *~ 0.5
 
     sz :: Num a => V2 a
     sz = V2 8 16
+
+respawnTime :: Time
+respawnTime = 1
+
+dieAndRespawnHandler :: SF (V2 WorldPos, Event ()) (Bool, Event (), ObjectEvents)
+dieAndRespawnHandler = proc (pos, on_die) -> do
+  rec
+    t <- time -< ()
+    respawn_at <- hold 0 -< (t  + respawnTime) <$ on_die
+
+    let alive = respawn_at <= t
+    let actually_die = if respawn_at == t + respawnTime then on_die else noEvent
+
+  respawn <- edge -< respawn_at <= t
+
+  returnA -< (alive, respawn, ) $ mempty
+    & #oe_spawn .~ (gore pos <$ actually_die)
+    & #oe_play_sound .~ ([DieSound] <$ actually_die)
 
 
 playerPhysVelocity :: SF FrameInfo (V2 Double)

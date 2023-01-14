@@ -47,10 +47,16 @@ originRectToRect ore pos =
   Rectangle (P $ orTopLeft pos ore)
     $ orect_size ore
 
+
 noObjectState :: V2 WorldPos -> ObjectState
 noObjectState pos = ObjectState pos Nothing mempty 0
+
 
 unlessNull :: [a] -> Maybe [a]
 unlessNull [] = Nothing
 unlessNull a = Just a
+
+
+ifA :: Monoid a => Bool -> a -> a
+ifA b a = bool mempty a b
 

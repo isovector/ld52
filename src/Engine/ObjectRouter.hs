@@ -63,7 +63,7 @@ router gs0 om =
 
 router' :: ObjectMap ObjSF -> SF (RawFrameInfo, ObjectMap ObjectOutput) (ObjectMap ObjectOutput)
 router' objs0 =
-  dpSwitch
+  pSwitch
       @ObjectMap
       @(RawFrameInfo, ObjectMap ObjectOutput)
       @ObjectInput
@@ -157,7 +157,7 @@ route :: ObjectId -> ObjectOutput -> Event (Endo (ObjectMap ObjSF))
 route oid (oo_events -> ObjectEvents {..}) = mconcat $
   [ Endo (#objm_map %~ M.delete oid) <$ oe_die
   , Endo (#objm_camera_focus .~ oid) <$ oe_focus
-  , foldMap (Endo . over #objm_map . insertObject)  <$> oe_spawn
+  , foldMap (Endo . over #objm_map . insertObject) <$> oe_spawn
   , Endo <$> oe_omnipotence
   , foldMap (Endo . uncurry (sendMsg oid)) <$> oe_send_message
   , foldMap (Endo . broadcast oid) <$> oe_broadcast_message
