@@ -5,7 +5,7 @@ import Game.Common
 
 
 actor
-    :: OriginRect WorldPos
+    :: OriginRect Double
     -> SF (Bool, Double, V2 Double, V2 WorldPos, GlobalState) (V2 WorldPos)
 actor ore = loopPre 0 $
   proc ((can_double, _dt, vel'0, pos, gs), vel) -> do
@@ -26,11 +26,11 @@ actor ore = loopPre 0 $
     returnA -< (pos', vel'')
 
 
-touchingGround :: (V2 WorldPos -> Bool) -> OriginRect WorldPos -> V2 WorldPos -> Bool
+touchingGround :: (V2 WorldPos -> Bool) -> OriginRect Double -> V2 WorldPos -> Bool
 touchingGround toHit ore pos =
     or
       $ fmap toHit
-      $ cornersX ore Positive
+      $ cornersX (coerce ore) Positive
       $ pos + touchDist
   where
   touchDist = V2 0 1

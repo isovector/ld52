@@ -1,8 +1,7 @@
-{-# LANGUAGE StrictData #-}
+{-# LANGUAGE StrictData           #-}
+{-# LANGUAGE UndecidableInstances #-}
 
 {-# OPTIONS_GHC -Wno-orphans #-}
-{-# OPTIONS_GHC -funbox-strict-fields #-}
-{-# LANGUAGE UndecidableInstances #-}
 
 module Engine.Types
   ( module Engine.Types
@@ -145,6 +144,7 @@ data ObjectInput = ObjectInput
   { oi_self :: ObjectId
   , oi_events :: ObjectInEvents
   , oi_frameInfo :: FrameInfo
+  , oi_everyone :: Map ObjectId ObjectState
   , oi_state :: ObjectState
   }
   deriving stock Generic

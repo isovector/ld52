@@ -84,9 +84,7 @@ player pos0 = proc oi -> do
         { oo_events =
             mempty
               & #oe_spawn .~
-                  ([teleportBall
-                        me
-                        (coerce ore) (pos - (sz & _x .~ 0))
+                  ([teleportBall me ore pos (- (sz & _x .~ 0))
                       $ V2 (bool negate id dir 200) (-200)] <$ throw_ball
                   ) <> (bool noEvent (Event $ gore pos) dying)
               & #oe_focus .~ mconcat
@@ -105,7 +103,7 @@ player pos0 = proc oi -> do
                                            1 -> 75
                                            _ -> error "impossible: player cam"
                                         )
-              & #os_collision .~ Just (coerce ore)
+              & #os_collision .~ Just ore
               & #os_tags %~ S.insert IsPlayer
         , oo_render = drawn
         }

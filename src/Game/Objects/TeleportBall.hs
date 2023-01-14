@@ -1,5 +1,7 @@
 module Game.Objects.TeleportBall where
 
+import qualified Data.Map as M
+import Data.Map (Map)
 import Engine.Collision (move)
 import Data.Maybe (isJust)
 import Game.Common
@@ -9,10 +11,11 @@ teleportBall
     :: ObjectId
     -> OriginRect Double
     -> V2 WorldPos
+    -> V2 WorldPos
     -> V2 Double
     -> Object
-teleportBall owner owner_ore pos0 vel0@(V2 vx _) =
-  dSwitch (charge pos0 $ round $ signum vx) $ \power ->
+teleportBall owner owner_ore pos0 offset vel0@(V2 vx _) =
+  dSwitch (charge owner pos0 offset $ round $ signum vx) $ \(power) ->
     loopPre (vel0 ^* power) $ proc (oi, vel) -> do
       die <- after 1 () -< ()
 
@@ -56,22 +59,24 @@ teleportBall owner owner_ore pos0 vel0@(V2 vx _) =
             }
         }
 
-charge :: V2 WorldPos -> Int -> SF ObjectInput (ObjectOutput, Event Double)
-charge pos0 dir = proc oi -> do
+charge :: ObjectId -> V2 WorldPos -> V2 WorldPos ->  Int -> SF ObjectInput (ObjectOutput, Event (Double))
+charge owner pos0 offset dir = proc oi -> do
   (progress, done)
     <- charging 0.5 (arr $ not . c_z . fi_controls . oi_frameInfo)
     -< oi
 
-  returnA -< (, done) $ ObjectOutput
+  let pos = (maybe pos0 os_pos $ M.lookup owner $ oi_everyone oi) + offset
+
+  returnA -< (, (done)) $ ObjectOutput
     { oo_events = mempty
     , oo_render =
         drawTextureOriginRect
           (setCenterOrigin (global_textures ChargeTexture) & #wt_origin . _x .~ 0)
           (coerce $ OriginRect (V2 (progress * 30) 10) 0)
-          (pos0 + bool 0 (V2 (-5) 8) (dir < 0))
+          (pos + bool 0 (V2 (-5) 8) (dir < 0))
           (-45 - bool 0 90 (dir < 0))
           (pure False)
-    , oo_state = noObjectState pos0
+    , oo_state = noObjectState pos
     }
 
 

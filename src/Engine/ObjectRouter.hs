@@ -98,6 +98,7 @@ routeHits rfi outlast new = do
             [ pushHits oid (fmap (first oo_state) hittable)
             , recv oid $ objm_undeliveredMsgs new
             ]
+        , oi_everyone = fmap oo_state $ objm_map outlast
         , oi_frameInfo = fi
         , oi_state
             = maybe noObjectState id
