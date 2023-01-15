@@ -27,13 +27,14 @@ dependencies:
 - mtl
 - sdl2
 - sdl2-image
-- sdl2-mixer
+- JuicyPixels
+- ALUT
 - text
 - time
 - Yampa
 - ldtk-types
 - lens
-- generic-lens
+- generic-lens >= 2.2.1.0
 - errors
 - vector
 - aeson

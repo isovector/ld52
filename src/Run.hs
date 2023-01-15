@@ -10,12 +10,12 @@ import Data.Time.Clock.System
 import FRP.Yampa
 import Game
 import SDL hiding (copy, Stereo)
-import SDL.Mixer hiding (quit)
 import System.Exit
 import Types
 import Globals (veryUnsafeEngineIORef, global_resources)
 import Game.Splash (mainMenu, runIntro)
 import System.Mem (performGC)
+import qualified Sound.ALUT as ALUT
 
 
 screenSize :: Num a => V2 a
@@ -23,7 +23,7 @@ screenSize = V2 640 480
 
 
 main :: IO ()
-main = do
+main = ALUT.withProgNameAndArgs ALUT.runALUT $ \_ _ -> do
   initializeAll
 
   window <- createWindow "ld52" $ defaultWindow
@@ -39,14 +39,6 @@ main = do
   rendererScale renderer $= screenSize / logicalSize
   rendererDrawBlendMode renderer $= BlendAlphaBlend
   cursorVisible $= False
-
-  openAudio
-    (Audio
-      { audioFrequency = 44100
-      , audioFormat = FormatS16_Sys
-      , audioOutput = Stereo
-      })
-      1024
 
   let engine = Engine
         { e_renderer = renderer
@@ -74,7 +66,6 @@ input win tRef _ = do
   pumpEvents
   es <- pollEvents
   when (any (isQuit . eventPayload) es) $ do
-    haltMusic
     destroyWindow win
     exitSuccess
   seconds <- readIORef tRef

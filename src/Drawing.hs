@@ -11,7 +11,7 @@ import Foreign.C
 import Game.Camera (viaCamera)
 import Globals (global_resources, global_sprites, global_glyphs, global_textures, global_songs)
 import SDL
-import SDL.Mixer
+import qualified Sound.ALUT as ALUT
 import Types
 import Utils (originRectToRect)
 import Geometry (rectContains)
@@ -20,10 +20,9 @@ import Resources (frameSound, frameCounts)
 
 playSound :: Resources -> Sound -> IO ()
 playSound r s = do
-  let channel = fromIntegral $ fromEnum s
-  halt channel
-  void $ playOn channel Once $ r_sounds r s
-
+  let src = r_sounds r s
+  ALUT.stop [src]
+  ALUT.play [src]
 
 drawOriginRect :: Color -> OriginRect WorldPos -> V2 WorldPos -> Renderable
 drawOriginRect c ore = drawFilledRect c . originRectToRect ore
@@ -101,7 +100,7 @@ drawSprite wt pos theta flips =
 
 playSong :: Song -> IO ()
 playSong s = do
-  playMusic Forever (global_songs s)
+  ALUT.play [global_songs s]
 
 mkAnim :: Sprite -> SF (DrawSpriteDetails, V2 WorldPos) Renderable
 mkAnim sprite = proc (dsd, pos) -> do

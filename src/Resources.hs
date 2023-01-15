@@ -7,8 +7,7 @@ import           Data.Traversable (for)
 import           Resources.Machinery
 import           SDL (Texture, textureWidth, textureHeight)
 import qualified SDL.Image as Image
-import           SDL.Mixer (Chunk)
-import qualified SDL.Mixer as Mixer
+import qualified Sound.ALUT as ALUT
 import           SDL.Video (queryTexture)
 import           System.Environment.Blank (getEnv)
 import           System.FilePath ((</>), (<.>))
@@ -107,14 +106,24 @@ instance IsResource GameTexture WrappedTexture where
   resourceName AuraTexture = "aura"
   resourceName TrampolineTexture = "trampoline"
 
-instance IsResource Song Mixer.Music where
-  load _ _ = Mixer.load
+instance IsResource Song ALUT.Source where
+  load _ _ fileName = do
+    buf <- ALUT.createBuffer (ALUT.File fileName)
+    src <- ALUT.genObjectName
+    ALUT.loopingMode src ALUT.$= ALUT.Looping
+    ALUT.buffer src ALUT.$= Just buf
+    pure src
   resourceFolder = "songs"
   resourceExt    = "wav"
   resourceName WarmDuckShuffle = "warm-duck-shuffle"
 
-instance IsResource Sound Chunk where
-  load _ _ = Mixer.load
+instance IsResource Sound ALUT.Source where
+  load _ _ fileName = do
+    buf <- ALUT.createBuffer (ALUT.File fileName)
+    src <- ALUT.genObjectName
+    ALUT.loopingMode src ALUT.$= ALUT.OneShot
+    ALUT.buffer src ALUT.$= Just buf
+    pure src
   resourceFolder = "sounds"
   resourceExt    = "wav"
   resourceName NintendoSound = "ding"

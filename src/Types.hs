@@ -41,7 +41,7 @@ import FRP (SF, Event)
 import Foreign.C (CInt)
 import GHC.Generics
 import SDL hiding (trace, Event)
-import SDL.Mixer (Chunk, Music)
+import qualified Sound.ALUT as ALUT
 import Data.Hashable (Hashable)
 
 
@@ -110,8 +110,8 @@ data Resources = Resources
   { r_engine   :: Engine
   , r_tilesets :: Tileset -> WrappedTexture
   , r_textures :: GameTexture -> WrappedTexture
-  , r_sounds   :: Sound -> Chunk
-  , r_songs    :: Song -> Music
+  , r_sounds   :: Sound -> ALUT.Source
+  , r_songs    :: Song -> ALUT.Source
   , r_worlds   :: WorldName -> World
   , r_sprites  :: Sprite -> Anim -> [WrappedTexture]
   , r_glyphs   :: Char -> Texture

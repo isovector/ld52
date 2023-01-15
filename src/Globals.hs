@@ -3,9 +3,9 @@ module Globals where
 
 import Data.IORef
 import Resources (loadResources)
-import SDL.Mixer (Chunk, Music)
 import System.IO.Unsafe
 import Types
+import qualified Sound.ALUT as ALUT
 import SDL (Texture)
 
 veryUnsafeEngineIORef :: IORef Engine
@@ -18,8 +18,8 @@ global_resources = unsafePerformIO $ loadResources =<< readIORef veryUnsafeEngin
 
 global_tilesets :: Tileset -> WrappedTexture
 global_textures :: GameTexture -> WrappedTexture
-global_sounds :: Sound -> Chunk
-global_songs :: Song -> Music
+global_sounds :: Sound -> ALUT.Source
+global_songs :: Song -> ALUT.Source
 global_worlds :: WorldName -> World
 global_sprites :: Sprite -> Anim -> [WrappedTexture]
 global_glyphs :: Char -> Texture
