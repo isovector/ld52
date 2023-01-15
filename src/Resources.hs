@@ -9,6 +9,10 @@ import           SDL (Texture, textureWidth, textureHeight)
 import qualified SDL.Image as Image
 import qualified Sound.ALUT as ALUT
 import           SDL.Video (queryTexture)
+import qualified Codec.Picture as P
+import qualified SDL.Video.Renderer as SDLR
+import qualified Data.Vector.Storable as V
+import           Foreign.C.Types (CInt (..))
 import           System.Environment.Blank (getEnv)
 import           System.FilePath ((</>), (<.>))
 import           Types
@@ -44,6 +48,24 @@ wrapTexture t = do
     , wt_origin = 0
     }
 
+-- https://www.reddit.com/r/haskell/comments/45sk5s/juicypixels_image_to_sdl_surface/
+juicyTexture :: SDLR.Renderer -> FilePath -> IO Texture
+juicyTexture renderer path = do
+  img <- P.readImage path >>= \case
+    Right x -> pure x
+    Left err -> error $ unwords ["Error loading image (", path, "):", err]
+  let rgba8 = P.convertRGBA8 img
+      width = P.imageWidth rgba8
+      height = P.imageHeight rgba8
+      iData = P.imageData rgba8
+  rawData <- V.thaw iData
+  sur <- SDLR.createRGBSurfaceFrom rawData
+         (V2 (CInt $ fromIntegral width)
+           (CInt $ fromIntegral height))
+         32
+         SDLR.ARGB8888
+  SDLR.createTextureFromSurface renderer sur
+
 instance IsResource (Sprite, Anim) [WrappedTexture] where
   resourceFolder = "sprites"
   resourceExt = "png"
@@ -76,7 +98,7 @@ instance IsResource Tileset WrappedTexture where
 
 instance IsResource Char' Texture where
   load _
-      = Image.loadTexture
+      = juicyTexture
       . e_renderer
   resourceFolder = "font"
   resourceExt    = "png"
