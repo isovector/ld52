@@ -133,4 +133,8 @@ fromEvent :: a -> Event a -> a
 fromEvent a NoEvent = a
 fromEvent _ (Event a') = a'
 
+whenE :: Bool -> Event a -> Event a
+whenE False _ = noEvent
+whenE True ev = ev
+
 #endif

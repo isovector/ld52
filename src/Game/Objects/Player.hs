@@ -53,9 +53,14 @@ player pos0 = proc oi -> do
 
   (alive, respawn, death_evs) <- dieAndRespawnHandler -< (pos, dying)
 
-  let me = oi_self oi
-  action <- edge -< c_z $ fi_controls $ oi_frameInfo oi
-  let throw_ball = bool noEvent action $ S.member PowerupWarpBall powerups
+  throw_ball <- edge -< c_z $ fi_controls $ oi_frameInfo oi
+  throw_evs <-
+    throwBallHandler (- (sz & _x .~ 0)) ore
+      -< ( oi_self oi
+         , pos
+         , whenE (S.member PowerupWarpBall powerups) throw_ball
+         )
+
 
   let can_double_jump = S.member PowerupDoubleJump powerups
       dt = fi_dt $ oi_frameInfo oi
@@ -84,12 +89,8 @@ player pos0 = proc oi -> do
 
   returnA -<
     ObjectOutput
-        { oo_events = (death_evs <>) $
+        { oo_events = (mconcat [death_evs, throw_evs] <>) $
             mempty
-              & #oe_spawn .~
-                  ([teleportBall me ore pos (- (sz & _x .~ 0))
-                      $ V2 (bool negate id dir 200) (-200)] <$ throw_ball
-                  )
               & #oe_focus .~ mconcat
                   [ () <$ am_teleporting
                   , start
@@ -120,7 +121,19 @@ respawnTime :: Time
 respawnTime = 1
 
 
-dieAndRespawnHandler :: SF (V2 WorldPos, Event ()) (Bool, Event (), ObjectEvents)
+throwBallHandler
+    :: V2 WorldPos
+    -> OriginRect Double
+    -> SF (ObjectId, V2 WorldPos, Event a) ObjectEvents
+throwBallHandler offset ore =
+  proc (me, pos, throw) -> do
+    edir <- edgeBy diffDir 0 -< pos
+    dir <- hold True -< edir
+    returnA -< mempty
+      & #oe_spawn .~ ([teleportBall me ore pos offset (V2 (bool negate id dir 200) (-200))] <$ throw)
+
+
+dieAndRespawnHandler :: SF (V2 WorldPos, Event a) (Bool, Event (), ObjectEvents)
 dieAndRespawnHandler = proc (pos, on_die) -> do
   t <- time -< ()
   let next_alive = t + respawnTime
