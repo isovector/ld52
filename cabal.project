@@ -12,8 +12,9 @@ source-repository-package
 source-repository-package
     type: git
     location: https://github.com/isovector/ldtk-types.git
-    tag: 0be47b237f36e4a16c6fac5d384adc733ed07711
-    --sha256: sha256-I5DIE+z0WTbpRDIe5fMUK4s/DUEAJJUh32F9OcOcM6w=
+    tag: 88e497bb8eb20a1ce8746b0be388ab084d4f1537
+    --sha256: sha256-rL0KsIKGFDvMJ/0dbzDq2SXiURA+XFD9vGo+caW4K0w=
+
 
 allow-older: *
 allow-newer: *
