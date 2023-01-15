@@ -17,9 +17,9 @@ import           Game.Resources (frameSound, frameCounts)
 import           SDL
 import qualified Sound.ALUT as ALUT
 
-playSound :: Resources -> Sound -> IO ()
-playSound r s = do
-  let src = r_sounds r s
+playSound :: Sound -> IO ()
+playSound s = do
+  let src = global_sounds s
   ALUT.stop [src]
   ALUT.play [src]
 

@@ -43,24 +43,6 @@ wrapTexture t = do
     , wt_origin = 0
     }
 
--- https://www.reddit.com/r/haskell/comments/45sk5s/juicypixels_image_to_sdl_surface/
-juicyTexture :: SDLR.Renderer -> FilePath -> IO Texture
-juicyTexture renderer path = do
-  img <- P.readImage path >>= \case
-    Right x -> pure x
-    Left err -> error $ unwords ["Error loading image (", path, "):", err]
-  let rgba8 = P.convertRGBA8 img
-      width = P.imageWidth rgba8
-      height = P.imageHeight rgba8
-      iData = P.imageData rgba8
-  rawData <- V.thaw iData
-  sur <- SDLR.createRGBSurfaceFrom rawData
-         (V2 (CInt $ fromIntegral width)
-           (CInt $ fromIntegral height))
-         (4 * (CInt $ fromIntegral width))
-         SDLR.ABGR8888
-  SDLR.createTextureFromSurface renderer sur
-
 instance IsResource (Sprite, Anim) [WrappedTexture] where
   resourceFolder = "sprites"
   resourceExt = "png"
@@ -68,7 +50,7 @@ instance IsResource (Sprite, Anim) [WrappedTexture] where
   load (cn, an) e _ = do
     for [0 .. frameCounts cn an - 1] $ \i -> do
       let fp = "resources" </> "sprites" </> charName cn </> animName an <> "_" <> show i <.> "png"
-      wt <- wrapTexture =<< juicyTexture (e_renderer e) fp
+      wt <- wrapTexture =<< loadJuicyTexture (e_renderer e) fp
       pure $ setGroundOrigin wt
 
 
@@ -106,7 +88,7 @@ pad n c s =
 instance IsResource GameTexture WrappedTexture where
   load _
       = (wrapTexture <=<)
-      . juicyTexture
+      . loadJuicyTexture
       . e_renderer
   resourceFolder = "textures"
   resourceExt    = "png"

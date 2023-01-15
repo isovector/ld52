@@ -1,11 +1,10 @@
 module Game.Objects.TeleportBall where
 
 import qualified Data.Map as M
-import Data.Map (Map)
-import Engine.Collision (move)
-import Data.Maybe (isJust)
-import Game.Common
-import Engine.Globals (global_textures)
+import           Data.Maybe (isJust)
+import           Engine.Collision (move)
+import           Engine.Globals (global_textures)
+import           Game.Common
 
 teleportBall
     :: ObjectId
