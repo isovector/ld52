@@ -9,9 +9,8 @@ import           Engine.Types
 import           Engine.Utils (setGroundOrigin)
 import           SDL (Texture, textureWidth, textureHeight)
 import           SDL.JuicyPixels (loadJuicyTexture)
-import           SDL.Mixer (Chunk)
-import qualified SDL.Mixer as Mixer
 import           SDL.Video (queryTexture)
+import qualified Sound.ALUT as ALUT
 import           System.FilePath ((</>), (<.>))
 
 import {-# SOURCE #-} Engine.Importer (loadWorld)
@@ -51,7 +50,7 @@ instance IsResource (Sprite, Anim) [WrappedTexture] where
   load (cn, an) e _ = do
     for [0 .. frameCounts cn an - 1] $ \i -> do
       let fp = "resources" </> "sprites" </> charName cn </> animName an <> "_" <> show i <.> "png"
-      wt <- loadWrappedTexture e fp
+      wt <- wrapTexture =<< loadJuicyTexture (e_renderer e) fp
       pure $ setGroundOrigin wt
 
 
@@ -87,7 +86,10 @@ pad n c s =
         False -> replicate (n - len) c <> s
 
 instance IsResource GameTexture WrappedTexture where
-  load _ = loadWrappedTexture
+  load _
+      = (wrapTexture <=<)
+      . loadJuicyTexture
+      . e_renderer
   resourceFolder = "textures"
   resourceExt    = "png"
   resourceName NintendoLogo = "nintendo"
@@ -100,14 +102,24 @@ instance IsResource GameTexture WrappedTexture where
   resourceName AuraTexture = "aura"
   resourceName TrampolineTexture = "trampoline"
 
-instance IsResource Song Mixer.Music where
-  load _ _ = Mixer.load
+instance IsResource Song ALUT.Source where
+  load _ _ fileName = do
+    buf <- ALUT.createBuffer (ALUT.File fileName)
+    src <- ALUT.genObjectName
+    ALUT.loopingMode src ALUT.$= ALUT.Looping
+    ALUT.buffer src ALUT.$= Just buf
+    pure src
   resourceFolder = "songs"
   resourceExt    = "wav"
   resourceName WarmDuckShuffle = "warm-duck-shuffle"
 
-instance IsResource Sound Chunk where
-  load _ _ = Mixer.load
+instance IsResource Sound ALUT.Source where
+  load _ _ fileName = do
+    buf <- ALUT.createBuffer (ALUT.File fileName)
+    src <- ALUT.genObjectName
+    ALUT.loopingMode src ALUT.$= ALUT.OneShot
+    ALUT.buffer src ALUT.$= Just buf
+    pure src
   resourceFolder = "sounds"
   resourceExt    = "wav"
   resourceName NintendoSound = "ding"

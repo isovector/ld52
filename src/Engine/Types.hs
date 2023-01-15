@@ -28,24 +28,24 @@ module Engine.Types
   , module Game.Types
   ) where
 
-import Control.Lens ((&), (^.), (.~), (%~), (+~), (-~), (<>~), view, set, over, preview, review)
-import Data.Bool (bool)
-import Data.Coerce
-import Data.Foldable (toList)
-import Data.Generics.Labels ()
-import Data.Map (Map)
-import Data.Monoid (Endo(Endo), appEndo)
-import Data.Set (Set)
-import Data.Text (Text)
-import Data.Word
-import Debug.Trace (trace, traceShowId, traceM)
-import Engine.CoreTypes
-import Engine.FRP (SF, Event, Time)
-import Foreign.C (CInt)
-import GHC.Generics
-import Game.Types
-import SDL hiding (trace, Event)
-import SDL.Mixer (Chunk, Music)
+import           Control.Lens ((&), (^.), (.~), (%~), (+~), (-~), (<>~), view, set, over, preview, review)
+import           Data.Bool (bool)
+import           Data.Coerce
+import           Data.Foldable (toList)
+import           Data.Generics.Labels ()
+import           Data.Map (Map)
+import           Data.Monoid (Endo(Endo), appEndo)
+import           Data.Set (Set)
+import           Data.Text (Text)
+import           Data.Word
+import           Debug.Trace (trace, traceShowId, traceM)
+import           Engine.CoreTypes
+import           Engine.FRP (SF, Event, Time)
+import           Foreign.C (CInt)
+import           GHC.Generics
+import           Game.Types
+import           SDL hiding (trace, Event)
+import qualified Sound.ALUT as ALUT
 
 
 ------------------------------------------------------------------------------
@@ -90,8 +90,8 @@ data Engine = Engine
 data Resources = Resources
   { r_engine   :: Engine
   , r_textures :: GameTexture -> WrappedTexture
-  , r_sounds   :: Sound -> Chunk
-  , r_songs    :: Song -> Music
+  , r_sounds   :: Sound -> ALUT.Source
+  , r_songs    :: Song -> ALUT.Source
   , r_worlds   :: WorldName -> World
   , r_sprites  :: Sprite -> Anim -> [WrappedTexture]
   , r_glyphs   :: Char -> Texture

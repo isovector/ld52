@@ -1,12 +1,12 @@
 -- | Here be unutterable, atrocious, ungodly dragons
 module Engine.Globals where
 
-import Data.IORef
-import Engine.Types
-import Game.Resources (loadResources)
-import SDL (Texture)
-import SDL.Mixer (Chunk, Music)
-import System.IO.Unsafe
+import           Data.IORef
+import           Engine.Types
+import           Game.Resources (loadResources)
+import           SDL (Texture)
+import qualified Sound.ALUT as ALUT
+import           System.IO.Unsafe
 
 veryUnsafeEngineIORef :: IORef Engine
 veryUnsafeEngineIORef = unsafePerformIO $ newIORef $ error "no unsafe engine io ref"
@@ -17,8 +17,8 @@ global_resources = unsafePerformIO $ loadResources =<< readIORef veryUnsafeEngin
 {-# NOINLINE global_resources #-}
 
 global_textures :: GameTexture -> WrappedTexture
-global_sounds :: Sound -> Chunk
-global_songs :: Song -> Music
+global_sounds :: Sound -> ALUT.Source
+global_songs :: Song -> ALUT.Source
 global_worlds :: WorldName -> World
 global_sprites :: Sprite -> Anim -> [WrappedTexture]
 global_glyphs :: Char -> Texture

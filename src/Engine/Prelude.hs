@@ -16,7 +16,6 @@ import Engine.FRP as X hiding (norm)
 import Engine.Types as X
 import Engine.Utils as X
 import SDL as X (quadrance, qd, norm, _xy, _xyz)
-import SDL.Mixer as X (Chunk, Music)
 
 
 traceF :: Show b => (a -> b) -> a -> a
