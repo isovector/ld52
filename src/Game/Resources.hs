@@ -8,7 +8,7 @@ import           Engine.Resources
 import           Engine.Types
 import           Engine.Utils (setGroundOrigin)
 import           SDL (Texture, textureWidth, textureHeight)
-import qualified SDL.Image as Image
+import           SDL.JuicyPixels (loadJuicyTexture)
 import           SDL.Mixer (Chunk)
 import qualified SDL.Mixer as Mixer
 import           SDL.Video (queryTexture)
@@ -68,12 +68,12 @@ charName MainCharacter = "mc"
 loadWrappedTexture :: Engine -> FilePath -> IO WrappedTexture
 loadWrappedTexture
   = (wrapTexture <=<)
-  . Image.loadTexture
+  . loadJuicyTexture
   . e_renderer
 
 instance IsResource Char' Texture where
   load _
-      = Image.loadTexture
+      = loadJuicyTexture
       . e_renderer
   resourceFolder = "font"
   resourceExt    = "png"

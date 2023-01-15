@@ -26,7 +26,6 @@ dependencies:
 - filepath
 - mtl
 - sdl2
-- sdl2-image
 - sdl2-mixer
 - text
 - time
@@ -38,6 +37,7 @@ dependencies:
 - vector
 - deepseq
 - hashable
+- JuicyPixels
 
 custom-setup:
   dependencies:
