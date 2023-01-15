@@ -9,9 +9,8 @@ import           Engine.Types
 import           Engine.Utils (setGroundOrigin)
 import           SDL (Texture, textureWidth, textureHeight)
 import           SDL.JuicyPixels (loadJuicyTexture)
-import           SDL.Mixer (Chunk)
-import qualified SDL.Mixer as Mixer
 import           SDL.Video (queryTexture)
+import qualified Sound.ALUT as ALUT
 import           System.FilePath ((</>), (<.>))
 
 import {-# SOURCE #-} Engine.Importer (loadWorld)
@@ -44,6 +43,24 @@ wrapTexture t = do
     , wt_origin = 0
     }
 
+-- https://www.reddit.com/r/haskell/comments/45sk5s/juicypixels_image_to_sdl_surface/
+juicyTexture :: SDLR.Renderer -> FilePath -> IO Texture
+juicyTexture renderer path = do
+  img <- P.readImage path >>= \case
+    Right x -> pure x
+    Left err -> error $ unwords ["Error loading image (", path, "):", err]
+  let rgba8 = P.convertRGBA8 img
+      width = P.imageWidth rgba8
+      height = P.imageHeight rgba8
+      iData = P.imageData rgba8
+  rawData <- V.thaw iData
+  sur <- SDLR.createRGBSurfaceFrom rawData
+         (V2 (CInt $ fromIntegral width)
+           (CInt $ fromIntegral height))
+         (4 * (CInt $ fromIntegral width))
+         SDLR.ABGR8888
+  SDLR.createTextureFromSurface renderer sur
+
 instance IsResource (Sprite, Anim) [WrappedTexture] where
   resourceFolder = "sprites"
   resourceExt = "png"
@@ -51,7 +68,7 @@ instance IsResource (Sprite, Anim) [WrappedTexture] where
   load (cn, an) e _ = do
     for [0 .. frameCounts cn an - 1] $ \i -> do
       let fp = "resources" </> "sprites" </> charName cn </> animName an <> "_" <> show i <.> "png"
-      wt <- loadWrappedTexture e fp
+      wt <- wrapTexture =<< juicyTexture (e_renderer e) fp
       pure $ setGroundOrigin wt
 
 
@@ -87,7 +104,10 @@ pad n c s =
         False -> replicate (n - len) c <> s
 
 instance IsResource GameTexture WrappedTexture where
-  load _ = loadWrappedTexture
+  load _
+      = (wrapTexture <=<)
+      . juicyTexture
+      . e_renderer
   resourceFolder = "textures"
   resourceExt    = "png"
   resourceName NintendoLogo = "nintendo"
@@ -100,14 +120,24 @@ instance IsResource GameTexture WrappedTexture where
   resourceName AuraTexture = "aura"
   resourceName TrampolineTexture = "trampoline"
 
-instance IsResource Song Mixer.Music where
-  load _ _ = Mixer.load
+instance IsResource Song ALUT.Source where
+  load _ _ fileName = do
+    buf <- ALUT.createBuffer (ALUT.File fileName)
+    src <- ALUT.genObjectName
+    ALUT.loopingMode src ALUT.$= ALUT.Looping
+    ALUT.buffer src ALUT.$= Just buf
+    pure src
   resourceFolder = "songs"
   resourceExt    = "wav"
   resourceName WarmDuckShuffle = "warm-duck-shuffle"
 
-instance IsResource Sound Chunk where
-  load _ _ = Mixer.load
+instance IsResource Sound ALUT.Source where
+  load _ _ fileName = do
+    buf <- ALUT.createBuffer (ALUT.File fileName)
+    src <- ALUT.genObjectName
+    ALUT.loopingMode src ALUT.$= ALUT.OneShot
+    ALUT.buffer src ALUT.$= Just buf
+    pure src
   resourceFolder = "sounds"
   resourceExt    = "wav"
   resourceName NintendoSound = "ding"
