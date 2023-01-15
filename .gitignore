@@ -5,3 +5,5 @@
 *.prof
 dist-newstyle/
 *~
+result
+releases/

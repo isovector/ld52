@@ -26,7 +26,6 @@ dependencies:
 - filepath
 - mtl
 - sdl2
-- sdl2-image
 - JuicyPixels
 - ALUT
 - text

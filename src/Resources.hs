@@ -6,7 +6,6 @@ import           Control.Monad ((<=<))
 import           Data.Traversable (for)
 import           Resources.Machinery
 import           SDL (Texture, textureWidth, textureHeight)
-import qualified SDL.Image as Image
 import qualified Sound.ALUT as ALUT
 import           SDL.Video (queryTexture)
 import qualified Codec.Picture as P
@@ -62,8 +61,8 @@ juicyTexture renderer path = do
   sur <- SDLR.createRGBSurfaceFrom rawData
          (V2 (CInt $ fromIntegral width)
            (CInt $ fromIntegral height))
-         32
-         SDLR.ARGB8888
+         (4 * (CInt $ fromIntegral width))
+         SDLR.ABGR8888
   SDLR.createTextureFromSurface renderer sur
 
 instance IsResource (Sprite, Anim) [WrappedTexture] where
@@ -73,7 +72,7 @@ instance IsResource (Sprite, Anim) [WrappedTexture] where
   load (cn, an) e _ = do
     for [0 .. frameCounts cn an - 1] $ \i -> do
       let fp = "resources" </> "sprites" </> charName cn </> animName an <> "_" <> show i <.> "png"
-      wt <- wrapTexture =<< Image.loadTexture (e_renderer e) fp
+      wt <- wrapTexture =<< juicyTexture (e_renderer e) fp
       pure $ setGroundOrigin wt
 
 
@@ -90,7 +89,7 @@ charName MainCharacter = "mc"
 instance IsResource Tileset WrappedTexture where
   load _
       = (wrapTexture <=<)
-      . Image.loadTexture
+      . juicyTexture
       . e_renderer
   resourceFolder = "tilesets"
   resourceExt    = "png"
@@ -114,7 +113,7 @@ pad n c s =
 instance IsResource GameTexture WrappedTexture where
   load _
       = (wrapTexture <=<)
-      . Image.loadTexture
+      . juicyTexture
       . e_renderer
   resourceFolder = "textures"
   resourceExt    = "png"
