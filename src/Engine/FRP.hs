@@ -12,6 +12,7 @@ import Data.Bifunctor
 import Data.Tuple (swap)
 import Data.Foldable (traverse_)
 import Data.Bool (bool)
+import Control.DeepSeq
 
 #ifndef __HLINT__
 
@@ -55,6 +56,9 @@ timedSequence d interval sfs =
 
 runSwont :: (a -> SF i o) -> Swont i o a -> SF i o
 runSwont end sw = runCont (runSwont' sw) end
+
+instance NFData (SF a b) where
+  rnf !_ = ()
 
 deriving via (Ap (SF i) o) instance Semigroup o => Semigroup (SF i o)
 deriving via (Ap (SF i) o) instance Monoid o    => Monoid    (SF i o)

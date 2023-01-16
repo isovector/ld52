@@ -4,7 +4,6 @@ module Game.Objects.Player where
 
 import           Control.Lens ((*~))
 import           Data.Maybe (isJust, isNothing)
-import           Data.Monoid
 import qualified Data.Set as S
 import           Engine.Collision
 import           Engine.Drawing
