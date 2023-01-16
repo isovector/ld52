@@ -76,17 +76,30 @@ staticCollisionObject
     :: V2 WorldPos
     -> OriginRect Double
     -> S.Set ObjectTag
-    -> Renderable
+    -> (V2 WorldPos -> Renderable)
     -> Object
-staticCollisionObject pos ore tags r = constant $
-  ObjectOutput
-    { oo_events = mempty
-    , oo_render = r
-    , oo_state = (noObjectState pos)
-        { os_collision = Just ore
-        , os_tags = tags
-        }
-    }
+staticCollisionObject pos ore tags r = proc oi -> do
+  on_start <- nowish () -< ()
+  let def =
+        (noObjectState pos)
+          { os_collision = Just ore
+          , os_tags = tags
+          }
+  let os = event (oi_state oi) (const def) on_start
+  returnA -<
+    ObjectOutput
+      { oo_events = mempty
+      , oo_render = r $ os_pos os
+      , oo_state = os
+      }
+
+-- TODO(sandy): very buggy; gets applied every frame
+oscillate :: (Time -> V2 WorldPos) -> Object -> Object
+oscillate f sf = proc oi -> do
+  offset <- fmap f localTime -< ()
+  oo <- sf -< oi
+  returnA -< oo & #oo_state . #os_pos +~ offset
+
 
 staticObject
     :: V2 WorldPos

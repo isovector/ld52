@@ -5,7 +5,8 @@ import Game.Common
 
 collectPowerup :: V2 WorldPos -> PowerupType -> Object
 collectPowerup pos pt
-  = onHitByTag IsPlayer
+  = oscillate (\t -> coerce $ V2 0 (cos (t * 5) * 0.3))
+  $ onHitByTag IsPlayer
       ( mconcat
           [ standardDeathResponse
           , playSoundReponse CoinSound
@@ -13,7 +14,7 @@ collectPowerup pos pt
           ]
       )
   $ staticCollisionObject pos ore mempty
-  $ drawPowerup pt ore pos
+  $ drawPowerup pt ore
   where
     ore = mkCenterdOriginRect 8
 

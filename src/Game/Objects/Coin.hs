@@ -11,6 +11,6 @@ coin pos
         , getCoinResponse
         ])
   $ staticCollisionObject pos ore mempty
-  $ drawOriginRect (V4 255 255 0 255) (coerce ore) pos
+  $ drawOriginRect (V4 255 255 0 255) (coerce ore)
   where
     ore = OriginRect 8 4
