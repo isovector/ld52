@@ -22,12 +22,11 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
   let pos = event (os_pos $ oi_state oi) (const pos0) start
 
   let am_teleporting
-        = fmap (foldMap (foldMap (Endo . const) . preview #_TeleportTo . snd))
-        . oie_receive
+        = listenInbox (preview #_TeleportTo . snd)
         $ oi_events oi
 
       do_teleport :: V2 WorldPos -> V2 WorldPos
-      do_teleport = event id appEndo am_teleporting
+      do_teleport = event id const am_teleporting
 
   reset <- edge -< c_reset $ fi_controls $ oi_frameInfo oi
   let cp_hit = listenInbox (\(from, m) -> (from, ) <$> preview #_SetCheckpoint m) $ oi_events oi
