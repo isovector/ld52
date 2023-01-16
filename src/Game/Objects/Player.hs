@@ -2,20 +2,19 @@
 
 module Game.Objects.Player where
 
-import           Engine.Collision (epsilon)
 import           Control.Lens ((*~))
 import           Data.Monoid
 import qualified Data.Set as S
+import           Engine.Collision
 import           Engine.Drawing
 import           FRP.Yampa ((*^))
 import           Game.Common
-import           Game.Objects.Actor (actor)
 import           Game.Objects.Particle (gore)
 import           Game.Objects.TeleportBall (teleportBall)
 import qualified SDL.Vect as SDL
 
 player :: V2 WorldPos -> Object
-player pos0 = proc oi -> do
+player pos0 = loopPre 0 $ proc (oi, vel) -> do
   -- TODO(sandy): this is a bad pattern; object constructor should take an
   -- initial pos
   start <- nowish () -< ()
@@ -63,16 +62,23 @@ player pos0 = proc oi -> do
 
 
   let can_double_jump = S.member PowerupDoubleJump powerups
-      dt = fi_dt $ oi_frameInfo oi
-  vel'0 <- playerPhysVelocity -< oi_frameInfo oi
-  pos' <- actor ore -<
-    ( alive
-    , can_double_jump
-    , dt
-    , vel'0 & _y %~ maybe id const tramp
-    , pos
-    , fi_global $ oi_frameInfo oi
-    )
+  vel''0 <- playerPhysVelocity -< oi_frameInfo oi
+  let vel'0 = vel''0 & _y %~ maybe id const tramp
+
+
+  let collision = getCollisionMap $ globalState oi
+
+  let onGround = touchingGround (collision CollisionCheckGround) ore pos
+  let vel' = updateVel (can_double_jump || onGround) vel vel'0
+  let dpos = 0.016 Game.Common.*^ vel'
+  let desiredPos = pos + coerce dpos
+  let pos' = fromMaybe pos $ move collision (coerce ore) pos $ dpos
+
+  let vel''
+        = (\want have res -> bool 0 res $ abs(want - have) <= epsilon )
+            <$> desiredPos
+            <*> pos'
+            <*> vel'
 
   let (V2 _ press_up) = fmap (== -1) $ c_dir $ fi_controls $ oi_frameInfo oi
   let pos'' = bool (const pos) id alive
@@ -88,7 +94,7 @@ player pos0 = proc oi -> do
 
   drawn <- drawPlayer -< pos''
 
-  returnA -<
+  returnA -< (, bool 0 vel'' alive) $
     ObjectOutput
         { oo_events = (mconcat [death_evs, throw_evs] <>) $
             mempty
@@ -116,6 +122,49 @@ player pos0 = proc oi -> do
 
     sz :: Num a => V2 a
     sz = V2 8 16
+
+
+touchingGround :: (V2 WorldPos -> Bool) -> OriginRect Double -> V2 WorldPos -> Bool
+touchingGround toHit ore pos =
+    or
+      $ fmap toHit
+      $ cornersX (coerce ore) Positive
+      $ pos + touchDist
+  where
+  touchDist = V2 0 1
+
+
+updateVelAir :: V2 Double -> V2 Double -> V2 Double
+updateVelAir vel dvel =
+    freeVel & _x %~ clampAbs maxXSpeed
+  where
+    grav = V2 0 10
+    maxXSpeed = 110
+    freeVel = vel + (dvel & _y %~ max 0) + grav
+
+updateVelGround :: V2 Double -> V2 Double -> V2 Double
+updateVelGround vel dvel@(V2 dvx _) =
+    V2 (maxXSpeed * signum dvx) air_y
+  where
+    maxXSpeed = 110
+    grav = V2 0 10
+    (V2 _ air_y) = vel + dvel + grav
+
+
+updateVel :: Bool -> V2 Double -> V2 Double -> V2 Double
+updateVel True = updateVelGround
+updateVel False = updateVelAir
+
+clampAbs :: (Num a, Ord a) => a -> a -> a
+clampAbs maxv val =
+  if abs val <= maxv
+     then val
+     else maxv * signum val
+
+clampJump :: Bool -> V2 Double -> V2 Double
+clampJump True = id
+clampJump False = _y %~ max 0
+
 
 
 respawnTime :: Time
