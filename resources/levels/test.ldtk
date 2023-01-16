@@ -11,7 +11,7 @@
 	"iid": "a22d35f0-7820-11ed-b6fd-213e885f30da",
 	"jsonVersion": "1.2.3",
 	"appBuildId": 464726,
-	"nextUid": 224,
+	"nextUid": 225,
 	"identifierStyle": "Capitalize",
 	"worldLayout": "LinearHorizontal",
 	"worldGridWidth": 128,
@@ -2211,7 +2211,7 @@
 			"tileOpacity": 1,
 			"fillOpacity": 1,
 			"lineOpacity": 1,
-			"hollow": false,
+			"hollow": true,
 			"color": "#B55088",
 			"renderMode": "Rectangle",
 			"showName": true,
@@ -2224,7 +2224,40 @@
 			"limitBehavior": "MoveLastOne",
 			"pivotX": 0,
 			"pivotY": 0,
-			"fieldDefs": []
+			"fieldDefs": [
+				{
+					"identifier": "key",
+					"doc": null,
+					"__type": "String",
+					"uid": 224,
+					"type": "F_String",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "ValueOnly",
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"min": null,
+					"max": null,
+					"regex": "/^.$/g",
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefTags": [],
+					"tilesetUid": null
+				}
+			]
 		}
 	], "tilesets": [
 		{
@@ -4201,7 +4234,10 @@
 							"height": 32,
 							"defUid": 223,
 							"px": [336,912],
-							"fieldInstances": []
+							"fieldInstances": [{ "__identifier": "key", "__value": "X", "__type": "String", "__tile": null, "defUid": 224, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["X"]
+							}] }]
 						},
 						{
 							"__identifier": "TutorialRegion",
@@ -4215,7 +4251,10 @@
 							"height": 32,
 							"defUid": 223,
 							"px": [912,944],
-							"fieldInstances": []
+							"fieldInstances": [{ "__identifier": "key", "__value": "R", "__type": "String", "__tile": null, "defUid": 224, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["R"]
+							}] }]
 						},
 						{
 							"__identifier": "TutorialRegion",
@@ -4229,7 +4268,7 @@
 							"height": 16,
 							"defUid": 223,
 							"px": [904,240],
-							"fieldInstances": []
+							"fieldInstances": [{ "__identifier": "key", "__value": "", "__type": "String", "__tile": null, "defUid": 224, "realEditorValues": [] }]
 						},
 						{
 							"__identifier": "TutorialRegion",
@@ -4243,7 +4282,10 @@
 							"height": 32,
 							"defUid": 223,
 							"px": [584,1184],
-							"fieldInstances": []
+							"fieldInstances": [{ "__identifier": "key", "__value": "C", "__type": "String", "__tile": null, "defUid": 224, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["C"]
+							}] }]
 						},
 						{
 							"__identifier": "TutorialRegion",
@@ -4257,7 +4299,7 @@
 							"height": 32,
 							"defUid": 223,
 							"px": [1984,1344],
-							"fieldInstances": []
+							"fieldInstances": [{ "__identifier": "key", "__value": "", "__type": "String", "__tile": null, "defUid": 224, "realEditorValues": [] }]
 						},
 						{
 							"__identifier": "DespawnTrigger",
@@ -4304,6 +4346,28 @@
 									"params": ["84db0ea0-7820-11ed-ab5c-eda1359efa39"]
 								}] },
 								{ "__identifier": "persistent", "__value": true, "__type": "Bool", "__tile": null, "defUid": 216, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Text",
+							"__grid": [59,148],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#FFDD00",
+							"iid": "a5101390-7820-11ed-87b2-5d0d5fb48b9b",
+							"width": 8,
+							"height": 8,
+							"defUid": 127,
+							"px": [472,1184],
+							"fieldInstances": [
+								{ "__identifier": "size", "__value": 6, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [] },
+								{ "__identifier": "text", "__value": "omg, that's my chicken!", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["omg, that's my chicken!"]
+								}] },
+								{ "__identifier": "color", "__value": "#FFDD00", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [16768256] }] },
+								{ "__identifier": "duration", "__value": null, "__type": "Float", "__tile": null, "defUid": 219, "realEditorValues": [] }
 							]
 						}
 					]

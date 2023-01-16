@@ -24,7 +24,7 @@ main :: IO ()
 main = ALUT.withProgNameAndArgs ALUT.runALUT $ \_ _ -> do
   initializeAll
 
-  window <- createWindow "ld52" $ defaultWindow
+  window <- createWindow "Where's My Chicken, Man?" $ defaultWindow
     { windowInitialSize = screenSize
     , windowGraphicsContext = OpenGLContext defaultOpenGL
     }
