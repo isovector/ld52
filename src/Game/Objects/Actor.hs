@@ -6,9 +6,9 @@ import Game.Common
 
 actor
     :: OriginRect Double
-    -> SF (Bool, Double, V2 Double, V2 WorldPos, GlobalState) (V2 WorldPos)
+    -> SF (Bool, Bool, Double, V2 Double, V2 WorldPos, GlobalState) (V2 WorldPos)
 actor ore = loopPre 0 $
-  proc ((can_double, _dt, vel'0, pos, gs), vel) -> do
+  proc ((alive, can_double, _dt, vel'0, pos, gs), vel) -> do
     let collision = getCollisionMap gs
 
     let onGround = touchingGround (collision CollisionCheckGround) ore pos
@@ -23,7 +23,7 @@ actor ore = loopPre 0 $
               <*> pos'
               <*> vel'
 
-    returnA -< (pos', vel'')
+    returnA -< (pos', bool 0 vel'' alive)
 
 
 touchingGround :: (V2 WorldPos -> Bool) -> OriginRect Double -> V2 WorldPos -> Bool

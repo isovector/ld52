@@ -58,7 +58,7 @@ player pos0 = proc oi -> do
     throwBallHandler (- (sz & _x .~ 0)) ore
       -< ( oi_self oi
          , pos
-         , whenE (S.member PowerupWarpBall powerups) throw_ball
+         , whenE (S.member PowerupWarpBall powerups) $ whenE alive throw_ball
          )
 
 
@@ -66,7 +66,8 @@ player pos0 = proc oi -> do
       dt = fi_dt $ oi_frameInfo oi
   vel'0 <- playerPhysVelocity -< oi_frameInfo oi
   pos' <- actor ore -<
-    ( can_double_jump
+    ( alive
+    , can_double_jump
     , dt
     , vel'0 & _y %~ maybe id const tramp
     , pos
@@ -126,11 +127,15 @@ throwBallHandler
     -> OriginRect Double
     -> SF (ObjectId, V2 WorldPos, Event a) ObjectEvents
 throwBallHandler offset ore =
-  proc (me, pos, throw) -> do
-    edir <- edgeBy diffDir 0 -< pos
-    dir <- hold True -< edir
-    returnA -< mempty
-      & #oe_spawn .~ ([teleportBall me ore pos offset (V2 (bool negate id dir 200) (-200))] <$ throw)
+  proc (me, pos, throw) ->
+    fmap rl_data $ rateLimit 1.5 (
+      proc (ev, (me, pos)) -> do
+        edir <- edgeBy diffDir 0 -< pos
+        dir <- hold True -< edir
+        returnA -< mempty
+          & #oe_spawn .~
+              ([teleportBall me ore pos offset (V2 (bool negate id dir 200) (-200))] <$ ev)
+      ) -< (throw, (me, pos))
 
 
 dieAndRespawnHandler :: SF (V2 WorldPos, Event a) (RateLimited ObjectEvents)
