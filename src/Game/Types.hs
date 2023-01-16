@@ -81,13 +81,14 @@ tileSize :: Num a => a
 tileSize = 16
 
 data PowerupType
-    = PowerupDoubleJump
-    | PowerupWarpBall
-    | PowerupTotsugeki
+  = PowerupDoubleJump
+  | PowerupWarpBall
+  | PowerupTotsugeki
   deriving (Eq, Ord, Show, Enum, Bounded, Generic, Read)
 
 data ObjectTag
-    = IsPlayer
+  = IsPlayer
+  | IsTileEntity
   deriving (Eq, Ord, Show, Generic)
 
 logicalSize :: Num a => V2 a
@@ -124,5 +125,9 @@ data Message
 data ParticleType
   = Gore
   | Firework
+  deriving stock (Eq, Ord, Show, Read, Generic)
+
+data TileData
+  = Twinkle Int
   deriving stock (Eq, Ord, Show, Read, Generic)
 
