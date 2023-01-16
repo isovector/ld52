@@ -83,6 +83,7 @@ tileSize = 16
 data PowerupType
     = PowerupDoubleJump
     | PowerupWarpBall
+    | PowerupTotsugeki
   deriving (Eq, Ord, Show, Enum, Bounded, Generic, Read)
 
 data ObjectTag

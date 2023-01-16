@@ -28,4 +28,5 @@ drawPowerup pt ore pos = mconcat
 powerupRenderable :: PowerupType -> GameTexture
 powerupRenderable PowerupDoubleJump = ChickenTexture
 powerupRenderable PowerupWarpBall = TeleTexture
+powerupRenderable PowerupTotsugeki = ChickenTexture
 

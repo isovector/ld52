@@ -4,6 +4,7 @@ module Game.Common
   , module Engine.Common
   ) where
 
+import           Data.Maybe (isNothing)
 import           Data.Monoid
 import qualified Data.Set as S
 import           Engine.Common
@@ -82,11 +83,14 @@ addInventoryResponse
   . AddInventory
 
 data RateLimited a = RateLimited
-  { rl_available :: Bool
+  { rl_cooldown_left :: Maybe Time
   , rl_on_refresh :: Event ()
   , rl_data :: a
   }
   deriving (Eq, Ord, Show, Generic)
+
+rl_available :: RateLimited a -> Bool
+rl_available = isNothing . rl_cooldown_left
 
 
 rateLimit :: Time -> SF (Event a, b) c -> SF (Event a, b) (RateLimited c)
@@ -103,5 +107,5 @@ rateLimit cooldown sf = loopPre 0 $ proc ((ev, b), last_ok) -> do
   out <- sf -< (actually_die, b)
 
   respawn <- edge -< respawn_at <= t
-  returnA -< (RateLimited alive respawn out, respawn_at)
+  returnA -< (RateLimited (bool (Just $ respawn_at - t) Nothing alive)  respawn out, respawn_at)
 
