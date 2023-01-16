@@ -93,7 +93,7 @@ data Resources = Resources
   , r_sounds   :: Sound -> ALUT.Source
   , r_songs    :: Song -> ALUT.Source
   , r_worlds   :: WorldName -> World
-  , r_sprites  :: Sprite -> Anim -> [WrappedTexture]
+  , r_anims    :: Anim -> [WrappedTexture]
   , r_glyphs   :: Char -> Texture
   }
 

@@ -1,5 +1,7 @@
 {-# LANGUAGE AllowAmbiguousTypes    #-}
 {-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE UndecidableInstances #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
 
 module Engine.Resources where
 
@@ -8,9 +10,10 @@ import           Data.Traversable (for)
 import           Engine.Types (Engine)
 import           System.Environment.Blank (getEnv)
 import           System.FilePath
+import Generics.Deriving (GEnum, genum)
 
 
-class (Ord key, Enum key, Bounded key)
+class (Ord key, GEnum key)
       => IsResource key res
        | key -> res
        where
@@ -18,6 +21,9 @@ class (Ord key, Enum key, Bounded key)
   resourceExt :: String
   resourceName :: key -> String
   load :: key -> Engine -> FilePath -> IO res
+
+instance {-# OVERLAPPABLE #-} (Enum a, Bounded a) => GEnum a where
+  genum = enumFromTo minBound maxBound
 
 resourceRootPath :: IO FilePath
 resourceRootPath =
@@ -29,7 +35,7 @@ loadResource
     => FilePath -> Engine -> IO (key -> res)
 loadResource rpath engine = do
   m <- fmap M.fromList $
-    for [minBound @key .. maxBound] $ \k ->
+    for genum $ \k ->
       fmap (k, ) $ load @_ @res k engine $
         rpath </> resourceFolder @key @res </>
           resourceName k <.> resourceExt @key @res

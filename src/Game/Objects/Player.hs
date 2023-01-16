@@ -167,9 +167,9 @@ drawPlayer = arr mconcat <<< fork
       edir <- edgeBy diffDir 0 -< pos
       dir <- hold True -< edir
       V2 vx vy <- derivative -< pos
-      mkAnim MainCharacter
+      mkAnim
         -<  ( DrawSpriteDetails
-                (bool Idle Run $ abs vx >= epsilon && abs vy < epsilon)
+                (bool (Idle MainCharacter) (Run MainCharacter) $ abs vx >= epsilon && abs vy < epsilon)
                 0
                 (V2 (not dir) False)
             , pos

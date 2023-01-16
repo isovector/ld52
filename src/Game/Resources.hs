@@ -23,15 +23,15 @@ instance Bounded Char' where
   maxBound = Char' $ toEnum 122
 
 
-frameCounts :: Sprite -> Anim -> Int
-frameCounts _ Idle   = 4
-frameCounts _ NoAnim = 1
-frameCounts _ Run    = 4
+frameCounts :: Anim -> Int
+frameCounts (Idle _)   = 4
+frameCounts (NoAnim _) = 1
+frameCounts (Run _)    = 4
 
-frameSound :: Sprite -> Anim -> Int -> Maybe Sound
-frameSound _ Run 1 = Just StepSound
-frameSound _ Run 3 = Just StepSound
-frameSound _ _ _ = Nothing
+frameSound :: Anim -> Int -> Maybe Sound
+frameSound (Run _) 1 = Just StepSound
+frameSound (Run _) 3 = Just StepSound
+frameSound _ _ = Nothing
 
 wrapTexture :: Texture -> IO WrappedTexture
 wrapTexture t = do
@@ -43,21 +43,21 @@ wrapTexture t = do
     , wt_origin = 0
     }
 
-instance IsResource (Sprite, Anim) [WrappedTexture] where
-  resourceFolder = "sprites"
+instance IsResource Anim [WrappedTexture] where
+  resourceFolder = "anims"
   resourceExt = "png"
   resourceName _ = "unused"
-  load (cn, an) e _ = do
-    for [0 .. frameCounts cn an - 1] $ \i -> do
-      let fp = "resources" </> "sprites" </> charName cn </> animName an <> "_" <> show i <.> "png"
+  load an e _ = do
+    for [0 .. frameCounts an - 1] $ \i -> do
+      let fp = "resources" </> "anims" </> animName an <> "_" <> show i <.> "png"
       wt <- wrapTexture =<< loadJuicyTexture (e_renderer e) fp
       pure $ setGroundOrigin wt
 
 
 animName :: Anim -> FilePath
-animName Idle = "idle"
-animName NoAnim = "no_anim"
-animName Run = "run"
+animName (Idle s) = charName s </> "idle"
+animName (NoAnim s) = charName s </> "no_anim"
+animName (Run s) = charName s </> "run"
 
 
 charName :: Sprite -> FilePath
@@ -147,7 +147,7 @@ loadResources engine = do
   songs    <- loadResource rpath engine
   sounds   <- loadResource rpath engine
   worlds   <- loadResource rpath engine
-  sprites  <- loadResource rpath engine
+  anims    <- loadResource rpath engine
   glyphs   <- loadResource rpath engine
 
   pure $ Resources
@@ -156,7 +156,7 @@ loadResources engine = do
     , r_sounds   = sounds
     , r_songs    = songs
     , r_worlds   = worlds
-    , r_sprites  = curry sprites
+    , r_anims    = anims
     , r_glyphs   = glyphs . Char'
     }
 

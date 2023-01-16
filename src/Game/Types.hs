@@ -1,8 +1,10 @@
+{-# LANGUAGE DeriveAnyClass #-}
 module Game.Types where
 
 import Data.Set (Set)
 import Engine.CoreTypes
 import GHC.Generics (Generic)
+import Generics.Deriving.Enum
 
 
 data GameState = GameState
@@ -96,13 +98,15 @@ screenRect = Rectangle (P $ -tileSize * buffer) (logicalSize + tileSize * 2 * bu
 data Sprite
   = MainCharacter
   deriving stock (Eq, Ord, Show, Read, Enum, Bounded, Generic)
+  deriving anyclass (GEnum)
 
 
 data Anim
-  = Idle
-  | NoAnim
-  | Run
-  deriving stock (Eq, Ord, Show, Read, Enum, Bounded, Generic)
+  = Idle Sprite
+  | NoAnim Sprite
+  | Run Sprite
+  deriving stock (Eq, Ord, Show, Read, Generic)
+  deriving anyclass (GEnum)
 
 data Message
   = TeleportTo (V2 WorldPos)

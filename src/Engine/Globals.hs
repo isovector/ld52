@@ -20,23 +20,23 @@ global_textures :: GameTexture -> WrappedTexture
 global_sounds :: Sound -> ALUT.Source
 global_songs :: Song -> ALUT.Source
 global_worlds :: WorldName -> World
-global_sprites :: Sprite -> Anim -> [WrappedTexture]
+global_anims :: Anim -> [WrappedTexture]
 global_glyphs :: Char -> Texture
 
 Resources
   { r_textures = global_textures
   , r_sounds   = global_sounds
   , r_worlds   = global_worlds
-  , r_sprites  = global_sprites
+  , r_anims    = global_anims
   , r_glyphs   = global_glyphs
   , r_songs    = global_songs
   } = global_resources
 
 
-{-# NOINLINE global_textures #-}
+{-# NOINLINE global_anims    #-}
+{-# NOINLINE global_glyphs   #-}
+{-# NOINLINE global_songs    #-}
 {-# NOINLINE global_sounds   #-}
+{-# NOINLINE global_textures #-}
 {-# NOINLINE global_worlds   #-}
-{-# NOINLINE global_sprites  #-}
-{-# NOINLINE global_glyphs  #-}
-{-# NOINLINE global_songs  #-}
 

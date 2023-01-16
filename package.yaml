@@ -39,6 +39,7 @@ dependencies:
 - deepseq
 - hashable
 - JuicyPixels
+- generic-deriving
 
 custom-setup:
   dependencies:
