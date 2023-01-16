@@ -8,7 +8,7 @@ import           Control.Monad.Except
 import           Data.Either (partitionEithers)
 import           Data.Generics.Labels ()
 import qualified Data.Map as M
-import           Data.Maybe (catMaybes)
+import           Data.Maybe (catMaybes, maybeToList)
 import           Data.Monoid
 import qualified Data.Set as S
 import qualified Data.Text as T
@@ -18,10 +18,14 @@ import           Engine.Drawing
 import           Engine.Prelude
 import           Engine.Resources
 import           Game.Resources (loadWrappedTexture)
+import           Game.Tiles (handleTileData)
 import qualified LDtk as LDtk
 import           System.FilePath
+import           Text.Read (readMaybe)
 
 import {-# SOURCE #-} Game.Objects
+import Control.Applicative (liftA2)
+import Data.Foldable (fold)
 
 
 ldtkColorToColor :: LDtk.Color -> Color
@@ -66,12 +70,15 @@ rectangularize (V2 x _)
   . chunksOf x
 
 parseLayer
-    :: Map Text WrappedTexture
+    :: LevelLayer
+    -> Map Int (Map Int TileData)
+    -> Map Text WrappedTexture
     -> LDtk.Layer
     -> ( CollisionPurpose -> V2 Tile -> Any
+       , [Object]
        , Renderable
        )
-parseLayer !ts_cache l = do
+parseLayer ll !ts_extra !ts_cache l = do
   let !sz = (parseV2 Tile l #__cWid #__cHei)
       !col = force $ rectangularize (coerce sz) (l ^. #intGridCsv)
       {-# NOINLINE col #-}
@@ -82,8 +89,16 @@ parseLayer !ts_cache l = do
             { wt_size = tileSize
             }
 
-      tilemap = buildTileMap wt $ l ^. #autoLayerTiles
+      (objs, tilemap)
+        = buildTileMap
+            ll
+            (fromMaybe mempty $
+              (l ^. #__tilesetDefUid) >>= flip M.lookup ts_extra
+            )
+            wt
+        $ l ^. #autoLayerTiles
   (   cols
+    , objs
     , drawTileMap tilemap
     )
 {-# NOINLINE parseLayer #-}
@@ -153,14 +168,22 @@ getReferencedEntities e
       else []
 
 
-buildTileMap :: WrappedTexture -> [LDtk.Tile] -> Map (V2 Tile) Renderable
-buildTileMap wt ts = M.fromListWith (<>) $ do
+buildTileMap
+    :: LevelLayer
+    -> Map Int TileData
+    -> WrappedTexture
+    -> [LDtk.Tile]
+    -> ([Object], Map (V2 Tile) Renderable)
+buildTileMap l extra wt ts = fold $ do
   t <- ts
-  let pos = fmap fromIntegral $ pairToV2 $ t ^. #px
+  let cd = (t ^. #t) >>= flip M.lookup extra
+      pos = fmap fromIntegral $ pairToV2 $ t ^. #px
+      tpos = posToTile pos
       wt' = wt { wt_sourceRect = Just (Rectangle (P $ fmap fromIntegral $ pairToV2 $ t ^. #src) tileSize)
                }
   pure
-    $ (posToTile pos, )
+    $ (maybeToList $ fmap (handleTileData wt l tpos) cd, )
+    $ M.singleton tpos
     $ drawSprite wt' pos  0
     $ flipToMirrors
     $ t ^. #tile_flip
@@ -193,6 +216,16 @@ parseLevels e root
         $ catMaybes
         $ root ^.. #defs . #tilesets . traverse . #relPath
 
+    let ts_extra :: Map Int (Map Int TileData)
+        !ts_extra =
+          M.fromListWith (M.union) $ do
+            ts <- root ^. #defs . #tilesets
+            pure $ (ts ^. #uid,) $ M.fromList $ do
+              cd <- ts ^. #customData
+              let data' = T.unpack $ cd ^. #data'
+              td <- maybe (trace (mappend "[WARNING] unknown TileData: " data') []) pure $ readMaybe data'
+              pure $ (cd ^. #tileId, td)
+
     fmap (foldMap (uncurry M.singleton))
       $ for (root ^. #levels) $ \lev -> do
 
@@ -203,17 +236,22 @@ parseLevels e root
 
         let ls = lev ^. #layerInstances
             (errs, ents) = foldMap parseEntities ls
-            make_layer
+            make_layer ll
               = except
               . force
               . pure
-              . fromMaybe (mempty, mempty)
-              . fmap (parseLayer ts_cache)
+              . fromMaybe (mempty, mempty, mempty)
+              . fmap (parseLayer ll ts_extra ts_cache)
               . getLayerFromLevel ls
+              $ ll
 
-        !(c1, d1) <- make_layer Layer1
-        !(c2, d2) <- make_layer Layer2
-        !(c3, d3) <- make_layer Layer3
+
+        !(c1, e1, d1) <- make_layer Layer1
+        !(c2, e2, d2) <- make_layer Layer2
+        !(c3, e3, d3) <- make_layer Layer3
+
+        let !layer_ents = e1 <> e2 <> e3
+            !insertable = foldMap (uncurry M.singleton) $ zip (fmap (T.pack . mappend "ent" . show @Int) [0..]) layer_ents
 
         traceM $ unlines $ fmap (T.unpack . mappend "[WARNING] level: ") errs
 
@@ -233,7 +271,7 @@ parseLevels e root
                 Layer2 -> c2
                 Layer3 -> c3
               )
-              ents
+              (ents <> insertable)
           )
 
 buildTilesetCache :: Engine -> [FilePath] -> IO (Map Text WrappedTexture)
