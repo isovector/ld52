@@ -4,7 +4,6 @@
 
 module Engine.Drawing where
 
-import           Control.Monad (void)
 import           Data.Foldable (for_, traverse_)
 import           Engine.Camera (viaCamera)
 import           Engine.FRP

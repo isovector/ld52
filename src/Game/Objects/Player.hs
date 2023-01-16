@@ -51,7 +51,7 @@ player pos0 = proc oi -> do
       powerups :: S.Set PowerupType
       powerups = gs_inventory $ gameState oi
 
-  (alive, respawn, death_evs) <- dieAndRespawnHandler -< (pos, dying)
+  RateLimited alive respawn death_evs <- dieAndRespawnHandler -< (pos, dying)
 
   throw_ball <- edge -< c_z $ fi_controls $ oi_frameInfo oi
   throw_evs <-
@@ -133,20 +133,14 @@ throwBallHandler offset ore =
       & #oe_spawn .~ ([teleportBall me ore pos offset (V2 (bool negate id dir 200) (-200))] <$ throw)
 
 
-dieAndRespawnHandler :: SF (V2 WorldPos, Event a) (Bool, Event (), ObjectEvents)
+dieAndRespawnHandler :: SF (V2 WorldPos, Event a) (RateLimited ObjectEvents)
 dieAndRespawnHandler = proc (pos, on_die) -> do
-  t <- time -< ()
-  let next_alive = t + respawnTime
-  respawn_at <- hold 0 -< next_alive <$ on_die
-
-  let alive = respawn_at <= t
-  let actually_die = bool noEvent on_die $ respawn_at == next_alive
-
-  respawn <- edge -< respawn_at <= t
-
-  returnA -< (alive, respawn, ) $ mempty
-    & #oe_spawn .~ (gore pos <$ actually_die)
-    & #oe_play_sound .~ ([DieSound] <$ actually_die)
+  rateLimit respawnTime
+     (arr $ \(ev, pos) ->
+        mempty
+          & #oe_spawn .~ (gore pos <$ ev)
+          & #oe_play_sound .~ ([DieSound] <$ ev))
+      -< (on_die, pos)
 
 
 playerPhysVelocity :: SF FrameInfo (V2 Double)

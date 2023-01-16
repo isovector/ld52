@@ -81,3 +81,26 @@ addInventoryResponse
   . pure
   . AddInventory
 
+data RateLimited a = RateLimited
+  { rl_available :: Bool
+  , rl_on_refresh :: Event ()
+  , rl_data :: a
+  }
+  deriving (Eq, Ord, Show, Generic)
+
+
+rateLimit :: Time -> SF (Event a, b) c -> SF (Event a, b) (RateLimited c)
+rateLimit cooldown sf = loopPre 0 $ proc ((ev, b), last_ok) -> do
+  t <- time -< ()
+  let next_alive = t + cooldown
+  respawn_at <- hold 0 -< whenE (t >= last_ok) $ next_alive <$ ev
+
+  let alive = respawn_at <= t
+  let actually_die = whenE (respawn_at == next_alive) ev
+
+  out <- sf -< (actually_die, b)
+
+  respawn <- edge -< respawn_at <= t
+  returnA -< (RateLimited alive respawn out, respawn_at)
+
+
