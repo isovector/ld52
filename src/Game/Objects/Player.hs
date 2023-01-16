@@ -3,7 +3,7 @@
 module Game.Objects.Player where
 
 import           Control.Lens ((*~))
-import           Data.Maybe (isJust)
+import           Data.Maybe (isJust, isNothing)
 import           Data.Monoid
 import qualified Data.Set as S
 import           Engine.Collision
@@ -51,15 +51,7 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
       powerups :: S.Set PowerupType
       powerups = gs_inventory $ gameState oi
 
-  RateLimited alive respawn death_evs <- dieAndRespawnHandler -< (pos, dying)
-
-  throw_ball <- edge -< c_z $ fi_controls $ oi_frameInfo oi
-  throw_evs <-
-    throwBallHandler (- (sz & _x .~ 0)) ore
-      -< ( oi_self oi
-         , pos
-         , whenE (S.member PowerupWarpBall powerups) $ whenE alive throw_ball
-         )
+  RateLimited (isNothing -> alive) respawn death_evs <- dieAndRespawnHandler -< (pos, dying)
 
 
   let can_double_jump = S.member PowerupDoubleJump powerups
@@ -72,7 +64,7 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
   let onGround = touchingGround (collision CollisionCheckGround) ore pos
   let vel2' = updateVel (can_double_jump || onGround) vel vel'0
 
-  wants_totsugeki <- edge -< c_c $ controls oi
+  wants_totsugeki <- edge -< c_c (controls oi) && alive && S.member PowerupTotsugeki powerups
   totsugeki <- totsugekiHandler -< (wants_totsugeki, pos)
 
   let vel' = fromMaybe vel2' totsugeki
@@ -81,6 +73,15 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
 
   let desiredPos = pos + coerce dpos
   let pos' = fromMaybe pos $ move collision (coerce ore) pos $ dpos
+
+  throw_ball <- edge -< c_z $ fi_controls $ oi_frameInfo oi
+  throw_evs <-
+    throwBallHandler (- (sz & _x .~ 0)) ore
+      -< ( oi_self oi
+         , pos
+         , vel
+         , whenE (S.member PowerupWarpBall powerups) $ whenE alive throw_ball
+         )
 
   let vel''
         = (\want have res -> bool 0 res $ abs(want - have) <= epsilon )
@@ -182,17 +183,17 @@ respawnTime = 1
 throwBallHandler
     :: V2 WorldPos
     -> OriginRect Double
-    -> SF (ObjectId, V2 WorldPos, Event a) ObjectEvents
+    -> SF (ObjectId, V2 WorldPos, V2 Double, Event a) ObjectEvents
 throwBallHandler offset ore =
-  proc (me, pos, throw) ->
+  proc (me, pos, vel, throw) ->
     fmap rl_data $ rateLimit 1.5 (
-      proc (ev, (me, pos)) -> do
+      proc (ev, (me, pos, vel)) -> do
         edir <- edgeBy diffDir 0 -< pos
         dir <- hold True -< edir
         returnA -< mempty
           & #oe_spawn .~
-              ([teleportBall me ore pos offset (V2 (bool negate id dir 200) (-200))] <$ ev)
-      ) -< (throw, (me, pos))
+              ([teleportBall me ore pos offset (vel + V2 (bool negate id dir 200) (-200))] <$ ev)
+      ) -< (throw, (me, pos, vel))
 
 
 dieAndRespawnHandler :: SF (V2 WorldPos, Event a) (RateLimited ObjectEvents)
@@ -201,16 +202,19 @@ dieAndRespawnHandler = proc (pos, on_die) -> do
      (arr $ \(ev, pos) ->
         mempty
           & #oe_spawn .~ (gore pos <$ ev)
-          & #oe_play_sound .~ ([DieSound] <$ ev))
-      -< (on_die, pos)
+          & #oe_play_sound .~ ([DieSound] <$ ev)
+          & #oe_broadcast_message .~ ([PlayerDeath] <$ ev)
+     ) -< (on_die, pos)
 
 
 totsugekiHandler :: SF (Event a, V2 WorldPos) (Maybe (V2 Double))
 totsugekiHandler = proc (ev, pos) -> do
   edir <- edgeBy diffDir 0 -< pos
   dir <- hold True -< edir
-  RateLimited inactive _ _ <- rateLimit 0.6 identity -< (ev, pos)
-  returnA -< bool (Just $ V2 (bool negate id dir 400) 0) Nothing inactive
+  RateLimited cooldown _ _ <- rateLimit 1.5 identity -< (ev, pos)
+  let active = maybe False (>= (1.5 - 0.6)) cooldown
+
+  returnA -< bool Nothing (Just $ V2 (bool negate id dir 400) 0) active
 
 
 playerPhysVelocity :: SF FrameInfo (V2 Double)

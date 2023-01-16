@@ -83,6 +83,7 @@ tileSize = 16
 data PowerupType
     = PowerupDoubleJump
     | PowerupWarpBall
+    | PowerupTotsugeki
   deriving (Eq, Ord, Show, Enum, Bounded, Generic, Read)
 
 data ObjectTag
@@ -115,6 +116,7 @@ data Message
   | TeleportOpportunity (V2 WorldPos)
   | SetCheckpoint (V2 WorldPos)
   | OnTrampoline Double
+  | PlayerDeath
   | Die
   | CurrentCheckpoint ObjectId
   deriving stock (Eq, Ord, Show, Read, Generic)
