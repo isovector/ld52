@@ -24,8 +24,6 @@ import           System.FilePath
 import           Text.Read (readMaybe)
 
 import {-# SOURCE #-} Game.Objects
-import Control.Applicative (liftA2)
-import Data.Foldable (fold)
 
 
 ldtkColorToColor :: LDtk.Color -> Color
@@ -174,19 +172,20 @@ buildTileMap
     -> WrappedTexture
     -> [LDtk.Tile]
     -> ([Object], Map (V2 Tile) Renderable)
-buildTileMap l extra wt ts = fold $ do
-  t <- ts
-  let cd = (t ^. #t) >>= flip M.lookup extra
-      pos = fmap fromIntegral $ pairToV2 $ t ^. #px
-      tpos = posToTile pos
-      wt' = wt { wt_sourceRect = Just (Rectangle (P $ fmap fromIntegral $ pairToV2 $ t ^. #src) tileSize)
-               }
-  pure
-    $ (maybeToList $ fmap (handleTileData wt l tpos) cd, )
-    $ M.singleton tpos
-    $ drawSprite wt' pos  0
-    $ flipToMirrors
-    $ t ^. #tile_flip
+buildTileMap l extra wt ts =
+  bimap join (foldr (flip $ M.unionWith (<>)) mempty) $ unzip $ do
+    t <- ts
+    let cd = (t ^. #t) >>= flip M.lookup extra
+        pos = fmap fromIntegral $ pairToV2 $ t ^. #px
+        tpos = posToTile pos
+        wt' = wt { wt_sourceRect = Just (Rectangle (P $ fmap fromIntegral $ pairToV2 $ t ^. #src) tileSize)
+                }
+        flips = flipToMirrors
+              $ t ^. #tile_flip
+    pure
+      $ (maybeToList $ fmap (handleTileData wt l tpos flips) cd, )
+      $ M.singleton tpos
+      $ drawSprite wt' pos  0 flips
 
 
 flipToMirrors :: LDtk.Flip -> V2 Bool
