@@ -31,6 +31,7 @@ import           Game.Objects.Test
 import           Game.Objects.TextBillboard (textBillboard)
 import           Game.Objects.ToggleRegion (toggleRegion)
 import           Game.Objects.Trampoline (trampoline)
+import           Game.Objects.TutorialRegion (tutorialRegion)
 import           Game.Objects.Unknown (unknown)
 import qualified LDtk.Types as LDtk
 
@@ -54,6 +55,9 @@ buildEntity "Checkpoint" pos _ _ _ = pure $ checkpoint pos
 buildEntity "Door" pos ore props _ =
   door pos ore
     <$> asPos "Door" "out" props
+buildEntity "TutorialRegion" pos ore props _ =
+  tutorialRegion pos ore
+    <$> asText "TutorialRegion" "key" props
 buildEntity "Coin" pos _ _ _ = pure $ coin pos
 buildEntity "Death" pos ore _ _ = pure $ deathZone pos ore
 buildEntity "ToggleLayer" pos ore props _ =
