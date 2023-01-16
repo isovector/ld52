@@ -3,6 +3,7 @@
 module Game.Objects.Player where
 
 import           Control.Lens ((*~))
+import           Data.Maybe (isJust)
 import           Data.Monoid
 import qualified Data.Set as S
 import           Engine.Collision
@@ -69,8 +70,15 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
   let collision = getCollisionMap $ globalState oi
 
   let onGround = touchingGround (collision CollisionCheckGround) ore pos
-  let vel' = updateVel (can_double_jump || onGround) vel vel'0
-  let dpos = 0.016 Game.Common.*^ vel'
+  let vel2' = updateVel (can_double_jump || onGround) vel vel'0
+
+  wants_totsugeki <- edge -< c_c $ controls oi
+  totsugeki <- totsugekiHandler -< (wants_totsugeki, pos)
+
+  let vel' = fromMaybe vel2' totsugeki
+
+  let dpos = vel' * 0.016
+
   let desiredPos = pos + coerce dpos
   let pos' = fromMaybe pos $ move collision (coerce ore) pos $ dpos
 
@@ -92,7 +100,7 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
 
   let V2 _ updowndir = c_dir $ fi_controls $ oi_frameInfo oi
 
-  drawn <- drawPlayer -< pos''
+  drawn <- drawPlayer -< (pos'', isJust totsugeki)
 
   returnA -< (, bool 0 vel'' alive) $
     ObjectOutput
@@ -197,6 +205,14 @@ dieAndRespawnHandler = proc (pos, on_die) -> do
       -< (on_die, pos)
 
 
+totsugekiHandler :: SF (Event a, V2 WorldPos) (Maybe (V2 Double))
+totsugekiHandler = proc (ev, pos) -> do
+  edir <- edgeBy diffDir 0 -< pos
+  dir <- hold True -< edir
+  RateLimited inactive _ _ <- rateLimit 0.6 identity -< (ev, pos)
+  returnA -< bool (Just $ V2 (bool negate id dir 400) 0) Nothing inactive
+
+
 playerPhysVelocity :: SF FrameInfo (V2 Double)
 playerPhysVelocity = proc fi -> do
   let jumpVel = V2 0 (-210)
@@ -209,21 +225,25 @@ playerPhysVelocity = proc fi -> do
   returnA -< vel'
 
 
-drawPlayer :: SF (V2 WorldPos) Renderable
-drawPlayer = arr mconcat <<< fork
-  [ proc pos -> do
-      -- We can fully animate the player as a function of the position!
-      edir <- edgeBy diffDir 0 -< pos
-      dir <- hold True -< edir
-      V2 vx vy <- derivative -< pos
-      mkAnim
+drawPlayer :: SF (V2 WorldPos, Bool) Renderable
+drawPlayer =
+  proc (pos, is_totsugeku) -> do
+    -- We can fully animate the player as a function of the position!
+    edir <- edgeBy diffDir 0 -< pos
+    dir <- hold True -< edir
+    V2 vx vy <- derivative -< pos
+    r <- mkAnim
         -<  ( DrawSpriteDetails
-                (bool (Idle MainCharacter) (Run MainCharacter) $ abs vx >= epsilon && abs vy < epsilon)
+                (bool (Idle MainCharacter) (Run MainCharacter) $ abs vx >= epsilon && abs vy < epsilon && not is_totsugeku)
                 0
                 (V2 (not dir) False)
             , pos
             )
-  ]
+    returnA -< mconcat
+      [ ifA is_totsugeku $ drawGameTextureOriginRect ChickenTexture (mkCenterdOriginRect 24 & #orect_offset . _x -~ 10) pos 0 (V2 dir False)
+      , r
+      ]
+
 
 
 instance (Floating a, Eq a) => VectorSpace (V2 a) a where

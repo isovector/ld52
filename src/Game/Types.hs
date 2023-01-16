@@ -62,6 +62,7 @@ data LevelLayer
 data Controls = Controls
   { c_space :: Bool
   , c_z :: Bool
+  , c_c :: Bool
   , c_reset :: Bool
   , c_dir :: V2 Int
   }
@@ -72,6 +73,7 @@ defaultControls = Controls
   { c_space = False
   , c_reset = False
   , c_z = False
+  , c_c = False
   , c_dir = V2 0 0
   }
 

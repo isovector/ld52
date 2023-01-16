@@ -9,6 +9,7 @@ parseControls :: (SDL.Scancode -> Bool) -> Controls
 parseControls check = Controls
   { c_space = check ScancodeX || check ScancodeSpace
   , c_z = check ScancodeZ
+  , c_c = check ScancodeC
   , c_reset = check ScancodeR
   , c_dir =
       V2
