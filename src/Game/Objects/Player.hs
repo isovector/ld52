@@ -13,6 +13,7 @@ import           Game.Common
 import           Game.Objects.Particle (gore)
 import           Game.Objects.TeleportBall (teleportBall)
 import qualified SDL.Vect as SDL
+import Control.Monad (void)
 
 player :: V2 WorldPos -> Object
 player pos0 = loopPre 0 $ proc (oi, vel) -> do
@@ -203,6 +204,7 @@ dieAndRespawnHandler = proc (pos, on_die) -> do
           & #oe_spawn .~ (gore pos <$ ev)
           & #oe_play_sound .~ ([DieSound] <$ ev)
           & #oe_broadcast_message .~ ([PlayerDeath] <$ ev)
+          & #oe_focus .~ void ev
      ) -< (on_die, pos)
 
 
@@ -211,7 +213,7 @@ totsugekiHandler = proc (ev, pos) -> do
   edir <- edgeBy diffDir 0 -< pos
   dir <- hold True -< edir
   RateLimited cooldown _ _ <- rateLimit 1.5 identity -< (ev, pos)
-  let active = maybe False (>= (1.5 - 0.6)) cooldown
+  let active = maybe False (>= (1.5 - 0.5)) cooldown
 
   returnA -< bool Nothing (Just $ V2 (bool negate id dir 400) 0) active
 
