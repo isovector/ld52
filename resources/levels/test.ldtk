@@ -2286,7 +2286,14 @@
 			"tags": [],
 			"tagsSourceEnumUid": null,
 			"enumTags": [],
-			"customData": [ { "tileId": 37, "data": "Twinkle 19" }, { "tileId": 54, "data": "Twinkle 18" }, { "tileId": 74, "data": "Twinkle 20" } ],
+			"customData": [
+				{ "tileId": 37, "data": "Twinkle 19" },
+				{ "tileId": 54, "data": "Twinkle 18" },
+				{ "tileId": 74, "data": "Twinkle 20" },
+				{ "tileId": 126, "data": "Twinkle 21" },
+				{ "tileId": 127, "data": "Twinkle 22" },
+				{ "tileId": 146, "data": "Twinkle 23" }
+			],
 			"savedSelections": [],
 			"cachedPixelData": {
 				"opaqueTiles": "000000000000000000000000000000001000000000000000111100000000000000111100000000000000000000000000000000000000011000001000000000000000000000000000000000000000001000111111111111111111111111111100000000",

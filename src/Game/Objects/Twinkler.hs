@@ -6,19 +6,17 @@ import           Game.Common
 import Data.Hashable (hash)
 import Data.Generics.Product (position)
 
-twinkler :: WrappedTexture -> LevelLayer -> V2 Tile -> V2 Bool -> Int -> Object
-twinkler wt l tpos@(tileToPos -> pos) flips n = proc oi -> do
+twinkler :: WrappedTexture -> LevelLayer -> V2 WorldPos -> V2 Bool -> Int -> Object
+twinkler wt l pos flips n = proc oi -> do
   let gs = globalState oi
 
   let wt' =
-        wt & #wt_sourceRect . #_Just . position @1 . #_P %~ \p ->
-         p & _x .~ (fromIntegral n - 18) * tileSize
-           & _y .~ tileSize
+        wt & #wt_sourceRect . #_Just . position @1 . #_P .~ V2 ((fromIntegral n - 18) * tileSize) tileSize
 
   t <- localTime -< ()
-  let seed = traceShowId $ abs $ hash tpos
+  let seed = abs $ hash pos
       rate = 2 + seed `mod` 4
-      speed = fromIntegral $ 1 + seed `mod` 5
+      speed = fromIntegral $ 1 + seed `mod` 3
       onoff = (round (t * speed) + seed) `mod` rate
 
   returnA -<

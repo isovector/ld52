@@ -183,7 +183,7 @@ buildTileMap l extra wt ts =
         flips = flipToMirrors
               $ t ^. #tile_flip
     pure
-      $ (maybeToList $ fmap (handleTileData wt l tpos flips) cd, )
+      $ (maybeToList $ fmap (handleTileData wt' l pos flips) cd, )
       $ M.singleton tpos
       $ drawSprite wt' pos  0 flips
 
