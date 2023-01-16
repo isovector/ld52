@@ -6,7 +6,7 @@ import Game.Common
 
 runIntro :: SF RawFrameInfo (Camera, Renderable)
 runIntro = runSwont (error "die") $ do
-  -- momentary $ (Camera 0, const $ playSong WarmDuckShuffle)
+  momentary $ (Camera 0, const $ playSong WarmDuckShuffle)
   splashScreen
 
 splashScreen :: Swont RawFrameInfo (Camera, Renderable) ()
