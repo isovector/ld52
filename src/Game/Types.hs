@@ -30,6 +30,7 @@ data GameTexture
     | TeleTexture
     | AuraTexture
     | TrampolineTexture
+    | KeycapTexture
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 

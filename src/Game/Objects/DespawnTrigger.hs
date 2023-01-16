@@ -20,7 +20,7 @@ despawnTrigger pos ore despawns =
         }
     )
     ore
-    (V4 0 128 92 128)
+    0
     pos
 
 

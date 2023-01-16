@@ -19,7 +19,7 @@ spawnTrigger pos ore persistent spawns =
         }
     )
     ore
-    (V4 255 0 0 128)
+    0
     pos
 
 
