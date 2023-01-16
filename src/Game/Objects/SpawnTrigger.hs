@@ -24,5 +24,9 @@ spawnTrigger pos ore persistent spawns =
 
 
 spawnAll :: Map Text Object -> ObjectMap ObjSF -> ObjectMap ObjSF
-spawnAll spawns = #objm_map %~ appEndo (foldMap (Endo . uncurry M.insert . first StaticId) $ M.toList spawns)
+spawnAll spawns
+  = over #objm_map
+  $ appEndo
+  $ foldMap (Endo . uncurry M.insert . first StaticId)
+  $ M.toList spawns
 
