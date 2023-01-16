@@ -23,7 +23,7 @@ $ stack run
 you'll need sdl2 and openal. On Fedora:
 
 ```bash
-$ dnf install sdl2 sdl2_image-devel sdl2_mixer-devel openal-devel freealut-devel
+$ dnf install sdl2 openal-devel freealut-devel
 ```
 
 which will kick off a long build and eventually start the game!
