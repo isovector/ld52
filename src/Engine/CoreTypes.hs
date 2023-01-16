@@ -12,7 +12,7 @@ import Control.DeepSeq (NFData)
 newtype Tile = Tile
   { getTile :: Int
   }
-  deriving newtype (Eq, Ord, Show, Read, Enum, Bounded, Num, NFData)
+  deriving newtype (Eq, Ord, Show, Read, Enum, Bounded, Num, NFData, Hashable)
 
 
 newtype Pixel = Pixel
