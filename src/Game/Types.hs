@@ -116,6 +116,7 @@ data Message
   | TeleportOpportunity (V2 WorldPos)
   | SetCheckpoint (V2 WorldPos)
   | OnTrampoline Double
+  | PlayerDeath
   | Die
   | CurrentCheckpoint ObjectId
   deriving stock (Eq, Ord, Show, Read, Generic)

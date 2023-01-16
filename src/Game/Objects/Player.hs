@@ -202,8 +202,9 @@ dieAndRespawnHandler = proc (pos, on_die) -> do
      (arr $ \(ev, pos) ->
         mempty
           & #oe_spawn .~ (gore pos <$ ev)
-          & #oe_play_sound .~ ([DieSound] <$ ev))
-      -< (on_die, pos)
+          & #oe_play_sound .~ ([DieSound] <$ ev)
+          & #oe_broadcast_message .~ ([PlayerDeath] <$ ev)
+     ) -< (on_die, pos)
 
 
 totsugekiHandler :: SF (Event a, V2 WorldPos) (Maybe (V2 Double))

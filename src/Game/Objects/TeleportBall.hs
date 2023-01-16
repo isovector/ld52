@@ -13,7 +13,7 @@ teleportBall
     -> V2 WorldPos
     -> V2 Double
     -> Object
-teleportBall owner owner_ore pos0 offset vel0@(V2 vx _) =
+teleportBall owner owner_ore pos0 offset vel0@(V2 vx _) = dieOnPlayerDeath $
   dSwitch (charge owner pos0 offset $ round $ signum vx) $ \(power) ->
     loopPre (vel0 ^* power) $ proc (oi, vel) -> do
       die <- after 1 () -< ()
