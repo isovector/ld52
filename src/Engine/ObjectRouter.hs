@@ -76,6 +76,7 @@ router' objs0 =
         . M.toList
         . objm_map
         . snd
+        . fst
      )
      >>> notYet
     )
