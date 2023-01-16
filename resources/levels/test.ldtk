@@ -2346,7 +2346,7 @@
 			"tags": [],
 			"tagsSourceEnumUid": null,
 			"enumTags": [],
-			"customData": [],
+			"customData": [ { "tileId": 37, "data": "Twinkle 19" }, { "tileId": 54, "data": "Twinkle 18" }, { "tileId": 74, "data": "Twinkle 24" } ],
 			"savedSelections": [],
 			"cachedPixelData": {
 				"opaqueTiles": "000000000000000000000000000000001000000000000000111100000000000000111100000000000000000000000000000000000000011000001000000000000000000000000000000000000000001000111111111111111111111111111100000000",
