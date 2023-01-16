@@ -8,15 +8,16 @@ import qualified Data.Set as S
 import           Engine.Globals
 import           Engine.ObjectRouter
 import           Engine.Prelude
+import           Game.Objects.CollectPowerup (powerupRenderable)
 import           Game.World (drawLevel)
-import Game.Objects.CollectPowerup (powerupRenderable)
 
 
 #ifndef __HLINT__
 
 initialObjs :: GlobalState -> ObjectMap ObjSF
 initialObjs gs
-  = foldr addObject (ObjectMap (ObjectId 0) mempty gs mempty)
+  = foldr (uncurry addStaticObject) (ObjectMap (DynamicId 0) mempty gs mempty)
+  $ M.toList
   $ l_defaultObjs $ gs_currentLevel gs
 
 

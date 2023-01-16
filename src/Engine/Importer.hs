@@ -90,7 +90,7 @@ parseLayer !ts_cache l = do
 
 
 
-parseEntities :: LDtk.Layer -> ([Text], [Object])
+parseEntities :: LDtk.Layer -> ([Text], Map Text Object)
 parseEntities l = do
   let es = l ^. #entityInstances
       refset = foldMap getReferencedEntities es
@@ -100,7 +100,7 @@ parseEntities l = do
       refmap = M.fromList refs
 
       (unref_errs, unrefs) = partitionEithers $ buildEntities refmap unref_es
-  (ref_errs <> unref_errs, fmap snd unrefs)
+  (ref_errs <> unref_errs, M.fromList unrefs)
 
 
 buildEntities :: Map Text Object -> [LDtk.Entity] -> [Either Text (Text, Object)]

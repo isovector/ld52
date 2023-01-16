@@ -5,6 +5,7 @@ module Engine.CoreTypes
 
 import SDL (V2(..), Rectangle(..), Point(..))
 import Data.Hashable (Hashable)
+import Data.Text (Text)
 
 
 newtype Tile = Tile
@@ -31,9 +32,9 @@ newtype WorldPos = WorldPos
   deriving newtype (Eq, Ord, Show, Read, Enum, Num, Fractional, Floating, Real, RealFrac, Hashable)
 
 
-newtype ObjectId = ObjectId
-  { getObjectId :: Int
-  }
+data ObjectId
+  = StaticId Text
+  | DynamicId Int
   deriving stock (Show, Read)
-  deriving newtype (Eq, Ord, Enum, Bounded)
+  deriving stock (Eq, Ord)
 

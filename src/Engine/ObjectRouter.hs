@@ -1,8 +1,10 @@
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
 
 module Engine.ObjectRouter
   ( renderObjects
   , addObject
+  , addStaticObject
   ) where
 
 import           Control.Lens (at, non)
@@ -18,6 +20,7 @@ import           Engine.Geometry (intersects)
 import           Engine.Types
 import           Engine.Utils (originRectToRect)
 import           Game.GameMessageHandler (handleGameMessage)
+import Data.Text (Text)
 
 
 renderObjects
@@ -46,7 +49,7 @@ renderEvents oe _ =
 
 emptyObjMap :: GlobalState -> ObjectMap a
 emptyObjMap gs = ObjectMap
-  { objm_camera_focus = ObjectId 0  -- TODO(sandy): should be Nothing
+  { objm_camera_focus = StaticId ""  -- TODO(sandy): should be Nothing
   , objm_undeliveredMsgs = mempty
   , objm_globalState = gs
   , objm_map = mempty
@@ -180,9 +183,16 @@ sendMsg from oid m = #objm_undeliveredMsgs . at oid . non mempty <>~ [(from, m)]
 addObject :: a -> ObjectMap a -> ObjectMap a
 addObject a = #objm_map %~ insertObject a
 
+addStaticObject :: Text -> a -> ObjectMap a -> ObjectMap a
+addStaticObject stid a = #objm_map %~ M.insert (StaticId stid) a
+
+
+getNextObjId :: ObjectId -> ObjectId
+getNextObjId (StaticId _) = DynamicId 0
+getNextObjId (DynamicId n) = DynamicId $ succ n
 
 insertObject :: a -> Map ObjectId a -> Map ObjectId a
 insertObject obj m =
-  let oid = maybe (ObjectId 0) (succ . fst) $ M.lookupMax m
+  let oid = maybe (DynamicId 0) (getNextObjId . fst) $ M.lookupMax m
    in M.insert oid obj m
 

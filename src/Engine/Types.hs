@@ -73,7 +73,7 @@ data Level = Level
   , l_bounds  :: Rect Pixel
   , l_tiles  :: LevelLayer -> Renderable
   , l_hitmap :: LevelLayer -> CollisionPurpose -> V2 Tile -> Bool
-  , l_defaultObjs :: [Object]
+  , l_defaultObjs :: Map Text Object
   }
   deriving stock Generic
 
