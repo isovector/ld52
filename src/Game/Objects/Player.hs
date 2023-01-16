@@ -103,7 +103,7 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
 
   drawn <- drawPlayer -< (pos'', isJust totsugeki)
 
-  returnA -< (, bool 0 vel'' alive) $
+  returnA -< (, bool 0 vel'' (alive && not (isEvent am_teleporting))) $
     ObjectOutput
         { oo_events = (mconcat [death_evs, throw_evs] <>) $
             mempty
