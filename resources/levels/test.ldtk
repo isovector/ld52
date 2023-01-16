@@ -11,7 +11,7 @@
 	"iid": "a22d35f0-7820-11ed-b6fd-213e885f30da",
 	"jsonVersion": "1.2.3",
 	"appBuildId": 464782,
-	"nextUid": 221,
+	"nextUid": 223,
 	"identifierStyle": "Capitalize",
 	"worldLayout": "LinearHorizontal",
 	"worldGridWidth": 128,
@@ -37,6 +37,33 @@
 	"customCommands": [],
 	"flags": ["UseMultilinesType"],
 	"defs": { "layers": [
+		{
+			"__type": "Entities",
+			"identifier": "Entities",
+			"type": "Entities",
+			"uid": 123,
+			"gridSize": 8,
+			"guideGridWid": 0,
+			"guideGridHei": 0,
+			"displayOpacity": 1,
+			"inactiveOpacity": 0.6,
+			"hideInList": false,
+			"hideFieldsWhenInactive": true,
+			"canSelectWhenInactive": true,
+			"pxOffsetX": 0,
+			"pxOffsetY": 0,
+			"parallaxFactorX": 0,
+			"parallaxFactorY": 0,
+			"parallaxScaling": true,
+			"requiredTags": [],
+			"excludedTags": [],
+			"intGridValues": [],
+			"autoRuleGroups": [],
+			"autoSourceLayerDefUid": null,
+			"tilesetDefUid": null,
+			"tilePivotX": 0,
+			"tilePivotY": 0
+		},
 		{
 			"__type": "IntGrid",
 			"identifier": "Layer3",
@@ -943,33 +970,6 @@
 			],
 			"autoSourceLayerDefUid": null,
 			"tilesetDefUid": 131,
-			"tilePivotX": 0,
-			"tilePivotY": 0
-		},
-		{
-			"__type": "Entities",
-			"identifier": "Entities",
-			"type": "Entities",
-			"uid": 123,
-			"gridSize": 8,
-			"guideGridWid": 0,
-			"guideGridHei": 0,
-			"displayOpacity": 1,
-			"inactiveOpacity": 0.6,
-			"hideInList": false,
-			"hideFieldsWhenInactive": true,
-			"canSelectWhenInactive": true,
-			"pxOffsetX": 0,
-			"pxOffsetY": 0,
-			"parallaxFactorX": 0,
-			"parallaxFactorY": 0,
-			"parallaxScaling": true,
-			"requiredTags": [],
-			"excludedTags": [],
-			"intGridValues": [],
-			"autoRuleGroups": [],
-			"autoSourceLayerDefUid": null,
-			"tilesetDefUid": null,
 			"tilePivotX": 0,
 			"tilePivotY": 0
 		},
@@ -2225,6 +2225,66 @@
 					"tilesetUid": null
 				}
 			]
+		},
+		{
+			"identifier": "DespawnTrigger",
+			"uid": 221,
+			"tags": [],
+			"width": 16,
+			"height": 16,
+			"resizableX": true,
+			"resizableY": true,
+			"keepAspectRatio": false,
+			"tileOpacity": 1,
+			"fillOpacity": 1,
+			"lineOpacity": 1,
+			"hollow": true,
+			"color": "#A22633",
+			"renderMode": "Rectangle",
+			"showName": true,
+			"tilesetId": null,
+			"tileRenderMode": "FitInside",
+			"tileRect": null,
+			"nineSliceBorders": [],
+			"maxCount": 0,
+			"limitScope": "PerLevel",
+			"limitBehavior": "MoveLastOne",
+			"pivotX": 0,
+			"pivotY": 0,
+			"fieldDefs": [
+				{
+					"identifier": "despawn",
+					"doc": null,
+					"__type": "Array<EntityRef>",
+					"uid": 222,
+					"type": "F_EntityRef",
+					"isArray": true,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "RefLinkBetweenCenters",
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "CurvedArrow",
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": null,
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "Any",
+					"allowedRefTags": [],
+					"tilesetUid": null
+				}
+			]
 		}
 	], "tilesets": [
 		{
@@ -2324,6 +2384,31 @@
 			"externalRelPath": null,
 			"fieldInstances": [],
 			"layerInstances": [
+				{
+					"__identifier": "Entities",
+					"__type": "Entities",
+					"__cWid": 38,
+					"__cHei": 150,
+					"__gridSize": 8,
+					"__opacity": 1,
+					"__pxTotalOffsetX": 0,
+					"__pxTotalOffsetY": 0,
+					"__tilesetDefUid": null,
+					"__tilesetRelPath": null,
+					"iid": "5f42c9f2-7820-11ed-9e01-253c3cc61d23",
+					"levelId": 220,
+					"layerDefUid": 123,
+					"pxOffsetX": 0,
+					"pxOffsetY": 0,
+					"visible": true,
+					"optionalRules": [],
+					"intGridCsv": [],
+					"autoLayerTiles": [],
+					"seed": 9853047,
+					"overrideTilesetUid": null,
+					"gridTiles": [],
+					"entityInstances": []
+				},
 				{
 					"__identifier": "Layer3",
 					"__type": "IntGrid",
@@ -2509,31 +2594,6 @@
 					"entityInstances": []
 				},
 				{
-					"__identifier": "Entities",
-					"__type": "Entities",
-					"__cWid": 38,
-					"__cHei": 150,
-					"__gridSize": 8,
-					"__opacity": 1,
-					"__pxTotalOffsetX": 0,
-					"__pxTotalOffsetY": 0,
-					"__tilesetDefUid": null,
-					"__tilesetRelPath": null,
-					"iid": "5f42c9f2-7820-11ed-9e01-253c3cc61d23",
-					"levelId": 220,
-					"layerDefUid": 123,
-					"pxOffsetX": 0,
-					"pxOffsetY": 0,
-					"visible": true,
-					"optionalRules": [],
-					"intGridCsv": [],
-					"autoLayerTiles": [],
-					"seed": 9853047,
-					"overrideTilesetUid": null,
-					"gridTiles": [],
-					"entityInstances": []
-				},
-				{
 					"__identifier": "Layer1",
 					"__type": "IntGrid",
 					"__cWid": 19,
@@ -2624,6 +2684,1261 @@
 			"externalRelPath": null,
 			"fieldInstances": [],
 			"layerInstances": [
+				{
+					"__identifier": "Entities",
+					"__type": "Entities",
+					"__cWid": 320,
+					"__cHei": 175,
+					"__gridSize": 8,
+					"__opacity": 1,
+					"__pxTotalOffsetX": 0,
+					"__pxTotalOffsetY": 0,
+					"__tilesetDefUid": null,
+					"__tilesetRelPath": null,
+					"iid": "be082fe0-7820-11ed-aa43-e594ae304189",
+					"levelId": 70,
+					"layerDefUid": 123,
+					"pxOffsetX": 0,
+					"pxOffsetY": 0,
+					"visible": true,
+					"optionalRules": [],
+					"intGridCsv": [],
+					"autoLayerTiles": [],
+					"seed": 3870539,
+					"overrideTilesetUid": null,
+					"gridTiles": [],
+					"entityInstances": [
+						{
+							"__identifier": "ToggleLayer",
+							"__grid": [216,96],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#BE4A2F",
+							"iid": "640d61f0-7820-11ed-ab5c-e50fcb815adc",
+							"width": 32,
+							"height": 24,
+							"defUid": 173,
+							"px": [1728,768],
+							"fieldInstances": [
+								{ "__identifier": "layer", "__value": "Layer1", "__type": "LocalEnum.Layer", "__tile": null, "defUid": 175, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Layer1"]
+								}] },
+								{ "__identifier": "toggle", "__value": true, "__type": "Bool", "__tile": null, "defUid": 176, "realEditorValues": [{
+									"id": "V_Bool",
+									"params": [ true ]
+								}] }
+							]
+						},
+						{
+							"__identifier": "Text",
+							"__grid": [217,93],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#412FD2",
+							"iid": "84db0ea0-7820-11ed-ab5c-eda1359efa39",
+							"width": 8,
+							"height": 8,
+							"defUid": 127,
+							"px": [1740,744],
+							"fieldInstances": [
+								{ "__identifier": "size", "__value": 8, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [8] }] },
+								{ "__identifier": "text", "__value": "grow!", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["grow!"]
+								}] },
+								{ "__identifier": "color", "__value": "#412FD2", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [4272082] }] },
+								{ "__identifier": "duration", "__value": null, "__type": "Float", "__tile": null, "defUid": 219, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Checkpoint",
+							"__grid": [125,103],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#2CE8F5",
+							"iid": "6cf05e80-7820-11ed-ab5c-db4bc4839d5b",
+							"width": 8,
+							"height": 8,
+							"defUid": 177,
+							"px": [1000,824],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "ToggleLayer",
+							"__grid": [140,80],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#BE4A2F",
+							"iid": "d328d130-7820-11ed-ab5c-1d258ea751bb",
+							"width": 16,
+							"height": 16,
+							"defUid": 173,
+							"px": [1120,640],
+							"fieldInstances": [
+								{ "__identifier": "layer", "__value": "Layer1", "__type": "LocalEnum.Layer", "__tile": null, "defUid": 175, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Layer1"]
+								}] },
+								{ "__identifier": "toggle", "__value": false, "__type": "Bool", "__tile": null, "defUid": 176, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Coin",
+							"__grid": [247,79],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#FEAE34",
+							"iid": "7be11ef0-7820-11ed-ab5c-2fd3a9e60e95",
+							"width": 8,
+							"height": 8,
+							"defUid": 184,
+							"px": [1980,636],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [218,140],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "c0375d20-7820-11ed-ab5c-e96ddc73ba2a",
+							"width": 48,
+							"height": 16,
+							"defUid": 178,
+							"px": [1744,1120],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Checkpoint",
+							"__grid": [75,47],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#2CE8F5",
+							"iid": "e8f5b3f0-7820-11ed-ab5c-6be4dd305fe3",
+							"width": 8,
+							"height": 8,
+							"defUid": 177,
+							"px": [600,376],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Checkpoint",
+							"__grid": [211,130],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#2CE8F5",
+							"iid": "831835b0-7820-11ed-ab5c-23218fb12450",
+							"width": 8,
+							"height": 8,
+							"defUid": 177,
+							"px": [1688,1040],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [100,49],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "0c290a70-7820-11ed-89df-63abaff01802",
+							"width": 16,
+							"height": 24,
+							"defUid": 178,
+							"px": [800,392],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [106,49],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "0d72c880-7820-11ed-89df-578bfd5a7a33",
+							"width": 16,
+							"height": 24,
+							"defUid": 178,
+							"px": [848,392],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [112,48],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "0f029040-7820-11ed-89df-b1e313c14eaa",
+							"width": 16,
+							"height": 32,
+							"defUid": 178,
+							"px": [896,384],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "ToggleLayer",
+							"__grid": [112,94],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#BE4A2F",
+							"iid": "3a972e00-7820-11ed-89df-f90350a4e000",
+							"width": 16,
+							"height": 16,
+							"defUid": 173,
+							"px": [896,752],
+							"fieldInstances": [
+								{ "__identifier": "layer", "__value": "Layer1", "__type": "LocalEnum.Layer", "__tile": null, "defUid": 175, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Layer1"]
+								}] },
+								{ "__identifier": "toggle", "__value": true, "__type": "Bool", "__tile": null, "defUid": 176, "realEditorValues": [{
+									"id": "V_Bool",
+									"params": [ true ]
+								}] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [110,34],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "78dd68f0-7820-11ed-89df-1ffc0a2955d0",
+							"width": 16,
+							"height": 32,
+							"defUid": 178,
+							"px": [880,272],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Coin",
+							"__grid": [101,39],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#FEAE34",
+							"iid": "c10ae350-7820-11ed-89df-29353a795ae2",
+							"width": 8,
+							"height": 8,
+							"defUid": 184,
+							"px": [812,316],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [145,57],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "54c815e0-7820-11ed-89df-6f6b23ccf6f4",
+							"width": 16,
+							"height": 16,
+							"defUid": 178,
+							"px": [1160,456],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [159,59],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "55f1efe0-7820-11ed-89df-45e22bbe51e0",
+							"width": 16,
+							"height": 16,
+							"defUid": 178,
+							"px": [1272,472],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [164,57],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "58ceaa00-7820-11ed-89df-f94a90feade4",
+							"width": 16,
+							"height": 32,
+							"defUid": 178,
+							"px": [1312,456],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Checkpoint",
+							"__grid": [175,56],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#2CE8F5",
+							"iid": "5beb2c40-7820-11ed-89df-53d4fecf91f7",
+							"width": 8,
+							"height": 8,
+							"defUid": 177,
+							"px": [1400,448],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [117,51],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "f932ff50-7820-11ed-89df-516377177637",
+							"width": 40,
+							"height": 24,
+							"defUid": 178,
+							"px": [936,408],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "ToggleLayer",
+							"__grid": [150,62],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#BE4A2F",
+							"iid": "bf91c5f0-7820-11ed-89df-c914a0cf018a",
+							"width": 48,
+							"height": 64,
+							"defUid": 173,
+							"px": [1200,496],
+							"fieldInstances": [
+								{ "__identifier": "layer", "__value": "Layer1", "__type": "LocalEnum.Layer", "__tile": null, "defUid": 175, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Layer1"]
+								}] },
+								{ "__identifier": "toggle", "__value": true, "__type": "Bool", "__tile": null, "defUid": 176, "realEditorValues": [{
+									"id": "V_Bool",
+									"params": [ true ]
+								}] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [188,67],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "a4d14ea0-7820-11ed-89df-810cc0043d0b",
+							"width": 16,
+							"height": 24,
+							"defUid": 178,
+							"px": [1504,536],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [192,67],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "a5ba00f0-7820-11ed-89df-d10e5d36ceae",
+							"width": 16,
+							"height": 24,
+							"defUid": 178,
+							"px": [1536,536],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Coin",
+							"__grid": [196,54],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#FEAE34",
+							"iid": "aa7fc660-7820-11ed-89df-afff74e609af",
+							"width": 8,
+							"height": 8,
+							"defUid": 184,
+							"px": [1572,436],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Trampoline",
+							"__grid": [62,66],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#196E1D",
+							"iid": "c771fbb0-7820-11ed-9973-55605254b0b6",
+							"width": 48,
+							"height": 8,
+							"defUid": 195,
+							"px": [496,528],
+							"fieldInstances": [{ "__identifier": "strength", "__value": -400, "__type": "Float", "__tile": null, "defUid": 196, "realEditorValues": [] }]
+						},
+						{
+							"__identifier": "Trampoline",
+							"__grid": [118,80],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#196E1D",
+							"iid": "02941340-7820-11ed-9973-c544e446eaf7",
+							"width": 16,
+							"height": 8,
+							"defUid": 195,
+							"px": [944,640],
+							"fieldInstances": [{ "__identifier": "strength", "__value": -400, "__type": "Float", "__tile": null, "defUid": 196, "realEditorValues": [] }]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [48,120],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "762b71e0-7820-11ed-9973-7d744a00a2d8",
+							"width": 64,
+							"height": 16,
+							"defUid": 178,
+							"px": [384,960],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [88,118],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "99645230-7820-11ed-9973-37d8aaf92ef7",
+							"width": 16,
+							"height": 16,
+							"defUid": 178,
+							"px": [704,944],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Trampoline",
+							"__grid": [122,92],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#196E1D",
+							"iid": "bf601120-7820-11ed-9973-37ac6f86ef29",
+							"width": 32,
+							"height": 8,
+							"defUid": 195,
+							"px": [976,736],
+							"fieldInstances": [{ "__identifier": "strength", "__value": -400, "__type": "Float", "__tile": null, "defUid": 196, "realEditorValues": [] }]
+						},
+						{
+							"__identifier": "Trampoline",
+							"__grid": [195,65],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#196E1D",
+							"iid": "428baae0-7820-11ed-9973-d74192f29ac5",
+							"width": 24,
+							"height": 8,
+							"defUid": 195,
+							"px": [1560,520],
+							"fieldInstances": [{ "__identifier": "strength", "__value": -400, "__type": "Float", "__tile": null, "defUid": 196, "realEditorValues": [] }]
+						},
+						{
+							"__identifier": "Chicken",
+							"__grid": [75,146],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#E43B44",
+							"iid": "899d3450-7820-11ed-9973-f9178e4d2a96",
+							"width": 20,
+							"height": 20,
+							"defUid": 126,
+							"px": [600,1168],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Checkpoint",
+							"__grid": [111,28],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#2CE8F5",
+							"iid": "6c899250-7820-11ed-9973-e19509eaf25a",
+							"width": 8,
+							"height": 8,
+							"defUid": 177,
+							"px": [888,224],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [130,16],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "0d8a0090-7820-11ed-9973-15a3c9628239",
+							"width": 16,
+							"height": 80,
+							"defUid": 178,
+							"px": [1040,128],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Text",
+							"__grid": [110,25],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#FFDD00",
+							"iid": "aa716420-7820-11ed-9973-c94f7e2fc2eb",
+							"width": 8,
+							"height": 8,
+							"defUid": 127,
+							"px": [884,200],
+							"fieldInstances": [
+								{ "__identifier": "size", "__value": 5, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [5] }] },
+								{ "__identifier": "text", "__value": "jump throw", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["jump throw"]
+								}] },
+								{ "__identifier": "color", "__value": "#FFDD00", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [16768256] }] },
+								{ "__identifier": "duration", "__value": null, "__type": "Float", "__tile": null, "defUid": 219, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [144,10],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "214724e0-7820-11ed-9973-8b6a2fc109b8",
+							"width": 32,
+							"height": 32,
+							"defUid": 178,
+							"px": [1152,80],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [154,10],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "1097a3d0-7820-11ed-9973-6b890cf9170e",
+							"width": 48,
+							"height": 32,
+							"defUid": 178,
+							"px": [1232,80],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Checkpoint",
+							"__grid": [186,23],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#2CE8F5",
+							"iid": "5afa0a20-7820-11ed-9973-875fd252afda",
+							"width": 8,
+							"height": 8,
+							"defUid": 177,
+							"px": [1488,184],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Coin",
+							"__grid": [172,8],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#FEAE34",
+							"iid": "0914f990-7820-11ed-9973-61827f0e0ab1",
+							"width": 8,
+							"height": 8,
+							"defUid": 184,
+							"px": [1380,68],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [188,28],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "f579ca40-7820-11ed-9973-ed343724ad3a",
+							"width": 128,
+							"height": 16,
+							"defUid": 178,
+							"px": [1504,224],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [207,12],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "540d1030-7820-11ed-9973-1fab93ffda65",
+							"width": 32,
+							"height": 64,
+							"defUid": 178,
+							"px": [1656,96],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [202,20],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "ab36c0e0-7820-11ed-9973-d356d46468d6",
+							"width": 16,
+							"height": 72,
+							"defUid": 178,
+							"px": [1616,160],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [194,42],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "fe80c660-7820-11ed-9973-e13e6307210c",
+							"width": 144,
+							"height": 16,
+							"defUid": 178,
+							"px": [1552,336],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Checkpoint",
+							"__grid": [213,6],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#2CE8F5",
+							"iid": "5d593630-7820-11ed-9973-39305104979c",
+							"width": 8,
+							"height": 8,
+							"defUid": 177,
+							"px": [1704,48],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "ToggleLayer",
+							"__grid": [222,4],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#BE4A2F",
+							"iid": "0e6c53d0-7820-11ed-9973-83b390e15185",
+							"width": 32,
+							"height": 32,
+							"defUid": 173,
+							"px": [1776,32],
+							"fieldInstances": [
+								{ "__identifier": "layer", "__value": "Layer1", "__type": "LocalEnum.Layer", "__tile": null, "defUid": 175, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Layer1"]
+								}] },
+								{ "__identifier": "toggle", "__value": false, "__type": "Bool", "__tile": null, "defUid": 176, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Trampoline",
+							"__grid": [220,38],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#196E1D",
+							"iid": "acfc8560-7820-11ed-9973-8f6ac315c645",
+							"width": 80,
+							"height": 8,
+							"defUid": 195,
+							"px": [1760,304],
+							"fieldInstances": [{ "__identifier": "strength", "__value": -400, "__type": "Float", "__tile": null, "defUid": 196, "realEditorValues": [] }]
+						},
+						{
+							"__identifier": "Text",
+							"__grid": [205,43],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#412FD2",
+							"iid": "ed9d2b10-7820-11ed-9973-39b37f01cd11",
+							"width": 8,
+							"height": 8,
+							"defUid": 127,
+							"px": [1644,344],
+							"fieldInstances": [
+								{ "__identifier": "size", "__value": 5, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [5] }] },
+								{ "__identifier": "text", "__value": "careful", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["careful"]
+								}] },
+								{ "__identifier": "color", "__value": "#412FD2", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [4272082] }] },
+								{ "__identifier": "duration", "__value": null, "__type": "Float", "__tile": null, "defUid": 219, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "PowerUp",
+							"__grid": [122,23],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#63C74D",
+							"iid": "ed6c88b0-7820-11ed-9973-8f9610279fa4",
+							"width": 16,
+							"height": 16,
+							"defUid": 181,
+							"px": [980,188],
+							"fieldInstances": [{ "__identifier": "power", "__value": "PowerupWarpBall", "__type": "LocalEnum.Power", "__tile": null, "defUid": 183, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["PowerupWarpBall"]
+							}] }]
+						},
+						{
+							"__identifier": "ToggleLayer",
+							"__grid": [70,29],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#BE4A2F",
+							"iid": "e0685500-7820-11ed-9973-2fd9c071f319",
+							"width": 64,
+							"height": 88,
+							"defUid": 173,
+							"px": [560,232],
+							"fieldInstances": [
+								{ "__identifier": "layer", "__value": "Layer1", "__type": "LocalEnum.Layer", "__tile": null, "defUid": 175, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Layer1"]
+								}] },
+								{ "__identifier": "toggle", "__value": true, "__type": "Bool", "__tile": null, "defUid": 176, "realEditorValues": [{
+									"id": "V_Bool",
+									"params": [ true ]
+								}] }
+							]
+						},
+						{
+							"__identifier": "Text",
+							"__grid": [25,52],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#FFDD00",
+							"iid": "fef43290-7820-11ed-9973-b3927b469aaa",
+							"width": 8,
+							"height": 8,
+							"defUid": 127,
+							"px": [204,416],
+							"fieldInstances": [
+								{ "__identifier": "size", "__value": 8, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [8] }] },
+								{ "__identifier": "text", "__value": "Home", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Home"]
+								}] },
+								{ "__identifier": "color", "__value": "#FFDD00", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [16768256] }] },
+								{ "__identifier": "duration", "__value": null, "__type": "Float", "__tile": null, "defUid": 219, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Text",
+							"__grid": [24,62],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#FFDD00",
+							"iid": "168bee70-7820-11ed-9973-eb2e737ba906",
+							"width": 8,
+							"height": 8,
+							"defUid": 127,
+							"px": [196,496],
+							"fieldInstances": [
+								{ "__identifier": "size", "__value": 8, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [8] }] },
+								{ "__identifier": "text", "__value": "Sweet", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Sweet"]
+								}] },
+								{ "__identifier": "color", "__value": "#FFDD00", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [16768256] }] },
+								{ "__identifier": "duration", "__value": null, "__type": "Float", "__tile": null, "defUid": 219, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Text",
+							"__grid": [22,73],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#FFDD00",
+							"iid": "1fa333b0-7820-11ed-9973-4501f1243dad",
+							"width": 8,
+							"height": 8,
+							"defUid": 127,
+							"px": [180,584],
+							"fieldInstances": [
+								{ "__identifier": "size", "__value": 8, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [8] }] },
+								{ "__identifier": "text", "__value": "Home", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["Home"]
+								}] },
+								{ "__identifier": "color", "__value": "#FFDD00", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [16768256] }] },
+								{ "__identifier": "duration", "__value": null, "__type": "Float", "__tile": null, "defUid": 219, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Checkpoint",
+							"__grid": [14,96],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#2CE8F5",
+							"iid": "86777130-7820-11ed-9973-f3d939cbd221",
+							"width": 8,
+							"height": 8,
+							"defUid": 177,
+							"px": [112,768],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [180,118],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "1db9e930-7820-11ed-9973-93bd5415a7d2",
+							"width": 32,
+							"height": 16,
+							"defUid": 178,
+							"px": [1440,944],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Player",
+							"__grid": [16,115],
+							"__pivot": [0.5,1],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#F6757A",
+							"iid": "c2a1ea80-7820-11ed-9973-b56c6f90f64c",
+							"width": 8,
+							"height": 16,
+							"defUid": 121,
+							"px": [132,928],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Checkpoint",
+							"__grid": [218,90],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#2CE8F5",
+							"iid": "0e4bc820-7820-11ed-9973-75d9281579c6",
+							"width": 8,
+							"height": 8,
+							"defUid": 177,
+							"px": [1744,720],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Coin",
+							"__grid": [95,80],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#FEAE34",
+							"iid": "f9292390-7820-11ed-9973-8714efffe980",
+							"width": 8,
+							"height": 8,
+							"defUid": 184,
+							"px": [764,644],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [207,24],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "e66e9040-7820-11ed-9973-1fd6488a48fd",
+							"width": 32,
+							"height": 72,
+							"defUid": 178,
+							"px": [1656,192],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [207,20],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "f320af80-7820-11ed-9973-e9d64b3b2e43",
+							"width": 16,
+							"height": 32,
+							"defUid": 178,
+							"px": [1656,160],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Checkpoint",
+							"__grid": [68,149],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#2CE8F5",
+							"iid": "a26798a0-7820-11ed-9973-05b9de738f60",
+							"width": 8,
+							"height": 8,
+							"defUid": 177,
+							"px": [544,1192],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "Checkpoint",
+							"__grid": [17,96],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#2CE8F5",
+							"iid": "98da0230-7820-11ed-a34d-fd447331f269",
+							"width": 8,
+							"height": 8,
+							"defUid": 177,
+							"px": [136,768],
+							"fieldInstances": []
+						},
+						{
+							"__identifier": "SpawnTrigger",
+							"__grid": [36,117],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#EAD4AA",
+							"iid": "39e91140-7820-11ed-9f6e-9d30f39cb379",
+							"width": 32,
+							"height": 16,
+							"defUid": 213,
+							"px": [288,936],
+							"fieldInstances": [
+								{ "__identifier": "refs", "__value": [
+									{
+										"entityIid": "407f02d0-7820-11ed-9f6e-03c1a69db0e7",
+										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
+										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
+										"worldIid": "37105620-7820-11ed-9255-67589c0f2792"
+									},
+									{
+										"entityIid": "41dd0c30-7820-11ed-9f6e-f38d9ceee6e0",
+										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
+										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
+										"worldIid": "37105620-7820-11ed-9255-67589c0f2792"
+									},
+									{
+										"entityIid": "4315b340-7820-11ed-9f6e-1314a9bf4bff",
+										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
+										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
+										"worldIid": "37105620-7820-11ed-9255-67589c0f2792"
+									},
+									{
+										"entityIid": "44c62260-7820-11ed-9f6e-45146885832e",
+										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
+										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
+										"worldIid": "37105620-7820-11ed-9255-67589c0f2792"
+									},
+									{
+										"entityIid": "460d6f70-7820-11ed-9f6e-8d1459b345d8",
+										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
+										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
+										"worldIid": "37105620-7820-11ed-9255-67589c0f2792"
+									},
+									{
+										"entityIid": "46d441e0-7820-11ed-9f6e-c12b68ae548f",
+										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
+										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
+										"worldIid": "37105620-7820-11ed-9255-67589c0f2792"
+									},
+									{
+										"entityIid": "e4ea2d00-7820-11ed-9d79-c334c7dd9519",
+										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
+										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
+										"worldIid": "37105620-7820-11ed-9255-67589c0f2792"
+									}
+								], "__type": "Array<EntityRef>", "__tile": null, "defUid": 214, "realEditorValues": [
+									{
+										"id": "V_String",
+										"params": ["407f02d0-7820-11ed-9f6e-03c1a69db0e7"]
+									},
+									{
+										"id": "V_String",
+										"params": ["41dd0c30-7820-11ed-9f6e-f38d9ceee6e0"]
+									},
+									{
+										"id": "V_String",
+										"params": ["4315b340-7820-11ed-9f6e-1314a9bf4bff"]
+									},
+									{
+										"id": "V_String",
+										"params": ["44c62260-7820-11ed-9f6e-45146885832e"]
+									},
+									{
+										"id": "V_String",
+										"params": ["460d6f70-7820-11ed-9f6e-8d1459b345d8"]
+									},
+									{
+										"id": "V_String",
+										"params": ["46d441e0-7820-11ed-9f6e-c12b68ae548f"]
+									},
+									{
+										"id": "V_String",
+										"params": ["e4ea2d00-7820-11ed-9d79-c334c7dd9519"]
+									}
+								] },
+								{ "__identifier": "persistent", "__value": true, "__type": "Bool", "__tile": null, "defUid": 216, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "ParticleSpawner",
+							"__grid": [27,111],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#3E2731",
+							"iid": "407f02d0-7820-11ed-9f6e-03c1a69db0e7",
+							"width": 8,
+							"height": 8,
+							"defUid": 215,
+							"px": [216,888],
+							"fieldInstances": [{ "__identifier": "type", "__value": "Firework", "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Firework"]
+							}] }]
+						},
+						{
+							"__identifier": "ParticleSpawner",
+							"__grid": [29,106],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#3E2731",
+							"iid": "41dd0c30-7820-11ed-9f6e-f38d9ceee6e0",
+							"width": 8,
+							"height": 8,
+							"defUid": 215,
+							"px": [232,848],
+							"fieldInstances": [{ "__identifier": "type", "__value": "Firework", "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Firework"]
+							}] }]
+						},
+						{
+							"__identifier": "ParticleSpawner",
+							"__grid": [35,104],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#3E2731",
+							"iid": "4315b340-7820-11ed-9f6e-1314a9bf4bff",
+							"width": 8,
+							"height": 8,
+							"defUid": 215,
+							"px": [280,832],
+							"fieldInstances": [{ "__identifier": "type", "__value": "Firework", "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Firework"]
+							}] }]
+						},
+						{
+							"__identifier": "ParticleSpawner",
+							"__grid": [40,104],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#3E2731",
+							"iid": "44c62260-7820-11ed-9f6e-45146885832e",
+							"width": 8,
+							"height": 8,
+							"defUid": 215,
+							"px": [320,832],
+							"fieldInstances": [{ "__identifier": "type", "__value": "Firework", "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Firework"]
+							}] }]
+						},
+						{
+							"__identifier": "ParticleSpawner",
+							"__grid": [46,106],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#3E2731",
+							"iid": "460d6f70-7820-11ed-9f6e-8d1459b345d8",
+							"width": 8,
+							"height": 8,
+							"defUid": 215,
+							"px": [368,848],
+							"fieldInstances": [{ "__identifier": "type", "__value": "Firework", "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Firework"]
+							}] }]
+						},
+						{
+							"__identifier": "ParticleSpawner",
+							"__grid": [48,111],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#3E2731",
+							"iid": "46d441e0-7820-11ed-9f6e-c12b68ae548f",
+							"width": 8,
+							"height": 8,
+							"defUid": 215,
+							"px": [384,888],
+							"fieldInstances": [{ "__identifier": "type", "__value": "Firework", "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["Firework"]
+							}] }]
+						},
+						{
+							"__identifier": "Text",
+							"__grid": [35,111],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#E80CD4",
+							"iid": "e4ea2d00-7820-11ed-9d79-c334c7dd9519",
+							"width": 8,
+							"height": 8,
+							"defUid": 127,
+							"px": [280,888],
+							"fieldInstances": [
+								{ "__identifier": "size", "__value": 10, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [10] }] },
+								{ "__identifier": "text", "__value": "cool!", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["cool!"]
+								}] },
+								{ "__identifier": "color", "__value": "#E80CD4", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [15207636] }] },
+								{ "__identifier": "duration", "__value": 2, "__type": "Float", "__tile": null, "defUid": 219, "realEditorValues": [{ "id": "V_Float", "params": [2] }] }
+							]
+						},
+						{
+							"__identifier": "DespawnTrigger",
+							"__grid": [48,101],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#A22633",
+							"iid": "6c4feda0-7820-11ed-9255-df98de4641fa",
+							"width": 16,
+							"height": 144,
+							"defUid": 221,
+							"px": [384,808],
+							"fieldInstances": [{ "__identifier": "despawn", "__value": [{
+								"entityIid": "39e91140-7820-11ed-9f6e-9d30f39cb379",
+								"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
+								"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
+								"worldIid": "37105620-7820-11ed-9255-67589c0f2792"
+							}], "__type": "Array<EntityRef>", "__tile": null, "defUid": 222, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["39e91140-7820-11ed-9f6e-9d30f39cb379"]
+							}] }]
+						}
+					]
+				},
 				{
 					"__identifier": "Layer3",
 					"__type": "IntGrid",
@@ -7371,1239 +8686,6 @@
 					"overrideTilesetUid": null,
 					"gridTiles": [],
 					"entityInstances": []
-				},
-				{
-					"__identifier": "Entities",
-					"__type": "Entities",
-					"__cWid": 320,
-					"__cHei": 175,
-					"__gridSize": 8,
-					"__opacity": 1,
-					"__pxTotalOffsetX": 0,
-					"__pxTotalOffsetY": 0,
-					"__tilesetDefUid": null,
-					"__tilesetRelPath": null,
-					"iid": "be082fe0-7820-11ed-aa43-e594ae304189",
-					"levelId": 70,
-					"layerDefUid": 123,
-					"pxOffsetX": 0,
-					"pxOffsetY": 0,
-					"visible": true,
-					"optionalRules": [],
-					"intGridCsv": [],
-					"autoLayerTiles": [],
-					"seed": 3870539,
-					"overrideTilesetUid": null,
-					"gridTiles": [],
-					"entityInstances": [
-						{
-							"__identifier": "ToggleLayer",
-							"__grid": [216,96],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#BE4A2F",
-							"iid": "640d61f0-7820-11ed-ab5c-e50fcb815adc",
-							"width": 32,
-							"height": 24,
-							"defUid": 173,
-							"px": [1728,768],
-							"fieldInstances": [
-								{ "__identifier": "layer", "__value": "Layer1", "__type": "LocalEnum.Layer", "__tile": null, "defUid": 175, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Layer1"]
-								}] },
-								{ "__identifier": "toggle", "__value": true, "__type": "Bool", "__tile": null, "defUid": 176, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ true ]
-								}] }
-							]
-						},
-						{
-							"__identifier": "Text",
-							"__grid": [217,93],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#412FD2",
-							"iid": "84db0ea0-7820-11ed-ab5c-eda1359efa39",
-							"width": 8,
-							"height": 8,
-							"defUid": 127,
-							"px": [1740,744],
-							"fieldInstances": [
-								{ "__identifier": "size", "__value": 8, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [8] }] },
-								{ "__identifier": "text", "__value": "grow!", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["grow!"]
-								}] },
-								{ "__identifier": "color", "__value": "#412FD2", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [4272082] }] },
-								{ "__identifier": "duration", "__value": null, "__type": "Float", "__tile": null, "defUid": 219, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Checkpoint",
-							"__grid": [125,103],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#2CE8F5",
-							"iid": "6cf05e80-7820-11ed-ab5c-db4bc4839d5b",
-							"width": 8,
-							"height": 8,
-							"defUid": 177,
-							"px": [1000,824],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "ToggleLayer",
-							"__grid": [140,80],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#BE4A2F",
-							"iid": "d328d130-7820-11ed-ab5c-1d258ea751bb",
-							"width": 16,
-							"height": 16,
-							"defUid": 173,
-							"px": [1120,640],
-							"fieldInstances": [
-								{ "__identifier": "layer", "__value": "Layer1", "__type": "LocalEnum.Layer", "__tile": null, "defUid": 175, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Layer1"]
-								}] },
-								{ "__identifier": "toggle", "__value": false, "__type": "Bool", "__tile": null, "defUid": 176, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Coin",
-							"__grid": [247,79],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#FEAE34",
-							"iid": "7be11ef0-7820-11ed-ab5c-2fd3a9e60e95",
-							"width": 8,
-							"height": 8,
-							"defUid": 184,
-							"px": [1980,636],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [218,140],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "c0375d20-7820-11ed-ab5c-e96ddc73ba2a",
-							"width": 48,
-							"height": 16,
-							"defUid": 178,
-							"px": [1744,1120],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Checkpoint",
-							"__grid": [75,47],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#2CE8F5",
-							"iid": "e8f5b3f0-7820-11ed-ab5c-6be4dd305fe3",
-							"width": 8,
-							"height": 8,
-							"defUid": 177,
-							"px": [600,376],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "Checkpoint",
-							"__grid": [211,130],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#2CE8F5",
-							"iid": "831835b0-7820-11ed-ab5c-23218fb12450",
-							"width": 8,
-							"height": 8,
-							"defUid": 177,
-							"px": [1688,1040],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [100,49],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "0c290a70-7820-11ed-89df-63abaff01802",
-							"width": 16,
-							"height": 24,
-							"defUid": 178,
-							"px": [800,392],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [106,49],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "0d72c880-7820-11ed-89df-578bfd5a7a33",
-							"width": 16,
-							"height": 24,
-							"defUid": 178,
-							"px": [848,392],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [112,48],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "0f029040-7820-11ed-89df-b1e313c14eaa",
-							"width": 16,
-							"height": 32,
-							"defUid": 178,
-							"px": [896,384],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "ToggleLayer",
-							"__grid": [112,94],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#BE4A2F",
-							"iid": "3a972e00-7820-11ed-89df-f90350a4e000",
-							"width": 16,
-							"height": 16,
-							"defUid": 173,
-							"px": [896,752],
-							"fieldInstances": [
-								{ "__identifier": "layer", "__value": "Layer1", "__type": "LocalEnum.Layer", "__tile": null, "defUid": 175, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Layer1"]
-								}] },
-								{ "__identifier": "toggle", "__value": true, "__type": "Bool", "__tile": null, "defUid": 176, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ true ]
-								}] }
-							]
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [110,34],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "78dd68f0-7820-11ed-89df-1ffc0a2955d0",
-							"width": 16,
-							"height": 32,
-							"defUid": 178,
-							"px": [880,272],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Coin",
-							"__grid": [101,39],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#FEAE34",
-							"iid": "c10ae350-7820-11ed-89df-29353a795ae2",
-							"width": 8,
-							"height": 8,
-							"defUid": 184,
-							"px": [812,316],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [145,57],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "54c815e0-7820-11ed-89df-6f6b23ccf6f4",
-							"width": 16,
-							"height": 16,
-							"defUid": 178,
-							"px": [1160,456],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [159,59],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "55f1efe0-7820-11ed-89df-45e22bbe51e0",
-							"width": 16,
-							"height": 16,
-							"defUid": 178,
-							"px": [1272,472],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [164,57],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "58ceaa00-7820-11ed-89df-f94a90feade4",
-							"width": 16,
-							"height": 32,
-							"defUid": 178,
-							"px": [1312,456],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Checkpoint",
-							"__grid": [175,56],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#2CE8F5",
-							"iid": "5beb2c40-7820-11ed-89df-53d4fecf91f7",
-							"width": 8,
-							"height": 8,
-							"defUid": 177,
-							"px": [1400,448],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [117,51],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "f932ff50-7820-11ed-89df-516377177637",
-							"width": 40,
-							"height": 24,
-							"defUid": 178,
-							"px": [936,408],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "ToggleLayer",
-							"__grid": [150,62],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#BE4A2F",
-							"iid": "bf91c5f0-7820-11ed-89df-c914a0cf018a",
-							"width": 48,
-							"height": 64,
-							"defUid": 173,
-							"px": [1200,496],
-							"fieldInstances": [
-								{ "__identifier": "layer", "__value": "Layer1", "__type": "LocalEnum.Layer", "__tile": null, "defUid": 175, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Layer1"]
-								}] },
-								{ "__identifier": "toggle", "__value": true, "__type": "Bool", "__tile": null, "defUid": 176, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ true ]
-								}] }
-							]
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [188,67],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "a4d14ea0-7820-11ed-89df-810cc0043d0b",
-							"width": 16,
-							"height": 24,
-							"defUid": 178,
-							"px": [1504,536],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [192,67],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "a5ba00f0-7820-11ed-89df-d10e5d36ceae",
-							"width": 16,
-							"height": 24,
-							"defUid": 178,
-							"px": [1536,536],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Coin",
-							"__grid": [196,54],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#FEAE34",
-							"iid": "aa7fc660-7820-11ed-89df-afff74e609af",
-							"width": 8,
-							"height": 8,
-							"defUid": 184,
-							"px": [1572,436],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "Trampoline",
-							"__grid": [62,66],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#196E1D",
-							"iid": "c771fbb0-7820-11ed-9973-55605254b0b6",
-							"width": 48,
-							"height": 8,
-							"defUid": 195,
-							"px": [496,528],
-							"fieldInstances": [{ "__identifier": "strength", "__value": -400, "__type": "Float", "__tile": null, "defUid": 196, "realEditorValues": [] }]
-						},
-						{
-							"__identifier": "Trampoline",
-							"__grid": [118,80],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#196E1D",
-							"iid": "02941340-7820-11ed-9973-c544e446eaf7",
-							"width": 16,
-							"height": 8,
-							"defUid": 195,
-							"px": [944,640],
-							"fieldInstances": [{ "__identifier": "strength", "__value": -400, "__type": "Float", "__tile": null, "defUid": 196, "realEditorValues": [] }]
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [48,120],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "762b71e0-7820-11ed-9973-7d744a00a2d8",
-							"width": 64,
-							"height": 16,
-							"defUid": 178,
-							"px": [384,960],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [88,118],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "99645230-7820-11ed-9973-37d8aaf92ef7",
-							"width": 16,
-							"height": 16,
-							"defUid": 178,
-							"px": [704,944],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Trampoline",
-							"__grid": [122,92],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#196E1D",
-							"iid": "bf601120-7820-11ed-9973-37ac6f86ef29",
-							"width": 32,
-							"height": 8,
-							"defUid": 195,
-							"px": [976,736],
-							"fieldInstances": [{ "__identifier": "strength", "__value": -400, "__type": "Float", "__tile": null, "defUid": 196, "realEditorValues": [] }]
-						},
-						{
-							"__identifier": "Trampoline",
-							"__grid": [195,65],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#196E1D",
-							"iid": "428baae0-7820-11ed-9973-d74192f29ac5",
-							"width": 24,
-							"height": 8,
-							"defUid": 195,
-							"px": [1560,520],
-							"fieldInstances": [{ "__identifier": "strength", "__value": -400, "__type": "Float", "__tile": null, "defUid": 196, "realEditorValues": [] }]
-						},
-						{
-							"__identifier": "Chicken",
-							"__grid": [75,146],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#E43B44",
-							"iid": "899d3450-7820-11ed-9973-f9178e4d2a96",
-							"width": 20,
-							"height": 20,
-							"defUid": 126,
-							"px": [600,1168],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "Checkpoint",
-							"__grid": [111,28],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#2CE8F5",
-							"iid": "6c899250-7820-11ed-9973-e19509eaf25a",
-							"width": 8,
-							"height": 8,
-							"defUid": 177,
-							"px": [888,224],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [130,16],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "0d8a0090-7820-11ed-9973-15a3c9628239",
-							"width": 16,
-							"height": 80,
-							"defUid": 178,
-							"px": [1040,128],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Text",
-							"__grid": [110,25],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#FFDD00",
-							"iid": "aa716420-7820-11ed-9973-c94f7e2fc2eb",
-							"width": 8,
-							"height": 8,
-							"defUid": 127,
-							"px": [884,200],
-							"fieldInstances": [
-								{ "__identifier": "size", "__value": 5, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [5] }] },
-								{ "__identifier": "text", "__value": "jump throw", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["jump throw"]
-								}] },
-								{ "__identifier": "color", "__value": "#FFDD00", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [16768256] }] },
-								{ "__identifier": "duration", "__value": null, "__type": "Float", "__tile": null, "defUid": 219, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [144,10],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "214724e0-7820-11ed-9973-8b6a2fc109b8",
-							"width": 32,
-							"height": 32,
-							"defUid": 178,
-							"px": [1152,80],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [154,10],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "1097a3d0-7820-11ed-9973-6b890cf9170e",
-							"width": 48,
-							"height": 32,
-							"defUid": 178,
-							"px": [1232,80],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Checkpoint",
-							"__grid": [186,23],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#2CE8F5",
-							"iid": "5afa0a20-7820-11ed-9973-875fd252afda",
-							"width": 8,
-							"height": 8,
-							"defUid": 177,
-							"px": [1488,184],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "Coin",
-							"__grid": [172,8],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#FEAE34",
-							"iid": "0914f990-7820-11ed-9973-61827f0e0ab1",
-							"width": 8,
-							"height": 8,
-							"defUid": 184,
-							"px": [1380,68],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [188,28],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "f579ca40-7820-11ed-9973-ed343724ad3a",
-							"width": 128,
-							"height": 16,
-							"defUid": 178,
-							"px": [1504,224],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [207,12],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "540d1030-7820-11ed-9973-1fab93ffda65",
-							"width": 32,
-							"height": 64,
-							"defUid": 178,
-							"px": [1656,96],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [202,20],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "ab36c0e0-7820-11ed-9973-d356d46468d6",
-							"width": 16,
-							"height": 72,
-							"defUid": 178,
-							"px": [1616,160],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [194,42],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "fe80c660-7820-11ed-9973-e13e6307210c",
-							"width": 144,
-							"height": 16,
-							"defUid": 178,
-							"px": [1552,336],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Checkpoint",
-							"__grid": [213,6],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#2CE8F5",
-							"iid": "5d593630-7820-11ed-9973-39305104979c",
-							"width": 8,
-							"height": 8,
-							"defUid": 177,
-							"px": [1704,48],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "ToggleLayer",
-							"__grid": [222,4],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#BE4A2F",
-							"iid": "0e6c53d0-7820-11ed-9973-83b390e15185",
-							"width": 32,
-							"height": 32,
-							"defUid": 173,
-							"px": [1776,32],
-							"fieldInstances": [
-								{ "__identifier": "layer", "__value": "Layer1", "__type": "LocalEnum.Layer", "__tile": null, "defUid": 175, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Layer1"]
-								}] },
-								{ "__identifier": "toggle", "__value": false, "__type": "Bool", "__tile": null, "defUid": 176, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Trampoline",
-							"__grid": [220,38],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#196E1D",
-							"iid": "acfc8560-7820-11ed-9973-8f6ac315c645",
-							"width": 80,
-							"height": 8,
-							"defUid": 195,
-							"px": [1760,304],
-							"fieldInstances": [{ "__identifier": "strength", "__value": -400, "__type": "Float", "__tile": null, "defUid": 196, "realEditorValues": [] }]
-						},
-						{
-							"__identifier": "Text",
-							"__grid": [205,43],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#412FD2",
-							"iid": "ed9d2b10-7820-11ed-9973-39b37f01cd11",
-							"width": 8,
-							"height": 8,
-							"defUid": 127,
-							"px": [1644,344],
-							"fieldInstances": [
-								{ "__identifier": "size", "__value": 5, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [5] }] },
-								{ "__identifier": "text", "__value": "careful", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["careful"]
-								}] },
-								{ "__identifier": "color", "__value": "#412FD2", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [4272082] }] },
-								{ "__identifier": "duration", "__value": null, "__type": "Float", "__tile": null, "defUid": 219, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "PowerUp",
-							"__grid": [122,23],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#63C74D",
-							"iid": "ed6c88b0-7820-11ed-9973-8f9610279fa4",
-							"width": 16,
-							"height": 16,
-							"defUid": 181,
-							"px": [980,188],
-							"fieldInstances": [{ "__identifier": "power", "__value": "PowerupWarpBall", "__type": "LocalEnum.Power", "__tile": null, "defUid": 183, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["PowerupWarpBall"]
-							}] }]
-						},
-						{
-							"__identifier": "ToggleLayer",
-							"__grid": [70,29],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#BE4A2F",
-							"iid": "e0685500-7820-11ed-9973-2fd9c071f319",
-							"width": 64,
-							"height": 88,
-							"defUid": 173,
-							"px": [560,232],
-							"fieldInstances": [
-								{ "__identifier": "layer", "__value": "Layer1", "__type": "LocalEnum.Layer", "__tile": null, "defUid": 175, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Layer1"]
-								}] },
-								{ "__identifier": "toggle", "__value": true, "__type": "Bool", "__tile": null, "defUid": 176, "realEditorValues": [{
-									"id": "V_Bool",
-									"params": [ true ]
-								}] }
-							]
-						},
-						{
-							"__identifier": "Text",
-							"__grid": [25,52],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#FFDD00",
-							"iid": "fef43290-7820-11ed-9973-b3927b469aaa",
-							"width": 8,
-							"height": 8,
-							"defUid": 127,
-							"px": [204,416],
-							"fieldInstances": [
-								{ "__identifier": "size", "__value": 8, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [8] }] },
-								{ "__identifier": "text", "__value": "Home", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Home"]
-								}] },
-								{ "__identifier": "color", "__value": "#FFDD00", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [16768256] }] },
-								{ "__identifier": "duration", "__value": null, "__type": "Float", "__tile": null, "defUid": 219, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Text",
-							"__grid": [24,62],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#FFDD00",
-							"iid": "168bee70-7820-11ed-9973-eb2e737ba906",
-							"width": 8,
-							"height": 8,
-							"defUid": 127,
-							"px": [196,496],
-							"fieldInstances": [
-								{ "__identifier": "size", "__value": 8, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [8] }] },
-								{ "__identifier": "text", "__value": "Sweet", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Sweet"]
-								}] },
-								{ "__identifier": "color", "__value": "#FFDD00", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [16768256] }] },
-								{ "__identifier": "duration", "__value": null, "__type": "Float", "__tile": null, "defUid": 219, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Text",
-							"__grid": [22,73],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#FFDD00",
-							"iid": "1fa333b0-7820-11ed-9973-4501f1243dad",
-							"width": 8,
-							"height": 8,
-							"defUid": 127,
-							"px": [180,584],
-							"fieldInstances": [
-								{ "__identifier": "size", "__value": 8, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [8] }] },
-								{ "__identifier": "text", "__value": "Home", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["Home"]
-								}] },
-								{ "__identifier": "color", "__value": "#FFDD00", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [16768256] }] },
-								{ "__identifier": "duration", "__value": null, "__type": "Float", "__tile": null, "defUid": 219, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Checkpoint",
-							"__grid": [14,96],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#2CE8F5",
-							"iid": "86777130-7820-11ed-9973-f3d939cbd221",
-							"width": 8,
-							"height": 8,
-							"defUid": 177,
-							"px": [112,768],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [180,118],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "1db9e930-7820-11ed-9973-93bd5415a7d2",
-							"width": 32,
-							"height": 16,
-							"defUid": 178,
-							"px": [1440,944],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Player",
-							"__grid": [16,115],
-							"__pivot": [0.5,1],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#F6757A",
-							"iid": "c2a1ea80-7820-11ed-9973-b56c6f90f64c",
-							"width": 8,
-							"height": 16,
-							"defUid": 121,
-							"px": [132,928],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "Checkpoint",
-							"__grid": [218,90],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#2CE8F5",
-							"iid": "0e4bc820-7820-11ed-9973-75d9281579c6",
-							"width": 8,
-							"height": 8,
-							"defUid": 177,
-							"px": [1744,720],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "Coin",
-							"__grid": [95,80],
-							"__pivot": [0.5,0.5],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#FEAE34",
-							"iid": "f9292390-7820-11ed-9973-8714efffe980",
-							"width": 8,
-							"height": 8,
-							"defUid": 184,
-							"px": [764,644],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [207,24],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "e66e9040-7820-11ed-9973-1fd6488a48fd",
-							"width": 32,
-							"height": 72,
-							"defUid": 178,
-							"px": [1656,192],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Death",
-							"__grid": [207,20],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#7B0A15",
-							"iid": "f320af80-7820-11ed-9973-e9d64b3b2e43",
-							"width": 16,
-							"height": 32,
-							"defUid": 178,
-							"px": [1656,160],
-							"fieldInstances": [
-								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
-								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "Checkpoint",
-							"__grid": [68,149],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#2CE8F5",
-							"iid": "a26798a0-7820-11ed-9973-05b9de738f60",
-							"width": 8,
-							"height": 8,
-							"defUid": 177,
-							"px": [544,1192],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "Checkpoint",
-							"__grid": [17,96],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#2CE8F5",
-							"iid": "98da0230-7820-11ed-a34d-fd447331f269",
-							"width": 8,
-							"height": 8,
-							"defUid": 177,
-							"px": [136,768],
-							"fieldInstances": []
-						},
-						{
-							"__identifier": "SpawnTrigger",
-							"__grid": [36,117],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#EAD4AA",
-							"iid": "39e91140-7820-11ed-9f6e-9d30f39cb379",
-							"width": 32,
-							"height": 16,
-							"defUid": 213,
-							"px": [288,936],
-							"fieldInstances": [
-								{ "__identifier": "refs", "__value": [
-									{
-										"entityIid": "407f02d0-7820-11ed-9f6e-03c1a69db0e7",
-										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
-										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
-										"worldIid": "596245b0-7820-11ed-9e01-5d026aa774e7"
-									},
-									{
-										"entityIid": "41dd0c30-7820-11ed-9f6e-f38d9ceee6e0",
-										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
-										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
-										"worldIid": "596245b0-7820-11ed-9e01-5d026aa774e7"
-									},
-									{
-										"entityIid": "4315b340-7820-11ed-9f6e-1314a9bf4bff",
-										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
-										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
-										"worldIid": "596245b0-7820-11ed-9e01-5d026aa774e7"
-									},
-									{
-										"entityIid": "44c62260-7820-11ed-9f6e-45146885832e",
-										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
-										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
-										"worldIid": "596245b0-7820-11ed-9e01-5d026aa774e7"
-									},
-									{
-										"entityIid": "460d6f70-7820-11ed-9f6e-8d1459b345d8",
-										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
-										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
-										"worldIid": "596245b0-7820-11ed-9e01-5d026aa774e7"
-									},
-									{
-										"entityIid": "46d441e0-7820-11ed-9f6e-c12b68ae548f",
-										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
-										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
-										"worldIid": "596245b0-7820-11ed-9e01-5d026aa774e7"
-									},
-									{
-										"entityIid": "e4ea2d00-7820-11ed-9d79-c334c7dd9519",
-										"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
-										"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
-										"worldIid": "596245b0-7820-11ed-9e01-5d026aa774e7"
-									}
-								], "__type": "Array<EntityRef>", "__tile": null, "defUid": 214, "realEditorValues": [
-									{
-										"id": "V_String",
-										"params": ["407f02d0-7820-11ed-9f6e-03c1a69db0e7"]
-									},
-									{
-										"id": "V_String",
-										"params": ["41dd0c30-7820-11ed-9f6e-f38d9ceee6e0"]
-									},
-									{
-										"id": "V_String",
-										"params": ["4315b340-7820-11ed-9f6e-1314a9bf4bff"]
-									},
-									{
-										"id": "V_String",
-										"params": ["44c62260-7820-11ed-9f6e-45146885832e"]
-									},
-									{
-										"id": "V_String",
-										"params": ["460d6f70-7820-11ed-9f6e-8d1459b345d8"]
-									},
-									{
-										"id": "V_String",
-										"params": ["46d441e0-7820-11ed-9f6e-c12b68ae548f"]
-									},
-									{
-										"id": "V_String",
-										"params": ["e4ea2d00-7820-11ed-9d79-c334c7dd9519"]
-									}
-								] },
-								{ "__identifier": "persistent", "__value": true, "__type": "Bool", "__tile": null, "defUid": 216, "realEditorValues": [] }
-							]
-						},
-						{
-							"__identifier": "ParticleSpawner",
-							"__grid": [27,111],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#3E2731",
-							"iid": "407f02d0-7820-11ed-9f6e-03c1a69db0e7",
-							"width": 8,
-							"height": 8,
-							"defUid": 215,
-							"px": [216,888],
-							"fieldInstances": [{ "__identifier": "type", "__value": "Firework", "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["Firework"]
-							}] }]
-						},
-						{
-							"__identifier": "ParticleSpawner",
-							"__grid": [29,106],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#3E2731",
-							"iid": "41dd0c30-7820-11ed-9f6e-f38d9ceee6e0",
-							"width": 8,
-							"height": 8,
-							"defUid": 215,
-							"px": [232,848],
-							"fieldInstances": [{ "__identifier": "type", "__value": "Firework", "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["Firework"]
-							}] }]
-						},
-						{
-							"__identifier": "ParticleSpawner",
-							"__grid": [35,104],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#3E2731",
-							"iid": "4315b340-7820-11ed-9f6e-1314a9bf4bff",
-							"width": 8,
-							"height": 8,
-							"defUid": 215,
-							"px": [280,832],
-							"fieldInstances": [{ "__identifier": "type", "__value": "Firework", "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["Firework"]
-							}] }]
-						},
-						{
-							"__identifier": "ParticleSpawner",
-							"__grid": [40,104],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#3E2731",
-							"iid": "44c62260-7820-11ed-9f6e-45146885832e",
-							"width": 8,
-							"height": 8,
-							"defUid": 215,
-							"px": [320,832],
-							"fieldInstances": [{ "__identifier": "type", "__value": "Firework", "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["Firework"]
-							}] }]
-						},
-						{
-							"__identifier": "ParticleSpawner",
-							"__grid": [46,106],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#3E2731",
-							"iid": "460d6f70-7820-11ed-9f6e-8d1459b345d8",
-							"width": 8,
-							"height": 8,
-							"defUid": 215,
-							"px": [368,848],
-							"fieldInstances": [{ "__identifier": "type", "__value": "Firework", "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["Firework"]
-							}] }]
-						},
-						{
-							"__identifier": "ParticleSpawner",
-							"__grid": [48,111],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#3E2731",
-							"iid": "46d441e0-7820-11ed-9f6e-c12b68ae548f",
-							"width": 8,
-							"height": 8,
-							"defUid": 215,
-							"px": [384,888],
-							"fieldInstances": [{ "__identifier": "type", "__value": "Firework", "__type": "LocalEnum.ParticleType", "__tile": null, "defUid": 218, "realEditorValues": [{
-								"id": "V_String",
-								"params": ["Firework"]
-							}] }]
-						},
-						{
-							"__identifier": "Text",
-							"__grid": [35,111],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#E80CD4",
-							"iid": "e4ea2d00-7820-11ed-9d79-c334c7dd9519",
-							"width": 8,
-							"height": 8,
-							"defUid": 127,
-							"px": [280,888],
-							"fieldInstances": [
-								{ "__identifier": "size", "__value": 10, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [10] }] },
-								{ "__identifier": "text", "__value": "cool!", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
-									"id": "V_String",
-									"params": ["cool!"]
-								}] },
-								{ "__identifier": "color", "__value": "#E80CD4", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [15207636] }] },
-								{ "__identifier": "duration", "__value": 2, "__type": "Float", "__tile": null, "defUid": 219, "realEditorValues": [{ "id": "V_Float", "params": [2] }] }
-							]
-						}
-					]
 				},
 				{
 					"__identifier": "Layer1",

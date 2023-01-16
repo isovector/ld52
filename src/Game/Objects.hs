@@ -10,6 +10,7 @@ import           Control.Lens (Prism')
 import           Control.Monad.Error (Error)
 import           Data.Map (Map)
 import qualified Data.Map as M
+import qualified Data.Set as S
 import           Data.Text (Text)
 import qualified Data.Text as T
 import           Data.Traversable (for)
@@ -21,6 +22,7 @@ import           Game.Objects.Chicken (chicken)
 import           Game.Objects.Coin (coin)
 import           Game.Objects.CollectPowerup (collectPowerup)
 import           Game.Objects.Death (deathZone)
+import           Game.Objects.DespawnTrigger (despawnTrigger)
 import           Game.Objects.Door (door)
 import           Game.Objects.ParticleSpawner (particleSpawner)
 import           Game.Objects.Player (player)
@@ -75,7 +77,10 @@ buildEntity "ParticleSpawner" pos _ props _ = do
 buildEntity "SpawnTrigger" pos sz props refmap = do
   persistent <- asBool "SpawnTrigger" "persistent" props
   refs <- getRefs "SpawnTrigger" "refs" props refmap
-  pure $ spawnTrigger pos (coerce sz) persistent refs
+  pure $ spawnTrigger pos sz persistent refs
+buildEntity "DespawnTrigger" pos sz props refmap = do
+  refs <- getRefs "DespawnTrigger" "despawn" props refmap
+  pure $ despawnTrigger pos sz $ S.map StaticId $ M.keysSet refs
 buildEntity nm pos sz _ _ = do
   traceM $ "unregistered entity: " <> T.unpack nm
   pure $ unknown nm pos sz
@@ -102,11 +107,11 @@ as ty pris obj field m
       , " was not found"
       ]
 
-getRefs :: Text -> Text -> Map Text LDtk.FieldValue -> Map Text Object -> Either Text [Object]
+getRefs :: Text -> Text -> Map Text LDtk.FieldValue -> Map Text Object -> Either Text (Map Text Object)
 getRefs obj prop props refs = do
   z <- as "Array" #_ArrayValue obj prop props
   iids <- for z $ note "couldn't lookup ref" . fmap (view #entityIid) . preview #_EntityRefValue
-  pure $ foldMap (pure . (refs M.!)) iids
+  pure $ foldMap (\iid -> M.singleton iid $ refs M.! iid) iids
 
 asPos :: Text -> Text -> Map Text LDtk.FieldValue -> Either Text (V2 WorldPos)
 asPos = fmap (fmap (fmap gridToWorld)) . as "Text" #_PointValue

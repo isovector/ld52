@@ -1,9 +1,11 @@
 module Game.Objects.SpawnTrigger where
 
-import Game.Common
+import qualified Data.Map as M
+import           Data.Monoid
+import           Game.Common
 
 
-spawnTrigger :: V2 WorldPos -> OriginRect Double -> Bool -> [Object]  -> Object
+spawnTrigger :: V2 WorldPos -> OriginRect Double -> Bool -> Map Text Object  -> Object
 spawnTrigger pos ore persistent spawns =
   playerHitRectObj'
     (proc oi -> do
@@ -13,10 +15,14 @@ spawnTrigger pos ore persistent spawns =
 
       returnA -< mempty
         { oe_die = bool (() <$ is_hit) noEvent persistent
-        , oe_spawn = spawns <$ is_hit
+        , oe_omnipotence = spawnAll spawns <$ is_hit
         }
     )
     ore
     (V4 255 0 0 128)
     pos
+
+
+spawnAll :: Map Text Object -> ObjectMap ObjSF -> ObjectMap ObjSF
+spawnAll spawns = #objm_map %~ appEndo (foldMap (Endo . uncurry M.insert . first StaticId) $ M.toList spawns)
 
