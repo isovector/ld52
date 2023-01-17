@@ -60,7 +60,7 @@ game gs0 =
           , bg
           , to_draw
           , drawPowerup PowerupWarpBall $ ui_box_pos (-17)
-          , drawPowerup PowerupDoubleJump $ ui_box_pos (17)
+          , drawPowerup PowerupTotsugeki $ ui_box_pos (17)
           , atScreenPos
               $ drawText 8
                   (V3 255 255 0)
