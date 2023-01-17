@@ -6,7 +6,7 @@ name="WheresMyChickenMan"
 t=$(date --rfc-3339=seconds | sed 's/ /-/g' | sed 's/:/-/g')
 g=$(git rev-parse --short HEAD)
 outdir="jam-windows-$t-$g"
-releasework="releases/jam-windows-$t-$g"
+releasework="releases/windows-$t-$g"
 releasedir="$releasework/$name"
 
 nix-build -A projectCross.mingwW64.hsPkgs.ld52.components.exes.ld52-exe -o "$outdir" ./default.nix
@@ -26,7 +26,7 @@ cp -r resources/* "$releasedir/resources/"
 chmod +w -R "$releasedir"
 
 pushd "$releasework"
-zip -r $name.zip $name
+zip -r windows-$name.zip $name
 popd
 
 echo "Built $releasedir"
