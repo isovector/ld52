@@ -20,7 +20,6 @@ import           Engine.Camera (camera, getCameraFocus)
 import           Engine.Drawing (playSound)
 import           Engine.FRP
 import           Engine.Geometry (intersects, rectContains)
-import           Engine.Prelude (traceFX)
 import           Engine.Types
 import           Engine.Utils (originRectToRect)
 import           Game.GameMessageHandler (handleGameMessage)

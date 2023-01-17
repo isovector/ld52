@@ -4,13 +4,14 @@ import Game.Common
 
 coin :: V2 WorldPos -> Object
 coin pos
-  = onHitByTag IsPlayer
+  = oscillate (\t -> coerce $ V2 0 (cos (t * 3) * 0.1))
+  $ onHitByTag IsPlayer
       (mconcat
         [ standardDeathResponse
         , playSoundReponse CoinSound
         , getCoinResponse
         ])
   $ staticCollisionObject pos ore mempty
-  $ drawOriginRect (V4 255 255 0 255) (coerce ore)
+  $ \p -> drawGameTextureOriginRect EggTexture (coerce ore) p 0 (pure False)
   where
     ore = OriginRect 8 4
