@@ -78,7 +78,7 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
     throwBallHandler (- (sz & _x .~ 0)) ore
       -< ( oi_self oi
          , pos
-         , vel
+         , vel'
          , whenE (S.member PowerupWarpBall powerups) $ whenE alive throw_ball
          )
 
