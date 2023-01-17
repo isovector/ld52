@@ -145,10 +145,19 @@ drawText sz color text pos@(V2 x y) cam
         copy renderer glyph Nothing
           $ Just
           $ fmap round
-          $ Rectangle (P $ coerce $ viaCamera cam $ V2 (x + coerce (i * sz)) y)
+          $ Rectangle (P $ coerce $ viaCamera cam $ V2 (x + coerce (i * sz)) $ withDescender sz c y)
           $ V2 sz sz
       rendererDrawBlendMode renderer $= BlendAlphaBlend
   | otherwise = mempty
+
+withDescender :: Double -> Char -> WorldPos -> WorldPos
+withDescender sz 'j' = (+ coerce sz / 6)
+withDescender sz 'g' = (+ coerce sz / 5)
+withDescender sz 'y' = (+ coerce sz / 6)
+withDescender sz 'p' = (+ coerce sz / 6)
+withDescender sz 'q' = (+ coerce sz / 6)
+withDescender _  _   = id
+
 
 drawParallax :: V2 WorldPos -> GameTexture -> Double -> Renderable
 drawParallax sz gt scale c@(Camera cam) =
