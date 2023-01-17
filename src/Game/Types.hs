@@ -34,6 +34,7 @@ data GameTexture
     | CheckpointTexture
     | ActiveCheckpointTexture
     | EggTexture
+    | ArrowTexture
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 

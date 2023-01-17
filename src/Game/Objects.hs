@@ -34,6 +34,7 @@ import           Game.Objects.Trampoline (trampoline)
 import           Game.Objects.TutorialRegion (tutorialRegion)
 import           Game.Objects.Unknown (unknown)
 import qualified LDtk.Types as LDtk
+import Game.Objects.Arrow (arrow)
 
 
 buildEntity
@@ -78,6 +79,8 @@ buildEntity "Grenade" pos _ props _ = do
 buildEntity "ParticleSpawner" pos _ props _ = do
   pt <- asEnum "ParticleSpawner" "type" props
   pure $ particleSpawner pos pt
+buildEntity "Arrow" pos _ props _ =
+  arrow pos <$> asDouble "Arrow" "angle" props
 buildEntity "SpawnTrigger" pos sz props refmap = do
   persistent <- asBool "SpawnTrigger" "persistent" props
   refs <- getRefs "SpawnTrigger" "refs" props refmap

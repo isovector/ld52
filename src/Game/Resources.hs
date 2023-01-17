@@ -105,6 +105,7 @@ instance IsResource GameTexture WrappedTexture where
   resourceName CheckpointTexture = "checkpoint"
   resourceName ActiveCheckpointTexture = "checkpoint-active"
   resourceName EggTexture = "coin"
+  resourceName ArrowTexture = "green_arrow"
 
 instance IsResource Song ALUT.Source where
   load _ _ fileName = do
