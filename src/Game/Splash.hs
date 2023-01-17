@@ -2,6 +2,8 @@ module Game.Splash where
 
 import Game (game, initialGlobalState)
 import Game.Common
+import SDL (setWindowMode, WindowMode (FullscreenDesktop))
+import Engine.Globals (global_resources)
 
 
 runIntro :: SF RawFrameInfo (Camera, Renderable)
@@ -13,6 +15,9 @@ splashScreen :: Swont RawFrameInfo (Camera, Renderable) ()
 splashScreen = do
   swont (liftIntoGame mainMenu) >>= \case
      Start -> swont $ game (initialGlobalState TestWorld) >>> arr (, noEvent)
+     Fullscreen -> do
+       momentary $ (Camera 0, const $ setWindowMode (e_window $ r_engine global_resources) FullscreenDesktop)
+       splashScreen
      Credits -> do
       swont $ liftIntoGame credits
       splashScreen
@@ -22,7 +27,7 @@ liftIntoGame sf = sf >>> arr (first $ (Camera 0,) . const)
 
 
 
-data MenuItem = Start | Credits
+data MenuItem = Start | Fullscreen | Credits
   deriving (Eq, Ord, Show, Enum, Bounded)
 
 prevMenuItem :: MenuItem -> MenuItem
@@ -112,7 +117,7 @@ drawMenuItem sel mi ix =
     drawText 16 col (show mi)
       ((logicalSize / 2)
           & _x -~ 130
-          & _y .~ 170 + fromIntegral ix * 24
+          & _y .~ 150 + fromIntegral ix * 24
       ) (Camera 0)
   where
     col =
