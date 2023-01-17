@@ -37,10 +37,12 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
             $ oi_events oi
 
 
-      doorout :: Maybe (V2 WorldPos)
-      doorout = eventToMaybe
-              $ listenInbox (preview #_TeleportOpportunity . snd)
+      at_door :: Event (V2 WorldPos)
+      at_door = listenInbox (preview #_TeleportOpportunity . snd)
               $ oi_events oi
+
+      doorout :: Maybe (V2 WorldPos)
+      doorout = eventToMaybe at_door
 
       tramp :: Maybe Double
       tramp = eventToMaybe
@@ -90,6 +92,8 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
 
   press_up <- edge -< view _y $ fmap (== -1) $ c_dir $ fi_controls $ oi_frameInfo oi
 
+  let won = press_up >> at_door
+
   let pos'' = bool (const pos) id alive
           $ bool id (const cp_pos) (isEvent respawn)
           $ bool id (maybe id const doorout) (event False (const True) press_up)
@@ -112,6 +116,7 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
                   , start
                   ]
               & #oe_broadcast_message .~ fmap (pure . CurrentCheckpoint . fst) cp_hit
+              & #oe_game_message .~ ([GameWon] <$ won)
         , oo_state =
             oi_state oi
               & #os_pos .~ pos''

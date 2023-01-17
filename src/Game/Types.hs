@@ -10,12 +10,14 @@ import Generics.Deriving.Enum
 data GameState = GameState
   { gs_coins :: Int
   , gs_inventory :: Set PowerupType
+  , gs_end :: Bool
   }
   deriving stock Generic
 
 data GameMessage
   = AddCoin
   | AddInventory PowerupType
+  | GameWon
   deriving stock (Eq, Ord, Show, Read, Generic)
 
 ------------------------------------------------------------------------------

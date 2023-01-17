@@ -10,6 +10,7 @@ import           Engine.ObjectRouter
 import           Engine.Prelude
 import           Game.Objects.CollectPowerup (powerupRenderable)
 import           Game.World (drawLevel)
+import Numeric (showFFloat)
 
 
 #ifndef __HLINT__
@@ -49,6 +50,13 @@ game gs0 =
           ]
 
     bg <- arr $ uncurry drawLevel -< (gs_layerset gs, gs_currentLevel gs)
+    t <- localTime -< ()
+
+    let eggs = gs_coins $ gs_gameState gs
+    game_won <- edge -< gs_end $ gs_gameState gs
+    all_eggs <- edge -< eggs == 5
+    egg_time <- hold Nothing -< Just t <$ all_eggs
+    end_time <- hold Nothing -< Just t <$ game_won
 
     returnA -<
       ( cam
@@ -61,11 +69,21 @@ game gs0 =
           , to_draw
           , drawPowerup PowerupWarpBall $ ui_box_pos (-17)
           , drawPowerup PowerupTotsugeki $ ui_box_pos (17)
-          , atScreenPos
+          , ifA (eggs > 0) $ atScreenPos
               $ drawText 8
                   (V3 255 255 0)
                   (show $ gs_coins $ gameState gs)
               $ V2 10 10
+          , flip foldMap end_time $ \et -> atScreenPos
+              $ drawText 8
+                  (V3 255 255 255)
+                  (formatTime et)
+              $ V2 240 10
+          , flip foldMap egg_time $ \et -> atScreenPos
+              $ drawText 8
+                  (V3 255 255 0)
+                  (formatTime et)
+              $ V2 240 20
           ]
         )
   where
@@ -74,12 +92,25 @@ game gs0 =
         & _x +~ dx
         & _y .~ 20
 
+formatTime :: Time -> String
+formatTime t =
+  let (tsecs, tmils) = properFraction @_ @Int t
+      mins = lpad 2 '0' $ show $ div tsecs 60
+      secs = lpad 2 '0' $ show $ mod tsecs 60
+   in mins <> (':' : secs <> ('.' : drop 2 (showFFloat (Just 3) tmils "")))
+
+lpad :: Int -> Char -> String -> String
+lpad n c s
+  | let l = length s
+  , l < n = replicate (n - l) c <> s
+  | otherwise = s
+
 initialGlobalState :: WorldName -> GlobalState
 initialGlobalState w
   = GlobalState
       (w_levels (global_worlds w) M.! "AutoLayer")
       (S.fromList [Layer3])
-      (GameState 0 mempty)
+      (GameState 0 mempty False)
 
 #endif
 
