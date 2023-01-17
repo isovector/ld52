@@ -88,10 +88,11 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
             <*> pos'
             <*> vel'
 
-  let (V2 _ press_up) = fmap (== -1) $ c_dir $ fi_controls $ oi_frameInfo oi
+  press_up <- edge -< view _y $ fmap (== -1) $ c_dir $ fi_controls $ oi_frameInfo oi
+
   let pos'' = bool (const pos) id alive
           $ bool id (const cp_pos) (isEvent respawn)
-          $ bool id (maybe id const doorout) press_up
+          $ bool id (maybe id const doorout) (event False (const True) press_up)
           $ do_teleport
           $ pos'
 
