@@ -4,9 +4,9 @@ import Game.Common
 
 
 checkpoint :: V2 WorldPos -> Object
-checkpoint pos =
-  playerHitRectObj
-    (proc oi -> do
+checkpoint pos
+  = oscillate (\t -> coerce $ V2 0 (cos (t * 5) * 1))
+  $ playerHitRectObj (proc oi -> do
       let hit_cp = (fmap (, SetCheckpoint pos) . onHitBy IsPlayer) oi
           mine = listenInbox (preview #_CurrentCheckpoint . snd) $ oi_events oi
 
@@ -20,9 +20,14 @@ checkpoint pos =
           }
     )
     ore
-    (\is_me pos' -> drawOriginRect (bool off_color on_color is_me) ore pos')
+    (\is_me pos' ->
+        drawGameTextureOriginRect
+          (bool CheckpointTexture ActiveCheckpointTexture is_me)
+          ore
+          pos'
+          0
+          (pure False)
+    )
     pos
   where
-    ore = OriginRect 8 0
-    on_color = V4 255 0 255 255
-    off_color = V4 100 0 100 255
+    ore = OriginRect (V2 14 10) 0

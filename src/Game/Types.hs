@@ -31,6 +31,9 @@ data GameTexture
     | AuraTexture
     | TrampolineTexture
     | KeycapTexture
+    | CheckpointTexture
+    | ActiveCheckpointTexture
+    | EggTexture
   deriving (Eq, Ord, Show, Read, Enum, Bounded)
 
 

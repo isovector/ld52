@@ -9,18 +9,20 @@ module Engine.ObjectRouter
 
 import           Control.Lens (at, non)
 import           Control.Lens.Lens
+import           Data.Foldable (find)
 import           Data.Map (Map)
 import qualified Data.Map as M
 import           Data.Maybe (maybeToList)
 import           Data.Monoid
+import qualified Data.Set as S
+import           Data.Text (Text)
 import           Engine.Camera (camera, getCameraFocus)
 import           Engine.Drawing (playSound)
 import           Engine.FRP
-import           Engine.Geometry (intersects)
+import           Engine.Geometry (intersects, rectContains)
 import           Engine.Types
 import           Engine.Utils (originRectToRect)
 import           Game.GameMessageHandler (handleGameMessage)
-import Data.Text (Text)
 
 
 renderObjects
@@ -90,8 +92,14 @@ router' objs0 =
 routeHits :: RawFrameInfo -> ObjectMap ObjectOutput -> ObjectMap sf -> ObjectMap (ObjectInput, sf)
 routeHits rfi outlast new = do
   let fi = rfi & #fi_global .~ objm_globalState new
+      playerpos = maybe 0 (os_pos . oo_state)
+                $ find (S.member IsPlayer . os_tags . oo_state)
+                $ toList
+                $ objm_map outlast
       hittable
         = M.fromList
+        -- TODO(sandy): big hack: fast collision detection by only colliding around the player
+        $ filter (rectContains screenRect . (playerpos -) . os_pos . oo_state . fst . snd)
         $ M.foldMapWithKey (\k m -> maybeToList . sequenceA . (k, ) . fmap (m, ) $ getCollisionRect $ oo_state m)
         $ objm_map outlast
   new
