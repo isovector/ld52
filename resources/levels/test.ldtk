@@ -3591,20 +3591,6 @@
 							]
 						},
 						{
-							"__identifier": "Checkpoint",
-							"__grid": [14,96],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": null,
-							"__smartColor": "#2CE8F5",
-							"iid": "86777130-7820-11ed-9973-f3d939cbd221",
-							"width": 8,
-							"height": 8,
-							"defUid": 177,
-							"px": [112,768],
-							"fieldInstances": []
-						},
-						{
 							"__identifier": "Death",
 							"__grid": [180,118],
 							"__pivot": [0,0],
@@ -3623,7 +3609,7 @@
 						},
 						{
 							"__identifier": "Player",
-							"__grid": [15,116],
+							"__grid": [15,115],
 							"__pivot": [0.5,1],
 							"__tags": [],
 							"__tile": null,
@@ -3632,7 +3618,7 @@
 							"width": 8,
 							"height": 16,
 							"defUid": 121,
-							"px": [124,936],
+							"px": [124,928],
 							"fieldInstances": []
 						},
 						{
@@ -3713,7 +3699,7 @@
 						},
 						{
 							"__identifier": "Checkpoint",
-							"__grid": [17,96],
+							"__grid": [33,116],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -3722,7 +3708,7 @@
 							"width": 8,
 							"height": 8,
 							"defUid": 177,
-							"px": [136,768],
+							"px": [264,928],
 							"fieldInstances": []
 						},
 						{
@@ -3982,15 +3968,23 @@
 							"defUid": 213,
 							"px": [40,488],
 							"fieldInstances": [
-								{ "__identifier": "refs", "__value": [{
+								{ "__identifier": "refs", "__value": [ {
 									"entityIid": "39e91140-7820-11ed-9f6e-9d30f39cb379",
 									"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
 									"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
 									"worldIid": "4a847660-7820-11ed-b537-03a7067551b1"
-								}], "__type": "Array<EntityRef>", "__tile": null, "defUid": 214, "realEditorValues": [{
+								}, {
+									"entityIid": "98da0230-7820-11ed-a34d-fd447331f269",
+									"layerIid": "be082fe0-7820-11ed-aa43-e594ae304189",
+									"levelIid": "a2a50ff0-66b0-11ec-9cd7-c721746049b9",
+									"worldIid": "4a847660-7820-11ed-b537-03a7067551b1"
+								} ], "__type": "Array<EntityRef>", "__tile": null, "defUid": 214, "realEditorValues": [ {
 									"id": "V_String",
 									"params": ["39e91140-7820-11ed-9f6e-9d30f39cb379"]
-								}] },
+								}, {
+									"id": "V_String",
+									"params": ["98da0230-7820-11ed-a34d-fd447331f269"]
+								} ] },
 								{ "__identifier": "persistent", "__value": true, "__type": "Bool", "__tile": null, "defUid": 216, "realEditorValues": [] }
 							]
 						},
@@ -4002,7 +3996,7 @@
 							"__tile": null,
 							"__smartColor": "#7B0A15",
 							"iid": "ab560070-7820-11ed-87b2-a7fbbc018211",
-							"width": 256,
+							"width": 128,
 							"height": 16,
 							"defUid": 178,
 							"px": [624,1232],
@@ -4019,7 +4013,7 @@
 							"__tile": null,
 							"__smartColor": "#7B0A15",
 							"iid": "fbe647b0-7820-11ed-87b2-d54e57238962",
-							"width": 256,
+							"width": 128,
 							"height": 16,
 							"defUid": 178,
 							"px": [624,1168],
@@ -4071,7 +4065,7 @@
 							"__smartColor": "#7B0A15",
 							"iid": "3b714230-7820-11ed-87b2-1726e07a837f",
 							"width": 16,
-							"height": 192,
+							"height": 96,
 							"defUid": 178,
 							"px": [976,1184],
 							"fieldInstances": [
@@ -4456,7 +4450,7 @@
 							"height": 16,
 							"defUid": 225,
 							"px": [1428,788],
-							"fieldInstances": [{ "__identifier": "angle", "__value": 210, "__type": "Float", "__tile": null, "defUid": 226, "realEditorValues": [{ "id": "V_Float", "params": [210] }] }]
+							"fieldInstances": [{ "__identifier": "angle", "__value": 150, "__type": "Float", "__tile": null, "defUid": 226, "realEditorValues": [{ "id": "V_Float", "params": [150] }] }]
 						},
 						{
 							"__identifier": "DespawnTrigger",
@@ -4536,7 +4530,7 @@
 							"height": 16,
 							"defUid": 225,
 							"px": [1156,244],
-							"fieldInstances": [{ "__identifier": "angle", "__value": 90, "__type": "Float", "__tile": null, "defUid": 226, "realEditorValues": [{ "id": "V_Float", "params": [90] }] }]
+							"fieldInstances": [{ "__identifier": "angle", "__value": 270, "__type": "Float", "__tile": null, "defUid": 226, "realEditorValues": [{ "id": "V_Float", "params": [270] }] }]
 						},
 						{
 							"__identifier": "SpawnTrigger",
@@ -4577,7 +4571,7 @@
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
-							"__smartColor": "#FFFFFF",
+							"__smartColor": "#FFDD00",
 							"iid": "69687420-7820-11ed-b537-b3bd63495b7f",
 							"width": 8,
 							"height": 8,
@@ -4589,7 +4583,7 @@
 									"id": "V_String",
 									"params": ["Did you get all 5 coins?"]
 								}] },
-								{ "__identifier": "color", "__value": "#FFFFFF", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [] },
+								{ "__identifier": "color", "__value": "#FFDD00", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [16768256] }] },
 								{ "__identifier": "duration", "__value": null, "__type": "Float", "__tile": null, "defUid": 219, "realEditorValues": [] }
 							]
 						},
@@ -4639,6 +4633,181 @@
 								"id": "V_String",
 								"params": ["0470c960-7820-11ed-b537-37ddd40f7017"]
 							}] }]
+						},
+						{
+							"__identifier": "Text",
+							"__grid": [246,154],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#FFFFFF",
+							"iid": "a3cfa680-7820-11ed-b537-c71c9f921333",
+							"width": 8,
+							"height": 8,
+							"defUid": 127,
+							"px": [1968,1232],
+							"fieldInstances": [
+								{ "__identifier": "size", "__value": 20, "__type": "Float", "__tile": null, "defUid": 128, "realEditorValues": [{ "id": "V_Float", "params": [20] }] },
+								{ "__identifier": "text", "__value": "THE END", "__type": "String", "__tile": null, "defUid": 129, "realEditorValues": [{
+									"id": "V_String",
+									"params": ["THE END"]
+								}] },
+								{ "__identifier": "color", "__value": "#FFFFFF", "__type": "Color", "__tile": null, "defUid": 130, "realEditorValues": [{ "id": "V_Int", "params": [16777215] }] },
+								{ "__identifier": "duration", "__value": null, "__type": "Float", "__tile": null, "defUid": 219, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [120,202],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "e2bad400-7820-11ed-b537-31c13769ed32",
+							"width": 200,
+							"height": 16,
+							"defUid": 178,
+							"px": [960,1616],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [145,202],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "fa646a30-7820-11ed-b537-5bd04bd57453",
+							"width": 184,
+							"height": 16,
+							"defUid": 178,
+							"px": [1160,1616],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [168,202],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "04ee0420-7820-11ed-b537-270e39de9f66",
+							"width": 208,
+							"height": 16,
+							"defUid": 178,
+							"px": [1344,1616],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [194,202],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "0e810910-7820-11ed-b537-05700ad98675",
+							"width": 160,
+							"height": 16,
+							"defUid": 178,
+							"px": [1552,1616],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [214,202],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "171dc720-7820-11ed-b537-5f7b02d57da1",
+							"width": 208,
+							"height": 16,
+							"defUid": 178,
+							"px": [1712,1616],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [240,202],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "207fd100-7820-11ed-b537-1d594ca45d0e",
+							"width": 208,
+							"height": 16,
+							"defUid": 178,
+							"px": [1920,1616],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [122,160],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "3159a0f0-7820-11ed-b537-97af743aab65",
+							"width": 16,
+							"height": 96,
+							"defUid": 178,
+							"px": [976,1280],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [94,146],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "42391630-7820-11ed-b537-5382a884a598",
+							"width": 128,
+							"height": 16,
+							"defUid": 178,
+							"px": [752,1168],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
+						},
+						{
+							"__identifier": "Death",
+							"__grid": [94,154],
+							"__pivot": [0,0],
+							"__tags": [],
+							"__tile": null,
+							"__smartColor": "#7B0A15",
+							"iid": "472612b0-7820-11ed-b537-efdb03d0547b",
+							"width": 128,
+							"height": 16,
+							"defUid": 178,
+							"px": [752,1232],
+							"fieldInstances": [
+								{ "__identifier": "killHero", "__value": true, "__type": "Bool", "__tile": null, "defUid": 179, "realEditorValues": [] },
+								{ "__identifier": "killOther", "__value": false, "__type": "Bool", "__tile": null, "defUid": 180, "realEditorValues": [] }
+							]
 						}
 					]
 				},
@@ -4758,7 +4927,7 @@
 						1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,
-						1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,2,2,2,2,1,0,0,0,0,0,0,1,0,0,0,
+						1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,2,0,0,0,0,2,2,2,2,1,0,0,0,0,0,0,1,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,4,4,4,4,4,4,4,4,
 						1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -4943,11 +5112,11 @@
 						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,
 						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,0,0,0,0,0,0,0,1,1,1,
-						1,2,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 						1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-						1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,
+						1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,1,1,
 						1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,
 						1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -10510,6 +10679,7 @@
 						{ "px": [656,1216], "src": [144,64], "f": 0, "t": 81, "d": [162,12201] },
 						{ "px": [1088,112], "src": [128,64], "f": 0, "t": 80, "d": [170,1188] },
 						{ "px": [944,256], "src": [128,64], "f": 0, "t": 80, "d": [170,2619] },
+						{ "px": [800,336], "src": [128,64], "f": 0, "t": 80, "d": [170,3410] },
 						{ "px": [688,544], "src": [128,64], "f": 0, "t": 80, "d": [170,5483] },
 						{ "px": [608,672], "src": [128,64], "f": 0, "t": 80, "d": [170,6758] },
 						{ "px": [1488,688], "src": [128,64], "f": 0, "t": 80, "d": [170,6973] },
@@ -10530,7 +10700,7 @@
 						{ "px": [384,944], "src": [128,64], "f": 0, "t": 80, "d": [170,9464] },
 						{ "px": [1888,960], "src": [128,64], "f": 0, "t": 80, "d": [170,9718] },
 						{ "px": [1584,976], "src": [128,64], "f": 0, "t": 80, "d": [170,9859] },
-						{ "px": [1776,976], "src": [128,64], "f": 0, "t": 80, "d": [170,9871] },
+						{ "px": [1776,992], "src": [128,64], "f": 0, "t": 80, "d": [170,10031] },
 						{ "px": [624,1216], "src": [128,64], "f": 0, "t": 80, "d": [170,12199] },
 						{ "px": [1696,64], "src": [96,64], "f": 0, "t": 78, "d": [169,746] },
 						{ "px": [1264,112], "src": [96,64], "f": 0, "t": 78, "d": [169,1199] },
@@ -11325,7 +11495,7 @@
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-						2,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 						0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -12881,7 +13051,6 @@
 						{ "px": [2000,1392], "src": [112,160], "f": 0, "t": 127, "d": [99,14045] },
 						{ "px": [2016,1392], "src": [48,192], "f": 0, "t": 147, "d": [99,14046] },
 						{ "px": [2032,1392], "src": [96,160], "f": 0, "t": 126, "d": [99,14047] },
-						{ "px": [800,352], "src": [96,16], "f": 0, "t": 18, "d": [166,3570] },
 						{ "px": [1440,480], "src": [96,16], "f": 0, "t": 18, "d": [166,4890] },
 						{ "px": [672,640], "src": [96,16], "f": 0, "t": 18, "d": [166,6442] },
 						{ "px": [672,704], "src": [96,16], "f": 0, "t": 18, "d": [166,7082] },
