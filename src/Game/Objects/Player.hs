@@ -211,10 +211,12 @@ totsugekiHandler :: SF (Event a, V2 WorldPos) (Maybe (V2 Double))
 totsugekiHandler = proc (ev, pos) -> do
   edir <- edgeBy diffDir 0 -< pos
   dir <- hold True -< edir
-  RateLimited cooldown _ _ <- rateLimit 1.5 identity -< (ev, pos)
-  let active = maybe False (>= (1.5 - 0.5)) cooldown
+  RateLimited cooldown _ _ <- rateLimit totsugeki_time identity -< (ev, pos)
+  let active = maybe False (>= (totsugeki_time - 0.5)) cooldown
 
   returnA -< bool Nothing (Just $ V2 (bool negate id dir 400) 0) active
+  where
+    totsugeki_time = 1
 
 
 playerPhysVelocity :: SF FrameInfo (V2 Double)
@@ -244,7 +246,11 @@ drawPlayer =
             , pos
             )
     returnA -< mconcat
-      [ ifA is_totsugeku $ drawGameTextureOriginRect ChickenTexture (mkCenterdOriginRect 24 & #orect_offset . _x -~ 10) pos 0 (V2 dir False)
+      [ ifA is_totsugeku
+          $ drawGameTextureOriginRect
+              ChickenTexture
+              (mkCenterdOriginRect 24 & #orect_offset . _x -~ bool (-10) 10 dir) pos 0
+          $ V2 dir False
       , r
       ]
 

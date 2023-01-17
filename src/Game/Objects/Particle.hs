@@ -4,7 +4,6 @@ import Engine.Collision (move)
 import Data.Hashable (hash)
 import Game.Common
 
-
 particle
     :: V2 WorldPos
     -> V2 Double
@@ -13,40 +12,66 @@ particle
     -> V2 Double
     -> Time
     -> Object
-particle pos0 vel0 ore col grav life =
-    loopPre vel0 $ proc (oi, vel) -> do
-      start <- nowish () -< ()
-      die <- after life () -< ()
+particle pos0 vel0 ore col grav life = loopPre vel0 $ proc (oi, vel) -> do
+  start <- nowish () -< ()
+  die <- after life () -< ()
 
-      let pos = event (os_pos $ oi_state oi) (const pos0) start
+  let pos = event (os_pos $ oi_state oi) (const pos0) start
 
-      let dt = fi_dt $ oi_frameInfo oi
+  let dt = fi_dt $ oi_frameInfo oi
 
-      let gs = fi_global $ oi_frameInfo oi
-          mpos' = move (getCollisionMap gs) (coerce ore) pos (vel ^* dt)
-          pos' = fromMaybe pos mpos'
+  let pos' = pos + coerce (vel ^* dt)
+      vel' = vel + grav ^* dt
 
-          vel' = maybe vel (coerce . subtract pos) (coerce mpos') ^* (1 / dt)
-                + grav ^* dt
+  returnA -< (, vel') $ ObjectOutput
+    { oo_events = mempty { oe_die = die }
+    , oo_render = drawOriginRect col (coerce ore) pos'
+    , oo_state = (noObjectState pos')
+    }
 
 
-          pos'' =
-            case quadrance vel <= 100 of
-              True -> pos
-              False -> pos'
+physicalParticle
+    :: V2 WorldPos
+    -> V2 Double
+    -> OriginRect Double
+    -> Color
+    -> V2 Double
+    -> Time
+    -> Object
+physicalParticle pos0 vel0 ore col grav life =
+  loopPre vel0 $ proc (oi, vel) -> do
+    start <- nowish () -< ()
+    die <- after life () -< ()
 
-      let end = mergeEvents
-            [ die
-            -- , bool noEvent (Event ()) $ quadrance vel' <= 400
-            ]
+    let pos = event (os_pos $ oi_state oi) (const pos0) start
 
-      returnA -< (, vel') $ ObjectOutput
-        { oo_events = mempty
-            { oe_die = end
-            }
-        , oo_render = drawOriginRect col (coerce ore) pos''
-        , oo_state = (noObjectState pos'')
-        }
+    let dt = fi_dt $ oi_frameInfo oi
+
+    let gs = fi_global $ oi_frameInfo oi
+        mpos' = move (getCollisionMap gs) (coerce ore) pos (vel ^* dt)
+        pos' = fromMaybe pos mpos'
+
+        vel' = maybe vel (coerce . subtract pos) (coerce mpos') ^* (1 / dt)
+              + grav ^* dt
+
+
+        pos'' =
+          case quadrance vel <= 100 of
+            True -> pos
+            False -> pos'
+
+    let end = mergeEvents
+          [ die
+          -- , bool noEvent (Event ()) $ quadrance vel' <= 400
+          ]
+
+    returnA -< (, vel') $ ObjectOutput
+      { oo_events = mempty
+          { oe_die = end
+          }
+      , oo_render = drawOriginRect col (coerce ore) pos''
+      , oo_state = (noObjectState pos'')
+      }
 
 
 gore :: V2 WorldPos -> [Object]
@@ -59,7 +84,7 @@ gore pos = do
       dur = 2 + mod (seed * 9) 2
       vel = V2 (cos j) (sin j) * fromIntegral speed
   pure
-    $ particle pos vel (mkCenterdOriginRect 2) (V4 128 0 0 192) (V2 0 210)
+    $ physicalParticle pos vel (mkCenterdOriginRect 2) (V4 128 0 0 192) (V2 0 210)
     $ fromIntegral dur
 
 firework :: V2 WorldPos -> [Object]
