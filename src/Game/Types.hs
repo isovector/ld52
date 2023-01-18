@@ -105,7 +105,7 @@ data ObjectTag
 logicalSize :: RealFrac a => V2 a
 logicalSize = V2 (h * aspectRatio) h
   where
-    h = 240
+    h = 270
 
 aspectRatio :: RealFrac a => a
 aspectRatio = 16 / 9

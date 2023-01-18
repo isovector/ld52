@@ -18,7 +18,7 @@ import           System.Exit
 screenSize :: RealFloat a => V2 a
 screenSize = V2 (h * aspectRatio) h
   where
-    h = 480
+    h = 540
 
 
 

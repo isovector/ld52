@@ -110,9 +110,7 @@ mainMenu = loopPre Start $ proc (fi, sel) -> do
   returnA -<
     ( ( mconcat
           [ bggame cam
-          , drawText 16 (V3 0 192 255) "Where's my Chicken," (V2 10 20) (Camera 0)
-          , drawText 16 (V3 0 192 255) "man?" (V2 210 38) (Camera 0)
-          , drawText 8 (V3 0 128 192) "Hunt of Bounty" (V2 110 70) (Camera 0)
+          , drawText 16 (V3 0 192 255) "Where's my Chicken, man?" (V2 50 20) (Camera 0)
           , mconcat
             $ zipWith (drawMenuItem sel) [minBound .. maxBound] [0..]
           ]
@@ -125,8 +123,8 @@ drawMenuItem :: MenuItem -> MenuItem -> Int -> IO ()
 drawMenuItem sel mi ix =
     drawText 16 col (show mi)
       ((logicalSize / 2)
-          & _x -~ 130
-          & _y .~ 150 + fromIntegral ix * 24
+          & _x -~ 215
+          & _y .~ 180 + fromIntegral ix * 24
       ) (Camera 0)
   where
     col =
