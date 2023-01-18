@@ -3,7 +3,6 @@
 
 module Engine.Run where
 
-import           Control.Concurrent (threadDelay)
 import           Control.Monad
 import           Data.IORef
 import           Data.Time.Clock.System
@@ -70,10 +69,7 @@ input win tRef _ = do
   let seconds' = floatSeconds tS
   writeIORef tRef seconds'
 
-  let secdiff = seconds' - seconds
-  let dt = max 0.016 secdiff
-  when (secdiff < 0.016) $ do
-    threadDelay $ floor $ (0.016 - secdiff) * 1000000
+  let dt = seconds' - seconds
 
   keys <- getKeyboardState
   pure (dt, Just $ FrameInfo (parseControls keys) dt ())

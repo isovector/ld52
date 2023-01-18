@@ -70,7 +70,7 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
 
   let vel' = fromMaybe vel2' totsugeki
 
-  let dpos = vel' * 0.016
+  let dpos = vel' ^* deltaTime oi
 
   let desiredPos = pos + coerce dpos
   let pos' = fromMaybe pos $ move collision (coerce ore) pos $ dpos
