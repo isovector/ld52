@@ -212,6 +212,7 @@ data ObjectState = ObjectState
   , os_collision :: Maybe (OriginRect Double)
   , os_tags :: Set ObjectTag
   , os_camera_offset :: V2 Double
+  , os_facing :: Bool
   }
   deriving stock (Eq, Ord, Show, Generic)
 
