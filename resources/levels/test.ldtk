@@ -2824,7 +2824,7 @@
 						},
 						{
 							"__identifier": "Checkpoint",
-							"__grid": [199,105],
+							"__grid": [202,106],
 							"__pivot": [0,0],
 							"__tags": [],
 							"__tile": null,
@@ -2833,7 +2833,7 @@
 							"width": 8,
 							"height": 8,
 							"defUid": 177,
-							"px": [1592,840],
+							"px": [1616,848],
 							"fieldInstances": []
 						},
 						{
