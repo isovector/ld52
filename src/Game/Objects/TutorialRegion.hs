@@ -7,8 +7,8 @@ import           Engine.Geometry (orTopDist)
 import           Game.Common
 
 
-tutorialRegion :: V2 WorldPos -> OriginRect Double -> Text -> Object
-tutorialRegion pos ore (T.unpack -> str) =
+tutorialRegion :: V2 WorldPos -> OriginRect Double -> Text -> Int -> Object
+tutorialRegion pos ore (T.unpack -> str) timer =
   proc oi -> do
     let hits = fmap topOfOre
              $ filter (S.member IsPlayer . os_tags)
@@ -18,7 +18,7 @@ tutorialRegion pos ore (T.unpack -> str) =
              $ oi_events oi
 
     t <- localTime -< ()
-    let onoff = mod @Int (round (t * 2)) 2 == 1
+    let onoff = mod @Int (round (t * 2)) timer == 0
     let on_ore = OriginRect 16 (V2 8 10)
         off_ore = OriginRect 14 (V2 7 9)
         ore' = bool off_ore on_ore onoff
