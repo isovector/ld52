@@ -9,7 +9,7 @@ import           Engine.Collision
 import           Engine.Drawing
 import           FRP.Yampa ((*^))
 import           Game.Common
-import           Game.Objects.Particle (gore)
+import           Game.Objects.Particle (gore, teleportIn)
 import           Game.Objects.TeleportBall (teleportBall)
 import qualified SDL.Vect as SDL
 import Control.Monad (void, join)
@@ -126,6 +126,7 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
                   ]
               & #oe_broadcast_message .~ fmap (pure . CurrentCheckpoint . fst) cp_hit
               & #oe_game_message .~ ([GameWon] <$ won)
+              & #oe_spawn .~ (teleportIn 0.50 (-60) pos <$ am_teleporting)
         , oo_state =
             oi_state oi
               & #os_pos .~ pos''

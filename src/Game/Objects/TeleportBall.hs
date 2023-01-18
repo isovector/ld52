@@ -5,7 +5,7 @@ import           Data.Maybe (isJust)
 import           Engine.Collision (move)
 import           Engine.Globals (global_textures)
 import           Game.Common
-import           Game.Objects.Particle (teleportDie)
+import           Game.Objects.Particle (teleportDie, teleportOut)
 
 teleportBall
     :: ObjectId
@@ -50,6 +50,7 @@ teleportBall owner owner_ore pos0 offset vel0@(V2 vx _) = dieOnPlayerDeath $
         { oo_events = mempty
             { oe_die = end
             , oe_send_message = [(owner, TeleportTo youpos')] <$ end
+            , oe_spawn = (teleportOut 0.50 60 pos) <$ end
             , oe_focus = () <$ start
             , oe_play_sound = [WarpSound] <$ end
             }
