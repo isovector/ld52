@@ -102,12 +102,12 @@ rateLimit cooldown sf = loopPre 0 $ proc ((ev, b), last_ok) -> do
   let actually_die = whenE ok ev
   respawn_at <- hold 0 -< next_alive <$ actually_die
 
-  let alive = respawn_at <= t
+  let alive = respawn_at < t
 
   out <- sf -< (actually_die, b)
 
   respawn <- edge -< respawn_at <= t
-  returnA -< (RateLimited (bool (Just $ respawn_at - t) Nothing alive)  respawn out, respawn_at)
+  returnA -< (RateLimited (bool (Just $ respawn_at - t) Nothing alive) respawn out, respawn_at)
 
 dieOnPlayerDeath :: Object -> Object
 dieOnPlayerDeath obj = proc oi -> do

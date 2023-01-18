@@ -12,7 +12,7 @@ import           Game.Common
 import           Game.Objects.Particle (gore)
 import           Game.Objects.TeleportBall (teleportBall)
 import qualified SDL.Vect as SDL
-import Control.Monad (void)
+import Control.Monad (void, join)
 
 player :: V2 WorldPos -> Object
 player pos0 = loopPre 0 $ proc (oi, vel) -> do
@@ -27,6 +27,8 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
 
       do_teleport :: V2 WorldPos -> V2 WorldPos
       do_teleport = event id const am_teleporting
+
+  let dir0 = os_facing $ oi_state oi
 
   reset <- edge -< c_reset $ fi_controls $ oi_frameInfo oi
   let cp_hit = listenInbox (\(from, m) -> (from, ) <$> preview #_SetCheckpoint m) $ oi_events oi
@@ -66,7 +68,7 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
   let vel2' = updateVel (can_double_jump || onGround) vel vel'0
 
   wants_totsugeki <- edge -< c_c (controls oi) && alive && S.member PowerupTotsugeki powerups
-  totsugeki <- totsugekiHandler -< (wants_totsugeki, pos)
+  totsugeki <- totsugekiHandler -< (wants_totsugeki, dir0, pos)
 
   let vel' = fromMaybe vel2' totsugeki
 
@@ -80,6 +82,7 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
     throwBallHandler (- (sz & _x .~ 0)) ore
       -< ( oi_self oi
          , pos
+         , dir0
          , vel'
          , whenE (S.member PowerupWarpBall powerups) $ whenE alive throw_ball
          )
@@ -100,8 +103,9 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
           $ do_teleport
           $ pos'
 
-  edir <- edgeBy diffDir 0 -< pos
-  dir <- hold True -< edir
+  edir <- edgeBy diffDir 0 -< pos''
+  edir' <- onChange -< edir
+  dir <- hold True -< whenE (alive && not (isEvent respawn)) $ join edir'
   dir_change <- onChange -< dir
 
   t <- localTime -< ()
@@ -110,7 +114,7 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
 
   let V2 _ updowndir = c_dir $ fi_controls $ oi_frameInfo oi
 
-  drawn <- drawPlayer -< (pos'', isJust totsugeki)
+  drawn <- drawPlayer -< (dir, pos'', isJust totsugeki)
 
   returnA -< (, bool 0 vel'' (alive && not (isEvent am_teleporting))) $
     ObjectOutput
@@ -134,6 +138,7 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
                                         )
               & #os_collision .~ bool Nothing (Just ore) alive
               & #os_tags %~ S.insert IsPlayer
+              & #os_facing .~ dir
         , oo_render = ifA alive drawn
         }
   where
@@ -193,17 +198,15 @@ respawnTime = 1
 throwBallHandler
     :: V2 WorldPos
     -> OriginRect Double
-    -> SF (ObjectId, V2 WorldPos, V2 Double, Event a) ObjectEvents
+    -> SF (ObjectId, V2 WorldPos, Bool, V2 Double, Event a) ObjectEvents
 throwBallHandler offset ore =
-  proc (me, pos, vel, throw) ->
+  proc (me, pos, dir, vel, throw) ->
     fmap rl_data $ rateLimit 1.5 (
-      proc (ev, (me, pos, vel)) -> do
-        edir <- edgeBy diffDir 0 -< pos
-        dir <- hold True -< edir
+      proc (ev, (me, pos, dir, vel)) -> do
         returnA -< mempty
           & #oe_spawn .~
               ([teleportBall me ore pos offset (vel + V2 (bool negate id dir 200) (-200))] <$ ev)
-      ) -< (throw, (me, pos, vel))
+      ) -< (throw, (me, pos, dir, vel))
 
 
 dieAndRespawnHandler :: SF (V2 WorldPos, Event a) (RateLimited ObjectEvents)
@@ -219,10 +222,8 @@ dieAndRespawnHandler = proc (pos, on_die) -> do
      ) -< (on_die, pos)
 
 
-totsugekiHandler :: SF (Event a, V2 WorldPos) (Maybe (V2 Double))
-totsugekiHandler = proc (ev, pos) -> do
-  edir <- edgeBy diffDir 0 -< pos
-  dir <- hold True -< edir
+totsugekiHandler :: SF (Event a, Bool, V2 WorldPos) (Maybe (V2 Double))
+totsugekiHandler = proc (ev, dir, pos) -> do
   RateLimited cooldown _ _ <- rateLimit totsugeki_time identity -< (ev, pos)
   let active = maybe False (>= (totsugeki_time - 0.5)) cooldown
 
@@ -243,12 +244,10 @@ playerPhysVelocity = proc fi -> do
   returnA -< vel'
 
 
-drawPlayer :: SF (V2 WorldPos, Bool) Renderable
+drawPlayer :: SF (Bool, V2 WorldPos, Bool) Renderable
 drawPlayer =
-  proc (pos, is_totsugeku) -> do
+  proc (dir, pos, is_totsugeku) -> do
     -- We can fully animate the player as a function of the position!
-    edir <- edgeBy diffDir 0 -< pos
-    dir <- hold True -< edir
     V2 vx vy <- derivative -< pos
     r <- mkAnim
         -<  ( DrawSpriteDetails

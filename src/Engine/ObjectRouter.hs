@@ -142,6 +142,7 @@ noObjectState = ObjectState
   , os_collision = Nothing
   , os_tags = mempty
   , os_camera_offset = 0
+  , os_facing = True
   }
 
 

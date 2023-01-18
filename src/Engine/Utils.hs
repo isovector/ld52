@@ -49,7 +49,7 @@ originRectToRect ore pos =
 
 
 noObjectState :: V2 WorldPos -> ObjectState
-noObjectState pos = ObjectState pos Nothing mempty 0
+noObjectState pos = ObjectState pos Nothing mempty 0 False
 
 
 unlessNull :: [a] -> Maybe [a]
