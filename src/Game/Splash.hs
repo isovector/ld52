@@ -48,6 +48,9 @@ nextMenuItem Credits = Start
 nextMenuItem n = succ n
 
 
+anyKey :: Controls -> Bool
+anyKey c = c_c c || c_space c || c_z c
+
 mainMenu :: SF RawFrameInfo (IO (), Event MenuItem)
 mainMenu = loopPre Start $ proc (fi, sel) -> do
   ((>>= maybeToEvent) -> y)
@@ -56,7 +59,7 @@ mainMenu = loopPre Start $ proc (fi, sel) -> do
   let f = bool prevMenuItem nextMenuItem <$> y
   let sel' = event sel ($ sel) f
 
-  press <- edge -< c_z $ fi_controls fi
+  press <- edge -< anyKey $ fi_controls fi
   idata <- afterEach (snd $ deltaEncode 0.3 $ cycle
                       [ defaultControls
                           { c_dir = V2 1 0 }
@@ -135,7 +138,7 @@ drawMenuItem sel mi ix =
 
 credits :: SF RawFrameInfo (IO (), Event ())
 credits = proc rfi -> do
-  press <- edge -< c_z $ fi_controls rfi
+  press <- edge -< anyKey $ fi_controls rfi
 
   returnA -<
     ( mconcat
