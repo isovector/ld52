@@ -102,6 +102,11 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
 
   edir <- edgeBy diffDir 0 -< pos
   dir <- hold True -< edir
+  dir_change <- onChange -< dir
+
+  t <- localTime -< ()
+  last_edir_time <- hold 0 -< t <$ dir_change
+  let offset_size = min 1 $ (t - last_edir_time) / 2
 
   let V2 _ updowndir = c_dir $ fi_controls $ oi_frameInfo oi
 
@@ -120,7 +125,7 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
         , oo_state =
             oi_state oi
               & #os_pos .~ pos''
-              & #os_camera_offset .~ V2 (bool negate id dir 80 * max 0.3 (1 - abs (fromIntegral updowndir)))
+              & #os_camera_offset .~ V2 (bool negate id dir (120 * offset_size) * max 0.3 (1 - abs (fromIntegral updowndir)))
                                         (case updowndir of
                                            -1 -> -100
                                            0 -> -50
@@ -270,7 +275,7 @@ instance (Floating a, Eq a) => VectorSpace (V2 a) a where
   dot = SDL.dot
 
 
-diffDir :: ( Ord a, Floating a) =>V2 a -> V2 a -> Maybe Bool
+diffDir :: (Ord a, Floating a) => V2 a -> V2 a -> Maybe Bool
 diffDir (V2 old _) (V2 new _) =
   case abs (old - new) <= epsilon of
     True -> Nothing
