@@ -102,10 +102,15 @@ data ObjectTag
   | IsTileEntity
   deriving (Eq, Ord, Show, Generic)
 
-logicalSize :: Num a => V2 a
-logicalSize = V2 320 240
+logicalSize :: RealFrac a => V2 a
+logicalSize = V2 (h * aspectRatio) h
+  where
+    h = 270
 
-screenRect :: (Fractional a) => Rectangle a
+aspectRatio :: RealFrac a => a
+aspectRatio = 16 / 9
+
+screenRect :: (RealFrac a) => Rectangle a
 screenRect = Rectangle (P $ -tileSize * buffer) (logicalSize + tileSize * 2 * buffer)
   where
     buffer = 4
