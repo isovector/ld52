@@ -60,9 +60,11 @@ game gs0 =
     perfect <- edge -< won && got_eggs && gs_deaths (gs_gameState gs) == 0
     egg_time <- hold Nothing -< Just t <$ all_eggs
     end_time <- hold Nothing -< Just t <$ game_won
-    perfect_time <- hold Nothing -< Just t <$ perfect
+    was_perfect <- hold False -< True <$ perfect
 
     reset <- edge -< c_full_restart $ controls rfi
+
+    let timer_x = 395
 
     returnA -< (, reset) $
       ( cam
@@ -82,19 +84,14 @@ game gs0 =
               $ V2 10 10
           , flip foldMap end_time $ \et -> atScreenPos
               $ drawText 8
-                  (V3 255 255 255)
+                  (bool (V3 255 255 255) (V3 255 0 0) was_perfect)
                   (formatTime et)
-              $ V2 240 10
+              $ V2 timer_x 10
           , flip foldMap egg_time $ \et -> atScreenPos
               $ drawText 8
                   (V3 255 255 0)
                   (formatTime et)
-              $ V2 240 20
-          , flip foldMap perfect_time $ \et -> atScreenPos
-              $ drawText 8
-                  (V3 255 0 0)
-                  (formatTime et)
-              $ V2 240 30
+              $ V2 timer_x 20
           ]
         )
   where
