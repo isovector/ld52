@@ -5,6 +5,7 @@ import           Data.Maybe (isJust)
 import           Engine.Collision (move)
 import           Engine.Globals (global_textures)
 import           Game.Common
+import           Game.Objects.Particle (teleportDie, teleportOut)
 
 teleportBall
     :: ObjectId
@@ -49,6 +50,7 @@ teleportBall owner owner_ore pos0 offset vel0@(V2 vx _) = dieOnPlayerDeath $
         { oo_events = mempty
             { oe_die = end
             , oe_send_message = [(owner, TeleportTo youpos')] <$ end
+            , oe_spawn = (teleportOut 0.50 60 pos) <$ end
             , oe_focus = () <$ start
             , oe_play_sound = [WarpSound] <$ end
             }
@@ -78,6 +80,16 @@ charge owner pos0 offset dir = proc oi -> do
     , oo_state = noObjectState pos
     }
 
+
+-- TODO(sandy): janky; does not do what it says on the tin
+dieOnPlayerDeath :: Object -> Object
+dieOnPlayerDeath obj = proc oi -> do
+  oo <- obj -< oi
+  let player_death = listenInbox (preview #_PlayerDeath . snd) $ oi_events oi
+  let pos = os_pos $ oo_state oo
+  returnA -< oo
+    & #oo_events . #oe_die <>~ player_death
+    & #oo_events . #oe_spawn <>~ (teleportDie pos <$ player_death)
 
 
 grav :: V2 Double

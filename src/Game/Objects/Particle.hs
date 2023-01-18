@@ -87,6 +87,43 @@ gore pos = do
     $ physicalParticle pos vel (mkCenterdOriginRect 2) (V4 128 0 0 192) (V2 0 210)
     $ fromIntegral dur
 
+teleportColor :: Color
+teleportColor = V4 0 192 255 255
+
+teleportIn :: Time -> Double -> V2 WorldPos -> [Object]
+teleportIn dur dist pos = do
+  let n = 12
+  i <- [id @Int 0 .. n]
+  let j = fromIntegral i * (2 * pi / fromIntegral n)
+      vel = V2 (cos j) (sin j) ^* coerce dist
+  pure
+    $ particle (pos + vel ^* coerce dur) (negate $ coerce vel) (mkCenterdOriginRect 2) teleportColor 0
+    $ dur
+
+teleportOut :: Time -> Double -> V2 WorldPos -> [Object]
+teleportOut dur dist pos = do
+  let n = 12
+  i <- [id @Int 0 .. n]
+  let j = fromIntegral i * (2 * pi / fromIntegral n)
+      vel = V2 (cos j) (sin j) ^* coerce dist
+  pure
+    $ particle pos (negate vel) (mkCenterdOriginRect 2) teleportColor 0
+    $ dur
+
+
+teleportDie :: V2 WorldPos -> [Object]
+teleportDie pos = do
+  let n = 6
+  i <- [id @Int 0 .. n]
+  let seed = hash pos * hash i
+      j = fromIntegral i * (360 / fromIntegral n)
+      speed = 25 + mod (seed * 17) 75
+      dur = 4 + mod (seed * 9) 6
+      vel = V2 (cos j) (sin j) * fromIntegral speed
+  pure
+    $ particle pos vel (mkCenterdOriginRect 2) (V4 192 0 192 200) (V2 0 30)
+    $ fromIntegral dur
+
 firework :: V2 WorldPos -> [Object]
 firework pos = do
   let n = 128
