@@ -120,7 +120,7 @@ initialGlobalState :: WorldName -> GlobalState
 initialGlobalState w
   = GlobalState
       (w_levels (global_worlds w) M.! "AutoLayer")
-      (S.fromList [Layer3])
+      (S.fromList [Layer3, Layer1])
       (GameState 0 mempty False 0)
 
 #endif

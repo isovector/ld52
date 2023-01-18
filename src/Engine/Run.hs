@@ -15,8 +15,11 @@ import qualified Sound.ALUT as ALUT
 import           System.Exit
 
 
-screenSize :: Num a => V2 a
-screenSize = V2 640 480
+screenSize :: RealFloat a => V2 a
+screenSize = V2 (h * aspectRatio) h
+  where
+    h = 480
+
 
 
 main :: IO ()
@@ -24,7 +27,7 @@ main = ALUT.withProgNameAndArgs ALUT.runALUT $ \_ _ -> do
   initializeAll
 
   window <- createWindow "Where's My Chicken, Man?" $ defaultWindow
-    { windowInitialSize = screenSize
+    { windowInitialSize = fmap (round @Double) screenSize
     , windowGraphicsContext = OpenGLContext defaultOpenGL
     }
   ctx <- glCreateContext window

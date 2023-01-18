@@ -2,8 +2,9 @@ module Game.Splash where
 
 import Game (game, initialGlobalState)
 import Game.Common
-import SDL (setWindowMode, WindowMode (FullscreenDesktop))
+import SDL (setWindowMode, WindowMode (FullscreenDesktop), get, ($=), rendererScale)
 import Engine.Globals (global_resources)
+import SDL.Video (windowSize)
 
 
 runIntro :: SF RawFrameInfo (Camera, Renderable)
@@ -14,13 +15,19 @@ runIntro = runSwont (error "die") $ do
 splashScreen :: Swont RawFrameInfo (Camera, Renderable) ()
 splashScreen = do
   swont (liftIntoGame mainMenu) >>= \case
-     Start -> do
-       swont $ game (initialGlobalState TestWorld)
-       splashScreen
-     Fullscreen -> do
-       momentary $ (Camera 0, const $ setWindowMode (e_window $ r_engine global_resources) FullscreenDesktop)
-       splashScreen
-     Credits -> do
+    Start -> do
+      swont $ game (initialGlobalState TestWorld)
+      splashScreen
+    Fullscreen -> do
+      momentary $ (Camera 0, const $ do
+        let e = r_engine global_resources
+            w = e_window e
+        setWindowMode w FullscreenDesktop
+        sz <- get $ windowSize w
+        rendererScale (e_renderer e) $= (fmap (fromIntegral . round @Double @Int) $ fmap fromIntegral sz / logicalSize @Double)
+                  )
+      splashScreen
+    Credits -> do
       swont $ liftIntoGame credits
       splashScreen
 

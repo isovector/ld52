@@ -149,8 +149,9 @@ getTilesOnScreen :: Camera -> [V2 Tile]
 getTilesOnScreen (Camera (negate -> posToTile -> cam)) = do
   let (V2 sx sy) = posToTile logicalSize
   -- Add a little bonus so we don't have weird culling on the edges
-  x <- [-2 .. sx + 2]
-  y <- [-2 .. sy + 2]
+  let bonus = 5
+  x <- [-2 .. sx + bonus]
+  y <- [-2 .. sy + bonus]
   pure $ cam + V2 x y
 
 getReferencedEntities :: LDtk.Entity -> Set Text

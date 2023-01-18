@@ -45,7 +45,7 @@ move
 move f sz pos dpos = do
   let (V2 xd yd) = fmap deltaDir dpos
       subdivs :: Int
-      subdivs = min 10 $ max 1 $ ceiling (norm dpos / tileSize)
+      subdivs = min 100 $ max 1 $ ceiling (norm dpos / tileSize)
 
       dpos' :: V2 Double
       dpos' = dpos / fromIntegral subdivs
