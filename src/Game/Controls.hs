@@ -10,7 +10,8 @@ parseControls check = Controls
   { c_space = check ScancodeX || check ScancodeSpace
   , c_z = check ScancodeZ
   , c_c = check ScancodeC
-  , c_reset = check ScancodeR
+  , c_reset = check ScancodeR && not (check ScancodeLShift || check ScancodeRShift)
+  , c_full_restart = check ScancodeR && (check ScancodeLShift || check ScancodeRShift)
   , c_dir =
       V2
         (toOne ScancodeRight - toOne ScancodeLeft)

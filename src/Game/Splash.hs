@@ -14,7 +14,9 @@ runIntro = runSwont (error "die") $ do
 splashScreen :: Swont RawFrameInfo (Camera, Renderable) ()
 splashScreen = do
   swont (liftIntoGame mainMenu) >>= \case
-     Start -> swont $ game (initialGlobalState TestWorld) >>> arr (, noEvent)
+     Start -> do
+       swont $ game (initialGlobalState TestWorld)
+       splashScreen
      Fullscreen -> do
        momentary $ (Camera 0, const $ setWindowMode (e_window $ r_engine global_resources) FullscreenDesktop)
        splashScreen
@@ -96,7 +98,7 @@ mainMenu = loopPre Start $ proc (fi, sel) -> do
   inputs <- hold defaultControls -< maybeToEvent =<< idata
 
 
-  (cam, bggame) <- game (initialGlobalState HelpWorld) -< fi & #fi_controls .~ inputs
+  ((cam, bggame), _) <- game (initialGlobalState HelpWorld) -< fi & #fi_controls .~ inputs
 
   returnA -<
     ( ( mconcat

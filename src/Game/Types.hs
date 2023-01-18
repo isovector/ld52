@@ -11,6 +11,7 @@ data GameState = GameState
   { gs_coins :: Int
   , gs_inventory :: Set PowerupType
   , gs_end :: Bool
+  , gs_deaths :: Int
   }
   deriving stock Generic
 
@@ -18,6 +19,7 @@ data GameMessage
   = AddCoin
   | AddInventory PowerupType
   | GameWon
+  | AddPlayerDeath
   deriving stock (Eq, Ord, Show, Read, Generic)
 
 ------------------------------------------------------------------------------
@@ -71,6 +73,7 @@ data Controls = Controls
   , c_z :: Bool
   , c_c :: Bool
   , c_reset :: Bool
+  , c_full_restart :: Bool
   , c_dir :: V2 Int
   }
   deriving (Eq)
@@ -79,6 +82,7 @@ defaultControls :: Controls
 defaultControls = Controls
   { c_space = False
   , c_reset = False
+  , c_full_restart = False
   , c_z = False
   , c_c = False
   , c_dir = V2 0 0

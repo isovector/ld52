@@ -209,6 +209,7 @@ dieAndRespawnHandler = proc (pos, on_die) -> do
           & #oe_spawn .~ (gore pos <$ ev)
           & #oe_play_sound .~ ([DieSound] <$ ev)
           & #oe_broadcast_message .~ ([PlayerDeath] <$ ev)
+          & #oe_game_message .~ ([AddPlayerDeath] <$ ev)
           & #oe_focus .~ void ev
      ) -< (on_die, pos)
 

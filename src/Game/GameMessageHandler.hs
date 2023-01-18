@@ -10,4 +10,6 @@ handleGameMessage (AddInventory pt) =
   #gs_inventory <>~ S.singleton pt
 handleGameMessage GameWon =
   #gs_end .~ True
+handleGameMessage AddPlayerDeath =
+  #gs_deaths +~ 1
 

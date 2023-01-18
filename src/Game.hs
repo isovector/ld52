@@ -22,7 +22,7 @@ initialObjs gs
   $ l_defaultObjs $ gs_currentLevel gs
 
 
-game :: GlobalState -> SF RawFrameInfo (Camera, Renderable)
+game :: GlobalState -> SF RawFrameInfo ((Camera, Renderable), Event ())
 game gs0 =
   proc rfi -> do
     (cam, objs, to_draw) <-
@@ -53,12 +53,18 @@ game gs0 =
     t <- localTime -< ()
 
     let eggs = gs_coins $ gs_gameState gs
-    game_won <- edge -< gs_end $ gs_gameState gs
-    all_eggs <- edge -< eggs == 5
+        won = gs_end $ gs_gameState gs
+        got_eggs = eggs == 5
+    game_won <- edge -< won
+    all_eggs <- edge -< got_eggs
+    perfect <- edge -< won && got_eggs && gs_deaths (gs_gameState gs) == 0
     egg_time <- hold Nothing -< Just t <$ all_eggs
     end_time <- hold Nothing -< Just t <$ game_won
+    perfect_time <- hold Nothing -< Just t <$ perfect
 
-    returnA -<
+    reset <- edge -< c_full_restart $ controls rfi
+
+    returnA -< (, reset) $
       ( cam
       , mconcat
           [ drawBackgroundColor (V4 46 90 137 255)
@@ -84,6 +90,11 @@ game gs0 =
                   (V3 255 255 0)
                   (formatTime et)
               $ V2 240 20
+          , flip foldMap perfect_time $ \et -> atScreenPos
+              $ drawText 8
+                  (V3 255 0 0)
+                  (formatTime et)
+              $ V2 240 30
           ]
         )
   where
@@ -110,7 +121,7 @@ initialGlobalState w
   = GlobalState
       (w_levels (global_worlds w) M.! "AutoLayer")
       (S.fromList [Layer3])
-      (GameState 0 mempty False)
+      (GameState 0 mempty False 0)
 
 #endif
 
