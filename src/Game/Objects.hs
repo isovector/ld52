@@ -59,6 +59,7 @@ buildEntity "Door" pos ore props _ =
 buildEntity "TutorialRegion" pos ore props _ =
   tutorialRegion pos ore
     <$> asText "TutorialRegion" "key" props
+    <*> fmap fromIntegral (asInt "TutorialRegion" "timer" props)
 buildEntity "Coin" pos _ _ _ = pure $ coin pos
 buildEntity "Death" pos ore _ _ = pure $ deathZone pos ore
 buildEntity "ToggleLayer" pos ore props _ =
