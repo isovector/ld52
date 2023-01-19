@@ -122,7 +122,8 @@ buildEntities refmap es =  do
     let iid = e ^. #iid
     pure $ fmap (iid, ) $
       buildEntity
-        (traceFX "spawning: " id $ e ^. #__identifier)
+        -- (traceFX "spawning: " id $ e ^. #__identifier)
+        (e ^. #__identifier)
         (fmap (WorldPos . fromIntegral) $ pairToV2 $ e ^. #px)
         (mkPivotOriginRect
           (parseV2 fromIntegral e #width #height)
