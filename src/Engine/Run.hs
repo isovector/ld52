@@ -4,13 +4,15 @@
 module Engine.Run where
 
 import           Control.Monad
+import           Data.Foldable (fold)
 import           Data.IORef
 import           Data.Time.Clock.System
+import           Data.Traversable (for)
 import           Engine.Globals (veryUnsafeEngineIORef, global_resources)
 import           Engine.Prelude
-import           Game.Controls (parseControls)
+import           Game.Controls (parseControls, parseController)
 import           Game.Splash (runIntro)
-import           SDL hiding (copy, Stereo)
+import           SDL hiding (Vector, copy, Stereo)
 import qualified Sound.ALUT as ALUT
 import           System.Exit
 
@@ -25,6 +27,9 @@ screenSize = V2 (h * aspectRatio) h
 main :: IO ()
 main = ALUT.withProgNameAndArgs ALUT.runALUT $ \_ _ -> do
   initializeAll
+
+  jsds <- fmap toList availableJoysticks
+  jss <- for jsds openJoystick
 
   window <- createWindow "Where's My Chicken, Man?" $ defaultWindow
     { windowInitialSize = fmap (round @Double) screenSize
@@ -53,15 +58,15 @@ main = ALUT.withProgNameAndArgs ALUT.runALUT $ \_ _ -> do
 
   reactimate
     (pure $ FrameInfo defaultControls 0.016 ())
-    (input window tRef)
+    (input window tRef $ listToMaybe jss)
     (output rs)
     -- game
     runIntro
   quit
 
 
-input :: Window -> IORef Double -> Bool -> IO (Double, Maybe RawFrameInfo)
-input win tRef _ = do
+input :: Window -> IORef Double -> Maybe Joystick -> Bool -> IO (Double, Maybe RawFrameInfo)
+input win tRef mjs _ = do
   pumpEvents
   es <- pollEvents
   when (any (isQuit . eventPayload) es) $ do
@@ -75,7 +80,9 @@ input win tRef _ = do
   let dt = seconds' - seconds
 
   keys <- getKeyboardState
-  pure (dt, Just $ FrameInfo (parseControls keys) dt ())
+  js <- for mjs parseController
+
+  pure (dt, Just $ FrameInfo (parseControls keys <> fold js) dt ())
 
 
 pattern Keypress :: Scancode -> EventPayload

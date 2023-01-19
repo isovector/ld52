@@ -78,6 +78,20 @@ data Controls = Controls
   }
   deriving (Eq)
 
+instance Semigroup Controls where
+  Controls a1 b1 c1 d1 e1 xy1 <> Controls a2 b2 c2 d2 e2 xy2
+    = Controls
+        { c_space = a1 || a2
+        , c_z = b1 || b2
+        , c_c = c1 || c2
+        , c_reset = d1 || d2
+        , c_full_restart = e1 || e2
+        , c_dir = if xy2 /= 0 then xy2 else xy1
+        }
+
+instance Monoid Controls where
+  mempty = defaultControls
+
 defaultControls :: Controls
 defaultControls = Controls
   { c_space = False
