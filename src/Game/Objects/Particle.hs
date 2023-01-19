@@ -79,7 +79,7 @@ gore pos = do
   let n = 128
   i <- [id @Int 0 .. n]
   let seed = hash pos * hash i
-      j = fromIntegral i * (360 / fromIntegral n)
+      j = fromIntegral i * (2 * pi / fromIntegral n)
       speed = 50 + mod (seed * 17) 150
       dur = 2 + mod (seed * 9) 2
       vel = V2 (cos j) (sin j) * fromIntegral speed
@@ -116,7 +116,7 @@ teleportDie pos = do
   let n = 6
   i <- [id @Int 0 .. n]
   let seed = hash pos * hash i
-      j = fromIntegral i * (360 / fromIntegral n)
+      j = fromIntegral i * (2 * pi / fromIntegral n)
       speed = 25 + mod (seed * 17) 75
       dur = 4 + mod (seed * 9) 6
       vel = V2 (cos j) (sin j) * fromIntegral speed
@@ -129,7 +129,7 @@ firework pos = do
   let n = 128
   i <- [id @Int 0 .. n]
   let seed = hash pos * hash i
-      j = fromIntegral i * (360 / fromIntegral n)
+      j = fromIntegral i * (2 * pi / fromIntegral n)
       speed = 25 + mod (seed * 17) 75
       dur = 4 + mod (seed * 9) 6
       vel = V2 (cos j) (sin j) * fromIntegral speed
