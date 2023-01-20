@@ -48,8 +48,9 @@ instance IsResource Anim [WrappedTexture] where
   resourceExt = "png"
   resourceName _ = "unused"
   load an e _ = do
+    rpath <- resourceRootPath
     for [0 .. frameCounts an - 1] $ \i -> do
-      let fp = "resources" </> "anims" </> animName an <> "_" <> show i <.> "png"
+      let fp = rpath </> "anims" </> animName an <> "_" <> show i <.> "png"
       wt <- wrapTexture =<< loadJuicyTexture (e_renderer e) fp
       pure $ setGroundOrigin wt
 
