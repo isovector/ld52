@@ -51,7 +51,7 @@ physicalParticle pos0 vel0 ore col grav life =
         mpos' = move (getCollisionMap gs) (coerce ore) pos (vel ^* dt)
         pos' = fromMaybe pos mpos'
 
-        vel' = maybe vel (coerce . subtract pos) (coerce mpos') ^* (1 / dt)
+        vel' = maybe (dt *^ vel) (coerce . subtract pos) (coerce mpos') ^* (1 / dt)
               + grav ^* dt
 
 
@@ -78,13 +78,16 @@ gore :: V2 WorldPos -> [Object]
 gore pos = do
   let n = 128
   i <- [id @Int 0 .. n]
-  let seed = hash pos * hash i
+  let seed = hash (pos * fromIntegral i)
       j = fromIntegral i * (2 * pi / fromIntegral n)
-      speed = 50 + mod (seed * 17) 150
-      dur = 2 + mod (seed * 9) 2
+      speed = 50 + mod (seed * 17) 100
+      dur = 4 + mod (seed * 9) 2
       vel = V2 (cos j) (sin j) * fromIntegral speed
+      trans = fromIntegral $ 92 + mod (seed * 13) 127
+      sz = fromIntegral (10 + mod (seed * 7) 15) / 10
+      r = fromIntegral $ 92 + mod (seed * 4) 48
   pure
-    $ physicalParticle pos vel (mkCenterdOriginRect 2) (V4 128 0 0 192) (V2 0 210)
+    $ physicalParticle (pos - V2 0 8) vel (mkCenterdOriginRect sz) (V4 r 0 0 trans) (V2 0 150)
     $ fromIntegral dur
 
 teleportColor :: Color

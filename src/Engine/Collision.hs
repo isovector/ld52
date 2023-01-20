@@ -61,7 +61,7 @@ move f sz pos dpos = do
 
 sufficientlyDifferent :: V2 WorldPos -> V2 WorldPos -> Maybe (V2 WorldPos)
 sufficientlyDifferent pos pos' =
-  if qd pos pos' <= epsilon * 5
+  if distance pos pos' <= epsilon
      then Nothing
      else Just pos'
 

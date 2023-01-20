@@ -38,7 +38,7 @@ main = ALUT.withProgNameAndArgs ALUT.runALUT $ \_ _ -> do
   ctx <- glCreateContext window
   glMakeCurrent window ctx
   renderer <- createRenderer window (-1) defaultRenderer
-    { rendererType = AcceleratedVSyncRenderer
+    { rendererType = AcceleratedRenderer
     , rendererTargetTexture = True
     }
   rendererScale renderer $= screenSize / logicalSize
