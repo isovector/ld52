@@ -64,15 +64,17 @@ player pos0 = loopPre 0 $ proc (oi, vel) -> do
 
   let collision = getCollisionMap $ globalState oi
 
+  let dt = deltaTime oi
+
   let onGround = touchingGround (collision CollisionCheckGround) ore pos
-  let vel2' = updateVel (can_double_jump || onGround) vel vel'0
+  let vel2' = updateVel (can_double_jump || onGround) dt vel vel'0
 
   wants_totsugeki <- edge -< c_c (controls oi) && alive && S.member PowerupTotsugeki powerups
   totsugeki <- totsugekiHandler -< (wants_totsugeki, dir0, pos)
 
   let vel' = fromMaybe vel2' totsugeki
 
-  let dpos = vel' ^* deltaTime oi
+  let dpos = vel' ^* dt
 
   let desiredPos = pos + coerce dpos
   let pos' = fromMaybe pos $ move collision (coerce ore) pos $ dpos
@@ -159,24 +161,24 @@ touchingGround toHit ore pos =
   touchDist = V2 0 1
 
 
-updateVelAir :: V2 Double -> V2 Double -> V2 Double
-updateVelAir vel dvel =
+updateVelAir :: Time -> V2 Double -> V2 Double -> V2 Double
+updateVelAir dt vel dvel =
     freeVel & _x %~ clampAbs maxXSpeed
   where
-    grav = V2 0 10
     maxXSpeed = 110
-    freeVel = vel + (dvel & _y %~ max 0) + grav
+    freeVel = vel + (dvel & _y %~ max 0) + gravity ^* dt
 
-updateVelGround :: V2 Double -> V2 Double -> V2 Double
-updateVelGround vel dvel@(V2 dvx _) =
+updateVelGround :: Time -> V2 Double -> V2 Double -> V2 Double
+updateVelGround dt vel dvel@(V2 dvx _) =
     V2 (maxXSpeed * signum dvx) air_y
   where
     maxXSpeed = 110
-    grav = V2 0 10
-    (V2 _ air_y) = vel + dvel + grav
+    (V2 _ air_y) = vel + dvel + gravity ^* dt
 
+gravity :: Num a => V2 a
+gravity = V2 0 625
 
-updateVel :: Bool -> V2 Double -> V2 Double -> V2 Double
+updateVel :: Bool -> Time -> V2 Double -> V2 Double -> V2 Double
 updateVel True = updateVelGround
 updateVel False = updateVelAir
 
