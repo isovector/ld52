@@ -237,7 +237,7 @@ totsugekiHandler = proc (ev, dir, pos) -> do
 
 playerPhysVelocity :: SF FrameInfo (V2 Double)
 playerPhysVelocity = proc fi -> do
-  let jumpVel = V2 0 (-210)
+  let jumpVel = V2 0 (-220)
   let stepSpeed = 11
   jumpEv <- edge -< c_space (fi_controls fi)
   let jump = event 0 (const jumpVel) jumpEv
