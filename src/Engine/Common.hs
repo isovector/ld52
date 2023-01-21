@@ -93,12 +93,30 @@ staticCollisionObject pos ore tags r = proc oi -> do
       , oo_state = os
       }
 
--- TODO(sandy): very buggy; gets applied every frame
-oscillate :: (Time -> V2 WorldPos) -> Object -> Object
-oscillate f sf = proc oi -> do
-  offset <- fmap f localTime -< ()
-  oo <- sf -< oi
-  returnA -< oo & #oo_state . #os_pos +~ offset
+oscillatingStaticCollisionObject
+    :: (Time -> V2 WorldPos)
+    -> V2 WorldPos
+    -> OriginRect Double
+    -> S.Set ObjectTag
+    -> (V2 WorldPos -> Renderable)
+    -> Object
+oscillatingStaticCollisionObject f pos ore tags r = proc oi -> do
+  on_start <- nowish () -< ()
+  t <- localTime -< ()
+  let pos' = pos + f t
+
+  let def =
+        (noObjectState pos')
+          { os_collision = Just ore
+          , os_tags = tags
+          }
+  let os = event (oi_state oi) (const def) on_start
+  returnA -<
+    ObjectOutput
+      { oo_events = mempty
+      , oo_render = r pos'
+      , oo_state = os & #os_pos .~ pos'
+      }
 
 
 staticObject

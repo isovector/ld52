@@ -5,7 +5,7 @@ import Game.Common
 
 checkpoint :: V2 WorldPos -> Object
 checkpoint pos
-  = oscillate (\t -> coerce $ V2 0 (cos (t * 5) * 1))
+  = id -- oscillate (\t -> coerce $ V2 0 (cos (t * 5) * 1))
   $ playerHitRectObj (proc oi -> do
       let hit_cp = (fmap (, SetCheckpoint pos) . onHitBy IsPlayer) oi
           mine = listenInbox (preview #_CurrentCheckpoint . snd) $ oi_events oi
