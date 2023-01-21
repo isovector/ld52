@@ -166,7 +166,7 @@ updateVelAir dt vel dvel =
     freeVel & _x %~ clampAbs maxXSpeed
   where
     maxXSpeed = 110
-    freeVel = vel + (dvel & _y %~ max 0) + gravity ^* dt
+    freeVel = vel + ((dvel & _y %~ max 0) + gravity) ^* dt
 
 updateVelGround :: Time -> V2 Double -> V2 Double -> V2 Double
 updateVelGround dt vel dvel@(V2 dvx _) =
@@ -238,7 +238,7 @@ totsugekiHandler = proc (ev, dir, pos) -> do
 playerPhysVelocity :: SF FrameInfo (V2 Double)
 playerPhysVelocity = proc fi -> do
   let jumpVel = V2 0 (-220)
-  let stepSpeed = 11
+  let stepSpeed = 11 * 60
   jumpEv <- edge -< c_space (fi_controls fi)
   let jump = event 0 (const jumpVel) jumpEv
   let vx = V2 stepSpeed 0 * (realToFrac <$> c_dir (fi_controls fi))
